@@ -23,7 +23,7 @@ public class UserController {
     public UserController(@NotNull AccountService accountService){
         this.accServ = accountService;
     }
-
+    @CrossOrigin(origins = "http://localhost")
     @RequestMapping(path = "/api/who_i_am", method = RequestMethod.GET, produces = "application/json")
     public UserData getWho(HttpSession httpSession, ModelMap model) {
         UserData data;
@@ -39,7 +39,7 @@ public class UserController {
         }
         return data;
     }
-
+    @CrossOrigin(origins = "http://localhost")
     @RequestMapping(path = "/api/logout", method = RequestMethod.GET)
     public void logOut(HttpSession httpSession) {
         httpSession.invalidate();
@@ -54,6 +54,8 @@ public class UserController {
             accServ.changeMail(str.getStrCont(), (String) httpSession.getAttribute("userLogin"));
         } catch (IllegalArgumentException a){
             result = false;
+            msg = context.getMessage("msgs.error",new Object[] {28, "" },Locale.ENGLISH);
+        } catch(NullPointerException b){
             msg = context.getMessage("msgs.error",new Object[] {28, "" },Locale.ENGLISH);
         }
         return new ResponceCode(result, msg);
