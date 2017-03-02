@@ -31,10 +31,14 @@ public class AccountService {
 
     public LogInController.ResponceCode login(@NotNull LogInController.LogInData data) {
         final String login = data.getUserLogin();
-        final String hash = userNameToUserProfile.get(login).getPassHash();
         boolean result = false;
-        if (hash.compareTo(data.getPassHash()) == 0){
-            result = true;
+        try {
+            final String hash = userNameToUserProfile.get(login).getPassHash();
+            if (hash.compareTo(data.getPassHash()) == 0){
+                result = true;
+            }
+        } catch (NullPointerException b){
+            result = false;
         }
         return new LogInController.ResponceCode(result);
     }
