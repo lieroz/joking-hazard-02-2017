@@ -15,7 +15,7 @@ public class SignUpController {
     public SignUpController(@NotNull AccountService accountService){
         this.accServ = accountService;
     }
-    @CrossOrigin(origins = "http://localhost")
+    //@CrossOrigin(origins = "http://localhost")
     @RequestMapping(path = "/api/user/signup", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     public  ResponceCode getMsg(@RequestBody SignUpData body, HttpSession httpSession) {
         System.out.println("SignUpCalled");
