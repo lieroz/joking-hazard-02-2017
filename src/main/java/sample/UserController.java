@@ -45,7 +45,7 @@ public class UserController {
         httpSession.invalidate();
     }
 
-    @CrossOrigin(origins = "http://localhost")
+    //@CrossOrigin(origins = "http://localhost")
     @RequestMapping(path = "/api/user/changeMail", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     public ResponceCode changeMail(@RequestBody StringContainer str, HttpSession httpSession){
         boolean result = true;
