@@ -6,11 +6,10 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
-import java.applet.AppletContext;
 
 import java.util.Locale;
 

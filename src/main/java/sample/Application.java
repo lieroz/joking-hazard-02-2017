@@ -26,7 +26,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *  6. В @RestController'е Spring находит методы помеченные @RequestMapping, запоминает их, чтобы DispatcherServlet, потом, смог произвести вызов
  *  на соответствующий http-запрос.
  */
-@SuppressWarnings("SpringFacetCodeInspection")
 @SpringBootApplication
 public class Application {
 
