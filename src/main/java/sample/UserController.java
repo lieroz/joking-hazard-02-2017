@@ -107,20 +107,15 @@ public class UserController {
             return  newPassHash;
         }
     }
-    public static final class ResponceCode{
-        final boolean signUpResult;
+    public static final class ResponceCode {
+        final boolean result;
         final String errorMsg;
+
         @JsonCreator
-        public ResponceCode(@JsonProperty("signUpResult") boolean loginResult,
-                            @JsonProperty("errorMsg") String errorMsg){
-            this.signUpResult = loginResult;
+        public ResponceCode(@JsonProperty("result") boolean result,
+                            @JsonProperty("errorMsg") String errorMsg) {
+            this.result = result;
             this.errorMsg = errorMsg;
-        }
-        public boolean getSignUpResult(){
-            return signUpResult;
-        }
-        public String getErrorMsg(){
-            return errorMsg;
         }
     }
     public static final class UserData {
