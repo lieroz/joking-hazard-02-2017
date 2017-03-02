@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 
-@SuppressWarnings("ALL")
+
 @RestController
 public class LogInController {
     @NotNull
@@ -28,6 +28,7 @@ public class LogInController {
     public static final class LogInData{
         final String userLogin;
         final String passHash;
+        @SuppressWarnings("unused")
         @JsonCreator
         public  LogInData(@JsonProperty("userId") String userLogin, @JsonProperty("passHash") String passHash){
             this.userLogin = userLogin;

@@ -4,25 +4,24 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
+
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 
-
-@SuppressWarnings("ALL")
 @Service
 public class AccountService {
 
-    private final Map<String, SignUpController.SignUpData> userNameToUserProfile = new HashMap<>();
+    private final Map<String, UserData> userNameToUserProfile = new HashMap<>();
     @NotNull
-    public  ResponceCode register(@NotNull SignUpController.SignUpData data) {
+    public  ResponceCode register(@NotNull UserData data) {
         boolean result = true;
         String message = "ok";
         if(userNameToUserProfile.containsKey(data.getUserLogin())){
             result = false;
-            ApplicationContext context = new ClassPathXmlApplicationContext("local.xml");
-            message = context.getMessage("msgs.login_occupied",new Object[] {28, "" }, Locale.ENGLISH);
+            final ApplicationContext context = new ClassPathXmlApplicationContext("local.xml");
+            message = context.getMessage("msgs.login_occupied",null, Locale.ENGLISH);
         } else {
             userNameToUserProfile.put(data.getUserLogin(), data);
         }
@@ -33,15 +32,15 @@ public class AccountService {
         final String login = data.getUserLogin();
         boolean result = false;
         String msg = "Invalid login";
-        try {
-            final String hash = userNameToUserProfile.get(login).getPassHash();
-            if (hash.compareTo(data.getPassHash()) == 0){
+        final String hash = userNameToUserProfile.get(login).getPassHash();
+        if(hash == null){
+            result = false;
+            msg = "invalid session";
+        } else {
+            if (hash.compareTo(data.getPassHash()) == 0) {
                 result = true;
                 msg = "Ok";
             }
-        } catch (NullPointerException b){
-            result = false;
-            msg = "invalid session";
         }
         return new ResponceCode(result, msg);
     }
@@ -49,9 +48,11 @@ public class AccountService {
     public ResponceCode changeMail(@NotNull String newMail, @NotNull String login){
         String msg = "ok";
         boolean res = true;
-        try {
-            userNameToUserProfile.get(login).setUserMail(newMail);
-        } catch (NullPointerException a){
+        final UserData data = userNameToUserProfile.get(login);
+        if (data != null){
+            data.setUserMail(newMail);
+        }else
+        {
             res = false;
             msg = "invalid session";
         }
@@ -60,9 +61,11 @@ public class AccountService {
     public ResponceCode changePassHash(@NotNull String newPassHash, @NotNull String login){
         String msg = "ok";
         boolean res = true;
-        try {
-            userNameToUserProfile.get(login).setPassHash(newPassHash);
-        } catch (NullPointerException a){
+        final UserData data = userNameToUserProfile.get(login);
+        if (data != null){
+            data.setPassHash(newPassHash);
+        }else
+        {
             res = false;
             msg = "invalid session";
         }
@@ -72,31 +75,31 @@ public class AccountService {
     public ResponceCode checkPass(@NotNull String passHash, @NotNull String login){
         String msg = "ok";
         boolean res = true;
-        try {
-            final String passH = userNameToUserProfile.get(login).getPassHash();
-            if (passHash.compareTo(passH) == 0) {
-                res = true;
-                msg = "Ok";
-            } else {
+            final UserData data = userNameToUserProfile.get(login);
+            if (data != null){
+                final String passH = data.getPassHash();
+                if (!passHash.equals(passH)) {
+                    res = false;
+                    msg = "invalid pass";
+                }
+            }else
+            {
                 res = false;
-                msg = "invalid pass";
+                msg = "invalid session";
             }
-        } catch (NullPointerException a){
-            res = false;
-            msg = "invalid session";
-        }
         return new ResponceCode(res, msg);
     }
 
 
 
-    public UserController.UserData getUserData(@NotNull String id) {
-        final SignUpController.SignUpData data = userNameToUserProfile.get(id);
-        UserController.UserData dat;
-        try {
-            dat = new UserController.UserData(data.getUserMail(), data.getUserLogin());
-        }catch (NullPointerException e){
-            dat = new UserController.UserData("", "");
+    public UserData.UserInfo getUserData(@NotNull String login) {
+        final UserData data = userNameToUserProfile.get(login);
+        final UserData.UserInfo dat;
+        if (data != null){
+            dat = new UserData.UserInfo(data.getUserMail(), data.getUserLogin());
+        }else
+        {
+            dat = new UserData.UserInfo("", "");
         }
         return  dat;
     }

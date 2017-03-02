@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Created by ksg on 02.03.17.
  */
-@SuppressWarnings("unused")
 public final class ResponceCode{
     final boolean result;
     final String errorMsg;
@@ -19,6 +18,7 @@ public final class ResponceCode{
     public boolean getResult(){
         return result;
     }
+    @SuppressWarnings("unused")
     public String getErrorMsg(){
         return errorMsg;
     }

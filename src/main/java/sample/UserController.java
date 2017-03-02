@@ -14,7 +14,6 @@ import javax.validation.constraints.NotNull;
 import java.util.Locale;
 
 
-@SuppressWarnings("ALL")
 @RestController
 public class UserController {
     @NotNull
@@ -24,17 +23,13 @@ public class UserController {
     }
     //@CrossOrigin(origins = "http://localhost")
     @RequestMapping(path = "/api/who_i_am", method = RequestMethod.GET, produces = "application/json")
-    public UserData getWho(HttpSession httpSession, ModelMap model) {
-        UserData data;
-        //noinspection TryWithIdenticalCatches
-        try {
-            final String id = (String) httpSession.getAttribute("userLogin");
+    public UserData.UserInfo getWho(HttpSession httpSession, ModelMap model) {
+        final UserData.UserInfo data;
+        final String id = (String) httpSession.getAttribute("userLogin");
+        if(id != null){
             data = accServ.getUserData(id);
-        } catch (NullPointerException a){
-            data = new UserData("", "");
-        }
-        catch (IllegalArgumentException a){
-            data = new UserData("", "");
+        } else {
+            data = new UserData.UserInfo("", "");
         }
         return data;
     }
@@ -47,61 +42,55 @@ public class UserController {
     //@CrossOrigin(origins = "http://localhost")
     @RequestMapping(path = "/api/user/changeMail", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     public ResponceCode changeMail(@RequestBody StringContainer str, HttpSession httpSession){
-        boolean result = true;
-        ApplicationContext context = new ClassPathXmlApplicationContext("local.xml");
-        String msg = "ok";
-        ResponceCode resp;
-        try{
-            resp = accServ.changeMail(str.getStrCont(), (String) httpSession.getAttribute("userLogin"));
-        } catch (IllegalArgumentException a){
-            result = false;
-            msg = context.getMessage("msgs.error",new Object[] {28, "" },Locale.ENGLISH);
-            resp = new ResponceCode(result, msg);
-        } catch(NullPointerException b){
-            result = false;
-            msg = context.getMessage("msgs.error",new Object[] {28, "" },Locale.ENGLISH);
-            resp = new ResponceCode(result, msg);
+        final ApplicationContext context = new ClassPathXmlApplicationContext("local.xml");
+        final ResponceCode resp;
+        final String login = (String) httpSession.getAttribute("userLogin");
+        if (login != null){
+           resp = accServ.changeMail(str.getStrCont(), login );
+        } else {
+            final boolean result = false;
+            final String msg = context.getMessage("msgs.error", null, Locale.ENGLISH);
+            resp = new ResponceCode(false, msg);
         }
         return resp;
     }
 
     //@CrossOrigin(origins = "http://localhost")
     @RequestMapping(path = "/api/user/changePass", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-    public ResponceCode changePass(@RequestBody PassForm form, HttpSession httpSession){
-        boolean result = true;
-        String msg = "ok";
-        ApplicationContext context = new ClassPathXmlApplicationContext("local.xml");
-        ResponceCode resp;
-        try{
-            final String login = (String) httpSession.getAttribute("userLogin");
+    public ResponceCode changePass(@RequestBody PassForm form, HttpSession httpSession) {
+        final String msg;
+        final ApplicationContext context = new ClassPathXmlApplicationContext("local.xml");
+        final ResponceCode resp;
+        final String login = (String) httpSession.getAttribute("userLogin");
+        if (login != null) {
             if (accServ.checkPass(form.getOldPassHash(), login).getResult()) {
                 resp = accServ.changePassHash(form.getNewPassHash(), login);
             } else {
-                result = false;
-                //msg = "Wrong pass";
-                msg = context.getMessage("msgs.invalid_password",new Object[] {28, "" },Locale.ENGLISH);
-                resp = new ResponceCode(result, msg);
+                msg = context.getMessage("msgs.invalid_password",null, Locale.ENGLISH);
+                resp = new ResponceCode(false, msg);
             }
-        } catch (IllegalArgumentException a){
-            result = false;
+        } else {
             msg = "Login? Which login?";
-            resp = new ResponceCode(result, msg);
+            resp = new ResponceCode(false, msg);
         }
         return resp;
     }
 
     public static final  class StringContainer{
         String strCont;
+        @SuppressWarnings("unused")
         public StringContainer(@JsonProperty("strCont") String strCont){
             this.strCont = strCont;
         }
         public String getStrCont(){return strCont;}
+        @SuppressWarnings("unused")
         public void setStrCont(String strCont){this.strCont = strCont;}
     }
 
     public static final  class PassForm{
         final String oldPassHash;
         final String newPassHash;
+        @SuppressWarnings("unused")
         @JsonCreator
         public PassForm(@JsonProperty("oldPassHash") String oldPassHash,
                         @JsonProperty("newPassHash") String newPassHash) {
@@ -116,21 +105,5 @@ public class UserController {
             return  newPassHash;
         }
     }
-    public static final class UserData {
-        final String userMail;
-        final String userLogin;
-        @JsonCreator
-        public UserData(@JsonProperty("userMail") String userMail,
-                        @JsonProperty("userLogin") String userLogin) {
-            this.userLogin = userLogin;
-            this.userMail = userMail;
-        }
 
-        public String getUserLogin() {
-            return userLogin;
-        }
-        public String getUserMail() {
-            return  userMail;
-        }
-    }
 }
