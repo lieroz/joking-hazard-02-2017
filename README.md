@@ -12,8 +12,8 @@
 #### Ответ
 <code>
 {
-"signUpResult": false,
-"errorMsg": "Login is occupied"   
+"result": true,
+"errorMsg": "ok"
 }
 </code>
 #### Адрес 
@@ -22,7 +22,8 @@
 <code> {"passHash": "111", "userLogin":"211"} </code>
 #### Ответ
 <code> {
-"loginResult": true
+"result": false,
+"errorMsg": "Invalid login"
 } </code>
 #### Адрес 
 <code>/api/user/changeMail</code>
