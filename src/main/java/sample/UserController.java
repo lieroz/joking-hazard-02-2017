@@ -57,6 +57,7 @@ public class UserController {
             result = false;
             msg = context.getMessage("msgs.error",new Object[] {28, "" },Locale.ENGLISH);
         } catch(NullPointerException b){
+            result = false;
             msg = context.getMessage("msgs.error",new Object[] {28, "" },Locale.ENGLISH);
         }
         return new ResponceCode(result, msg);
