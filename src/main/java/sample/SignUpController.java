@@ -15,11 +15,12 @@ public class SignUpController {
     public SignUpController(@NotNull AccountService accountService){
         this.accServ = accountService;
     }
+    @CrossOrigin(origins = "http://localhost")
     @RequestMapping(path = "/api/user/signup", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     public  ResponceCode getMsg(@RequestBody SignUpData body, HttpSession httpSession) {
         System.out.println("SignUpCalled");
         final ResponceCode result = accServ.register(body);
-        if(result.result()){
+        if(result.getResult()){
             httpSession.setAttribute("userLogin", body.getUserLogin());
         }
         return result;
@@ -61,7 +62,7 @@ public class SignUpController {
             this.result = result;
             this.errorMsg = errorMsg;
         }
-        public boolean result(){
+        public boolean getResult(){
             return result;
         }
         public String getErrorMsg(){

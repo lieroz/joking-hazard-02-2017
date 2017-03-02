@@ -45,6 +45,7 @@ public class UserController {
         httpSession.invalidate();
     }
 
+    @CrossOrigin(origins = "http://localhost")
     @RequestMapping(path = "/api/user/changeMail", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     public ResponceCode changeMail(@RequestBody StringContainer str, HttpSession httpSession){
         boolean result = true;
@@ -61,6 +62,7 @@ public class UserController {
         return new ResponceCode(result, msg);
     }
 
+    @CrossOrigin(origins = "http://localhost")
     @RequestMapping(path = "/api/user/changePass", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     public ResponceCode changePass(@RequestBody PassForm form, HttpSession httpSession){
         boolean result = true;
