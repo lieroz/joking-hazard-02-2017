@@ -51,16 +51,19 @@ public class UserController {
         boolean result = true;
         ApplicationContext context = new ClassPathXmlApplicationContext("local.xml");
         String msg = "ok";
+        ResponceCode resp;
         try{
-            accServ.changeMail(str.getStrCont(), (String) httpSession.getAttribute("userLogin"));
+            resp = accServ.changeMail(str.getStrCont(), (String) httpSession.getAttribute("userLogin"));
         } catch (IllegalArgumentException a){
             result = false;
             msg = context.getMessage("msgs.error",new Object[] {28, "" },Locale.ENGLISH);
+            resp = new ResponceCode(result, msg);
         } catch(NullPointerException b){
             result = false;
             msg = context.getMessage("msgs.error",new Object[] {28, "" },Locale.ENGLISH);
+            resp = new ResponceCode(result, msg);
         }
-        return new ResponceCode(result, msg);
+        return resp;
     }
 
     //@CrossOrigin(origins = "http://localhost")
@@ -69,20 +72,23 @@ public class UserController {
         boolean result = true;
         String msg = "ok";
         ApplicationContext context = new ClassPathXmlApplicationContext("local.xml");
+        ResponceCode resp;
         try{
             final String login = (String) httpSession.getAttribute("userLogin");
-            if (accServ.checkPass(form.getOldPassHash(), login)) {
-                accServ.changePassHash(form.getNewPassHash(), login);
+            if (accServ.checkPass(form.getOldPassHash(), login).getResult()) {
+                resp = accServ.changePassHash(form.getNewPassHash(), login);
             } else {
                 result = false;
                 //msg = "Wrong pass";
                 msg = context.getMessage("msgs.invalid_password",new Object[] {28, "" },Locale.ENGLISH);
+                resp = new ResponceCode(result, msg);
             }
         } catch (IllegalArgumentException a){
             result = false;
             msg = "Login? Which login?";
+            resp = new ResponceCode(result, msg);
         }
-        return new ResponceCode(result, msg);
+        return resp;
     }
 
     public static final  class StringContainer{
@@ -109,23 +115,6 @@ public class UserController {
         }
         public String getNewPassHash() {
             return  newPassHash;
-        }
-    }
-    public static final class ResponceCode {
-        final boolean result;
-        final String errorMsg;
-
-        @JsonCreator
-        public ResponceCode(@JsonProperty("result") boolean result,
-                            @JsonProperty("errorMsg") String errorMsg) {
-            this.result = result;
-            this.errorMsg = errorMsg;
-        }
-        public boolean getResult(){
-            return result;
-        }
-        public String getErrorMsg(){
-            return errorMsg;
         }
     }
     public static final class UserData {

@@ -20,7 +20,7 @@ public class LogInController {
     public  ResponceCode getMsg(@RequestBody LogInData body, HttpSession httpSession) {
         System.out.println("GetCalled");
         final ResponceCode resp = accServ.login(body);
-        if (resp.getloginResult())  {
+        if (resp.getResult())  {
             httpSession.setAttribute("userLogin", body.getUserLogin());
         }
         return resp;
@@ -38,16 +38,6 @@ public class LogInController {
         }
         public String getPassHash() {
             return  passHash;
-        }
-    }
-    public static final class ResponceCode{
-        final boolean loginResult;
-        @JsonCreator
-        public ResponceCode(@JsonProperty("loginResult") boolean loginResult){
-            this.loginResult = loginResult;
-        }
-        public boolean getloginResult(){
-            return loginResult;
         }
     }
 }

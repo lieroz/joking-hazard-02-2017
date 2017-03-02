@@ -16,7 +16,7 @@ public class AccountService {
 
     private final Map<String, SignUpController.SignUpData> userNameToUserProfile = new HashMap<>();
     @NotNull
-    public  SignUpController.ResponceCode register(@NotNull SignUpController.SignUpData data) {
+    public  ResponceCode register(@NotNull SignUpController.SignUpData data) {
         boolean result = true;
         String message = "ok";
         if(userNameToUserProfile.containsKey(data.getUserLogin())){
@@ -26,33 +26,66 @@ public class AccountService {
         } else {
             userNameToUserProfile.put(data.getUserLogin(), data);
         }
-        return new SignUpController.ResponceCode(result, message);
+        return new ResponceCode(result, message);
     }
 
-    public LogInController.ResponceCode login(@NotNull LogInController.LogInData data) {
+    public ResponceCode login(@NotNull LogInController.LogInData data) {
         final String login = data.getUserLogin();
         boolean result = false;
+        String msg = "Invalid login";
         try {
             final String hash = userNameToUserProfile.get(login).getPassHash();
             if (hash.compareTo(data.getPassHash()) == 0){
                 result = true;
+                msg = "Ok";
             }
         } catch (NullPointerException b){
             result = false;
+            msg = "invalid session";
         }
-        return new LogInController.ResponceCode(result);
+        return new ResponceCode(result, msg);
     }
 
-    public void changeMail(@NotNull String newMail, @NotNull String login){
-        userNameToUserProfile.get(login).setUserMail(newMail);
+    public ResponceCode changeMail(@NotNull String newMail, @NotNull String login){
+        String msg = "ok";
+        boolean res = true;
+        try {
+            userNameToUserProfile.get(login).setUserMail(newMail);
+        } catch (NullPointerException a){
+            res = false;
+            msg = "invalid session";
+        }
+        return new ResponceCode(res, msg);
     }
-    public void changePassHash(@NotNull String newPassHash, @NotNull String login){
-        userNameToUserProfile.get(login).setPassHash(newPassHash);
+    public ResponceCode changePassHash(@NotNull String newPassHash, @NotNull String login){
+        String msg = "ok";
+        boolean res = true;
+        try {
+            userNameToUserProfile.get(login).setPassHash(newPassHash);
+        } catch (NullPointerException a){
+            res = false;
+            msg = "invalid session";
+        }
+        return new ResponceCode(res, msg);
     }
 
-    public boolean checkPass(@NotNull String passHash, @NotNull String login){
-        final String passH = userNameToUserProfile.get(login).getPassHash();
-        return  (passHash.compareTo(passH) == 0);
+    public ResponceCode checkPass(@NotNull String passHash, @NotNull String login){
+        String msg = "ok";
+        boolean res = true;
+        try {
+            final String passH = userNameToUserProfile.get(login).getPassHash();
+            if (passHash.compareTo(passH) == 0) {
+                res = true;
+                msg = "Ok";
+            } else {
+                res = false;
+                msg = "invalid pass";
+            }
+        } catch (NullPointerException a){
+            res = false;
+            msg = "invalid session";
+        }
+        return new ResponceCode(res, msg);
     }
 
 
