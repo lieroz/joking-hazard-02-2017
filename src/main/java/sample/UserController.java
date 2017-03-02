@@ -120,6 +120,12 @@ public class UserController {
             this.result = result;
             this.errorMsg = errorMsg;
         }
+        public boolean getResult(){
+            return result;
+        }
+        public String getErrorMsg(){
+            return errorMsg;
+        }
     }
     public static final class UserData {
         final String userMail;
