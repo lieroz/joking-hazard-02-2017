@@ -29,18 +29,26 @@ public class AccountService {
     }
 
     public ResponceCode login(@NotNull LogInController.LogInData data) {
-        final String login = data.getUserLogin();
         boolean result = false;
         String msg = "Invalid login";
-        final String hash = userNameToUserProfile.get(login).getPassHash();
-        if((hash == null)||(login == null)){
+        final String login = data.getUserLogin();
+        if (login != null) {
+            result = false;
+            msg = "Invalid login";
+            final UserData rec = userNameToUserProfile.get(login);
+            if (rec == null) {
+                result = false;
+                msg = "invalid session";
+            } else {
+                String hash = rec.getPassHash();
+                if (hash.equals(data.getPassHash())) {
+                    result = true;
+                    msg = "Ok";
+                }
+            }
+        } else {
             result = false;
             msg = "invalid session";
-        } else {
-            if (hash.compareTo(data.getPassHash()) == 0) {
-                result = true;
-                msg = "Ok";
-            }
         }
         return new ResponceCode(result, msg);
     }
