@@ -19,7 +19,7 @@ public class SignUpController {
     public  ResponceCode getMsg(@RequestBody SignUpData body, HttpSession httpSession) {
         System.out.println("SignUpCalled");
         final ResponceCode result = accServ.register(body);
-        if(result.getSignUpResult()){
+        if(result.result()){
             httpSession.setAttribute("userLogin", body.getUserLogin());
         }
         return result;
@@ -53,16 +53,16 @@ public class SignUpController {
         }
     }
     public static final class ResponceCode{
-        final boolean signUpResult;
+        final boolean result;
         final String errorMsg;
         @JsonCreator
-        public ResponceCode(@JsonProperty("signUpResult") boolean loginResult,
+        public ResponceCode(@JsonProperty("result") boolean result,
                             @JsonProperty("errorMsg") String errorMsg){
-            this.signUpResult = loginResult;
+            this.result = result;
             this.errorMsg = errorMsg;
         }
-        public boolean getSignUpResult(){
-            return signUpResult;
+        public boolean result(){
+            return result;
         }
         public String getErrorMsg(){
             return errorMsg;
