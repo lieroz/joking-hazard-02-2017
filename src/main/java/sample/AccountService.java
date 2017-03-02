@@ -33,7 +33,7 @@ public class AccountService {
         boolean result = false;
         String msg = "Invalid login";
         final String hash = userNameToUserProfile.get(login).getPassHash();
-        if(hash == null){
+        if((hash == null)||(login == null)){
             result = false;
             msg = "invalid session";
         } else {
