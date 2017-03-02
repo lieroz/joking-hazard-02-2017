@@ -85,11 +85,12 @@ public class UserController {
     }
 
     public static final  class StringContainer{
-        final  String strCont;
+        String strCont;
         public StringContainer(@JsonProperty("strCont") String strCont){
             this.strCont = strCont;
         }
         public String getStrCont(){return strCont;}
+        public void setStrCont(String strCont){this.strCont = strCont;}
     }
 
     public static final  class PassForm{
