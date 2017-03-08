@@ -2,10 +2,9 @@ package sample;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.MessageSource;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.context.ApplicationContext;
 
 
 import javax.servlet.http.HttpSession;
@@ -18,7 +17,9 @@ import java.util.Locale;
 public class UserController {
     @NotNull
     final AccountService accServ;
-    public UserController(@NotNull AccountService accountService){
+    private final MessageSource messageSource;
+    public UserController(@NotNull AccountService accountService, MessageSource messageSource){
+        this.messageSource = messageSource;
         this.accServ = accountService;
     }
     //@CrossOrigin(origins = "http://localhost")
@@ -42,14 +43,13 @@ public class UserController {
     //@CrossOrigin(origins = "http://localhost")
     @RequestMapping(path = "/api/user/changeMail", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     public ResponceCode changeMail(@RequestBody StringContainer str, HttpSession httpSession){
-        final ApplicationContext context = new ClassPathXmlApplicationContext("local.xml");
         final ResponceCode resp;
         final String login = (String) httpSession.getAttribute("userLogin");
         if (login != null){
            resp = accServ.changeMail(str.getStrCont(), login );
         } else {
             final boolean result = false;
-            final String msg = context.getMessage("msgs.error", null, Locale.ENGLISH);
+            final String msg = messageSource.getMessage("msgs.error",null, Locale.ENGLISH);
             resp = new ResponceCode(false, msg);
         }
         return resp;
@@ -59,14 +59,13 @@ public class UserController {
     @RequestMapping(path = "/api/user/changePass", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     public ResponceCode changePass(@RequestBody PassForm form, HttpSession httpSession) {
         final String msg;
-        final ApplicationContext context = new ClassPathXmlApplicationContext("local.xml");
         final ResponceCode resp;
         final String login = (String) httpSession.getAttribute("userLogin");
         if (login != null) {
             if (accServ.checkPass(form.getOldPassHash(), login).getResult()) {
                 resp = accServ.changePassHash(form.getNewPassHash(), login);
             } else {
-                msg = context.getMessage("msgs.invalid_password",null, Locale.ENGLISH);
+                msg = messageSource.getMessage("msgs.invalid_session", null, Locale.ENGLISH);
                 resp = new ResponceCode(false, msg);
             }
         } else {

@@ -15,7 +15,6 @@ public class SignUpController {
     //@CrossOrigin(origins = "http://localhost")
     @RequestMapping(path = "/api/user/signup", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     public  ResponceCode getMsg(@RequestBody UserData body, HttpSession httpSession) {
-        System.out.println("SignUpCalled");
         final ResponceCode result = accServ.register(body);
         if(result.getResult()){
             httpSession.setAttribute("userLogin", body.getUserLogin());

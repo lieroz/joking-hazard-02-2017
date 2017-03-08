@@ -1,27 +1,31 @@
 package sample;
 
 import org.jetbrains.annotations.NotNull;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+//import org.springframework.context.ApplicationContext;
+//import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
+import org.springframework.context.MessageSource;
 
 import java.util.HashMap;
+//import java.util.Locale;
 import java.util.Locale;
 import java.util.Map;
 
 
 @Service
 public class AccountService {
-
+    private final MessageSource messageSource;
     private final Map<String, UserData> userNameToUserProfile = new HashMap<>();
+    public  AccountService(MessageSource messageSource){
+        this.messageSource = messageSource;
+    }
     @NotNull
     public  ResponceCode register(@NotNull UserData data) {
         boolean result = true;
         String message = "ok";
         if(userNameToUserProfile.containsKey(data.getUserLogin())){
             result = false;
-            final ApplicationContext context = new ClassPathXmlApplicationContext("local.xml");
-            message = context.getMessage("msgs.login_occupied",null, Locale.ENGLISH);
+            message = messageSource.getMessage("msgs.login_occupied", null, Locale.ENGLISH);
         } else {
             userNameToUserProfile.put(data.getUserLogin(), data);
         }
@@ -29,18 +33,18 @@ public class AccountService {
     }
 
     public ResponceCode login(@NotNull LogInController.LogInData data) {
-        boolean result = false;
-        String msg = "Invalid login";
+        boolean result;
+        String msg;
         final String login = data.getUserLogin();
         if (login != null) {
             result = false;
-            msg = "Invalid login";
+            msg = messageSource.getMessage("msgs.invalid_auth_data",null,Locale.ENGLISH);
             final UserData rec = userNameToUserProfile.get(login);
             if (rec == null) {
                 result = false;
-                msg = "invalid session";
+                msg = messageSource.getMessage("msgs.invalid_auth_data",null,Locale.ENGLISH);
             } else {
-                String hash = rec.getPassHash();
+                final String hash = rec.getPassHash();
                 if (hash.equals(data.getPassHash())) {
                     result = true;
                     msg = "Ok";
@@ -48,7 +52,7 @@ public class AccountService {
             }
         } else {
             result = false;
-            msg = "invalid session";
+            msg =  messageSource.getMessage("msgs.invalid_auth_data",null,Locale.ENGLISH);
         }
         return new ResponceCode(result, msg);
     }
@@ -62,7 +66,7 @@ public class AccountService {
         }else
         {
             res = false;
-            msg = "invalid session";
+            msg =  messageSource.getMessage("msgs.invalid_session",null,Locale.ENGLISH);
         }
         return new ResponceCode(res, msg);
     }
@@ -75,7 +79,7 @@ public class AccountService {
         }else
         {
             res = false;
-            msg = "invalid session";
+            msg = messageSource.getMessage("msgs.invalid_session",null,Locale.ENGLISH);
         }
         return new ResponceCode(res, msg);
     }
@@ -88,12 +92,12 @@ public class AccountService {
                 final String passH = data.getPassHash();
                 if (!passHash.equals(passH)) {
                     res = false;
-                    msg = "invalid pass";
+                    msg = messageSource.getMessage("msgs.invalid_password",null,Locale.ENGLISH);
                 }
             }else
             {
                 res = false;
-                msg = "invalid session";
+                msg = messageSource.getMessage("msgs.invalid_session",null,Locale.ENGLISH);
             }
         return new ResponceCode(res, msg);
     }
