@@ -22,7 +22,7 @@ public class UserController {
         this.messageSource = messageSource;
         this.accServ = accountService;
     }
-    @CrossOrigin(origins = "http://jokinghazard.herokuapp.com")
+    @CrossOrigin(origins = "https://jokinghazard.herokuapp.com")
     @RequestMapping(path = "/api/who_i_am", method = RequestMethod.GET, produces = "application/json")
     public UserData.UserInfo getWho(HttpSession httpSession, ModelMap model) {
         final UserData.UserInfo data;
@@ -55,7 +55,7 @@ public class UserController {
         return resp;
     }
 
-    @CrossOrigin(origins = "http://jokinghazard.herokuapp.com")
+    @CrossOrigin(origins = "https://jokinghazard.herokuapp.com")
     @RequestMapping(path = "/api/user/changePass", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     public ResponceCode changePass(@RequestBody PassForm form, HttpSession httpSession) {
         final String msg;

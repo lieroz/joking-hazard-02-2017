@@ -15,7 +15,7 @@ public class LogInController {
     public LogInController(@NotNull AccountService accountService){
         this.accServ = accountService;
     }
-    @CrossOrigin(origins = "http://jokinghazard.herokuapp.com")
+    @CrossOrigin(origins = "https://jokinghazard.herokuapp.com")
     @RequestMapping(path = "/api/user/login", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     public  ResponceCode getMsg(@RequestBody LogInData body, HttpSession httpSession) {
         final ResponceCode resp = accServ.login(body);
