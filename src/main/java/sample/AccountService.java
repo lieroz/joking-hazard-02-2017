@@ -22,14 +22,20 @@ public class AccountService {
     @NotNull
     public  ResponceCode register(@NotNull UserData data) {
         boolean result = true;
-        String message = "ok";
-        if(userNameToUserProfile.containsKey(data.getUserLogin())){
-            result = false;
-            message = messageSource.getMessage("msgs.login_occupied", null, Locale.ENGLISH);
+        String msg = "ok";
+        String login = data.getUserLogin();
+        if (login != null) {
+            if (userNameToUserProfile.containsKey(login)) {
+                result = false;
+                msg = messageSource.getMessage("msgs.login_occupied", null, Locale.ENGLISH);
+            } else {
+                userNameToUserProfile.put(login, data);
+            }
         } else {
-            userNameToUserProfile.put(data.getUserLogin(), data);
+            result = false;
+            msg = messageSource.getMessage("msgs.invalid_auth_data", null, Locale.ENGLISH);
         }
-        return new ResponceCode(result, message);
+        return new ResponceCode(result, msg);
     }
 
     public ResponceCode login(@NotNull LogInController.LogInData data) {
