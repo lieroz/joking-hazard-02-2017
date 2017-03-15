@@ -6,20 +6,25 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Created by ksg on 02.03.17.
  */
-public final class ResponceCode{
+public final class ResponseCode {
     final boolean result;
     final String errorMsg;
+
+    @SuppressWarnings("unused")
     @JsonCreator
-    public ResponceCode(@JsonProperty("result") boolean result,
-                        @JsonProperty("errorMsg") String errorMsg){
+    public ResponseCode(@JsonProperty("result") boolean result,
+                        @JsonProperty("errorMsg") String errorMsg) {
         this.result = result;
         this.errorMsg = errorMsg;
     }
-    public boolean getResult(){
+
+    @SuppressWarnings("unused")
+    public boolean getResult() {
         return result;
     }
+
     @SuppressWarnings("unused")
-    public String getErrorMsg(){
+    public String getErrorMsg() {
         return errorMsg;
     }
 }

@@ -12,37 +12,47 @@ public final class UserData {
     final String userLogin;
     String userMail;
     String passHash;
+
     @SuppressWarnings("unused")
     @JsonCreator
-    public  UserData(@JsonProperty("userMail") String userMail,
-                       @JsonProperty("userLogin") String userLogin,
-                       @JsonProperty("passHash") String passHash){
+    public UserData(@JsonProperty("userMail") String userMail,
+                    @JsonProperty("userLogin") String userLogin,
+                    @JsonProperty("pass") String passHash) {
         this.userLogin = userLogin;
         this.passHash = passHash;
         this.userMail = userMail;
     }
+
+    @SuppressWarnings("unused")
     public String getUserLogin() {
         return userLogin;
     }
+
     public String getPassHash() {
-        return  passHash;
+        return passHash;
     }
+
     public String getUserMail() {
-        return  userMail;
+        return userMail;
     }
+
     @SuppressWarnings("unused")
     public UserInfo getUserInfo() {
-        return  new UserInfo(userMail,userLogin);
+        return new UserInfo(userMail, userLogin);
     }
+
     public void setUserMail(@NotNull String userMail) {
         this.userMail = userMail;
     }
+
     public void setPassHash(@NotNull String passHash) {
         this.passHash = passHash;
     }
+
     public static final class UserInfo {
         final String userMail;
         final String userLogin;
+
         @JsonCreator
         public UserInfo(@JsonProperty("userMail") String userMail,
                         @JsonProperty("userLogin") String userLogin) {
@@ -54,9 +64,10 @@ public final class UserData {
         public String getUserLogin() {
             return userLogin;
         }
+
         @SuppressWarnings("unused")
         public String getUserMail() {
-            return  userMail;
+            return userMail;
         }
     }
 }
