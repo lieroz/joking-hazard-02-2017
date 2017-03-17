@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 
+@CrossOrigin(origins = "https://jokinghazard.herokuapp.com")
 @RestController
 public class SignUpController {
     @SuppressWarnings("unused")
@@ -16,7 +17,6 @@ public class SignUpController {
         this.accServ = accountService;
     }
 
-    @CrossOrigin(origins = "https://jokinghazard.herokuapp.com")
     @RequestMapping(path = "/api/user/signup", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     public ResponseCode getMsg(@RequestBody UserData body, HttpSession httpSession) {
         final ResponseCode result = accServ.register(body);

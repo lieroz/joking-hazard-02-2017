@@ -5,14 +5,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.context.MessageSource;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 
 import java.util.Locale;
 
-
+@CrossOrigin(origins = "https://jokinghazard.herokuapp.com")
 @RestController
 public class UserController {
     @SuppressWarnings("unused")
@@ -27,24 +28,21 @@ public class UserController {
         this.accServ = accountService;
     }
 
-    @CrossOrigin(origins = "https://jokinghazard.herokuapp.com")
     @RequestMapping(path = "/api/who_i_am", method = RequestMethod.GET, produces = "application/json")
-    public UserData.UserInfo getWho(HttpSession httpSession, ModelMap model) {
+    public ResponseEntity<UserData.UserInfo> getWho(HttpSession httpSession, ModelMap model) {
         final UserData.UserInfo data;
         final String id = (String) httpSession.getAttribute("userLogin");
         if (id != null) {
-            return accServ.getUserData(id);
+            return new ResponseEntity<UserData.UserInfo>( accServ.getUserData(id),HttpStatus.OK);
         }
-        return new UserData.UserInfo("", "");
+        return new ResponseEntity<UserData.UserInfo>(HttpStatus.FORBIDDEN);
     }
 
-    @CrossOrigin(origins = "http://jokinghazard.herokuapp.com")
     @RequestMapping(path = "/api/logout", method = RequestMethod.GET)
     public void logOut(HttpSession httpSession) {
         httpSession.invalidate();
     }
 
-    @CrossOrigin(origins = "http://jokinghazard.herokuapp.com")
     @RequestMapping(path = "/api/user/changeMail", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     public ResponseCode changeMail(@RequestBody StringContainer str, HttpSession httpSession) {
         final ResponseCode resp;
@@ -58,7 +56,6 @@ public class UserController {
 
     }
 
-    @CrossOrigin(origins = "https://jokinghazard.herokuapp.com")
     @RequestMapping(path = "/api/user/changePass", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     public ResponseCode changePass(@RequestBody PassForm form, HttpSession httpSession) {
         final String msg;
