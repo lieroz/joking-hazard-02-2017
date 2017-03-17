@@ -1,8 +1,10 @@
-package sample;
+package sample.Controllers;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.web.bind.annotation.*;
+import sample.Views.ResponseCode;
+import sample.Services.AccountService;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;

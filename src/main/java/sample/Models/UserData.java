@@ -1,5 +1,6 @@
-package sample;
+package sample.Models;
 
+import sample.Views.UserInfo;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -49,25 +50,5 @@ public final class UserData {
         this.passHash = passHash;
     }
 
-    public static final class UserInfo {
-        final String userMail;
-        final String userLogin;
 
-        @JsonCreator
-        public UserInfo(@JsonProperty("userMail") String userMail,
-                        @JsonProperty("userLogin") String userLogin) {
-            this.userLogin = userLogin;
-            this.userMail = userMail;
-        }
-
-        @SuppressWarnings("unused")
-        public String getUserLogin() {
-            return userLogin;
-        }
-
-        @SuppressWarnings("unused")
-        public String getUserMail() {
-            return userMail;
-        }
-    }
 }

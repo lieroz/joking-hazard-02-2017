@@ -1,7 +1,9 @@
-package sample;
+package sample.Controllers;
 
 import org.springframework.web.bind.annotation.*;
 import sample.Services.AccountService;
+import sample.Models.UserData;
+import sample.Views.ResponseCode;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;

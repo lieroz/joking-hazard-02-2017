@@ -1,12 +1,17 @@
-package sample;
+package sample.Services;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.context.MessageSource;
+import sample.Controllers.LogInController;
+import sample.Views.ResponseCode;
+import sample.Models.UserData;
 
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import sample.Views.UserInfo;
 
 
 @Service
@@ -99,12 +104,12 @@ public class AccountService {
 
 
     @SuppressWarnings("unused")
-    public UserData.UserInfo getUserData(@NotNull String login) {
+    public UserInfo getUserData(@NotNull String login) {
         final UserData data = userNameToUserProfile.get(login);
         if (data != null) {
-            return new UserData.UserInfo(data.getUserMail(), data.getUserLogin());
+            return new UserInfo(data.getUserMail(), data.getUserLogin());
         }
-        return new UserData.UserInfo("", "");
+        return new UserInfo("", "");
     }
 
 }

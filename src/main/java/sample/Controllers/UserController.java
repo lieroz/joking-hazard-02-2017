@@ -1,4 +1,4 @@
-package sample;
+package sample.Controllers;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -8,11 +8,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import sample.Services.AccountService;
+import sample.Models.UserData;
+import sample.Views.ResponseCode;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 
 import java.util.Locale;
+import sample.Views.UserInfo;
 
 @CrossOrigin(origins = "https://jokinghazard.herokuapp.com")
 @RestController
@@ -30,13 +33,13 @@ public class UserController {
     }
 
     @RequestMapping(path = "/api/who_i_am", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<UserData.UserInfo> getWho(HttpSession httpSession, ModelMap model) {
-        final UserData.UserInfo data;
+    public ResponseEntity<UserInfo> getWho(HttpSession httpSession, ModelMap model) {
+        final UserInfo data;
         final String id = (String) httpSession.getAttribute("userLogin");
         if (id != null) {
-            return new ResponseEntity<UserData.UserInfo>( accServ.getUserData(id),HttpStatus.OK);
+            return new ResponseEntity<UserInfo>( accServ.getUserData(id),HttpStatus.OK);
         }
-        return new ResponseEntity<UserData.UserInfo>(HttpStatus.FORBIDDEN);
+        return new ResponseEntity<UserInfo>(HttpStatus.FORBIDDEN);
     }
 
     @RequestMapping(path = "/api/logout", method = RequestMethod.GET)
