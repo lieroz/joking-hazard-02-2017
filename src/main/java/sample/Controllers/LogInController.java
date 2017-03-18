@@ -45,7 +45,7 @@ public class LogInController {
             }
             return new ResponseEntity<ResponseCode>(new ResponseCode(resCode,msg), HttpStatus.OK);
         }
-        LogInModel body_model = body.getData();
+        LogInModel body_model = new LogInModel(body.getUserLogin(), body.getPassHash());
         final AccountService.ErrorCodes resp = accServ.login(body_model);
         switch (resp){
             case INVALID_LOGIN:

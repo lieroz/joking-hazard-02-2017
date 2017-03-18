@@ -28,7 +28,4 @@ public final class UserInfo {
         return userMail;
     }
 
-    public UserInfoModel getData(){
-        return new UserInfoModel(userMail, userLogin);
-    }
 }

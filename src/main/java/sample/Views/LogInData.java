@@ -31,7 +31,4 @@ public final class LogInData {
         return ViewError.OK;
     }
 
-    public LogInModel getData(){
-        return new LogInModel(userLogin, pass);
-    }
 }

@@ -55,8 +55,4 @@ public final class UserDataView {
         return ViewError.OK;
     }
 
-    public UserData getData(){
-        return new UserData(this.userMail,this.userLogin,this.pass);
-    }
-
 }

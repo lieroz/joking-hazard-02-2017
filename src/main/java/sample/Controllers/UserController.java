@@ -46,7 +46,9 @@ public class UserController {
             msg = messageSource.getMessage("msgs.invalid_session", null, Locale.ENGLISH);
             return new ResponseEntity<ResponseCode<UserInfo>>(new ResponseCode<UserInfo>(false,msg),HttpStatus.FORBIDDEN);
         }
-        return new ResponseEntity<ResponseCode<UserInfo>>(new ResponseCode<UserInfo>(result,msg, data[0].getData()),
+        UserInfoModel dataMod = data[0];
+        UserInfo dataView = new UserInfo(dataMod.getUserMail(),dataMod.getUserLogin());
+        return new ResponseEntity<ResponseCode<UserInfo>>(new ResponseCode<UserInfo>(result,msg, dataView),
                 HttpStatus.OK);
     }
 

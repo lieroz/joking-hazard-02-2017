@@ -45,7 +45,7 @@ public class SignUpController {
             }
             return new ResponseEntity<ResponseCode>(new ResponseCode(resCode,msg), HttpStatus.OK);
         }
-        UserData body_model = body.getData();
+        UserData body_model = new UserData(body.getUserMail(),body.getUserLogin(),body.getPass());
         AccountService.ErrorCodes result = accServ.register(body_model);
         switch (result){
             case INVALID_LOGIN:
