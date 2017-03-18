@@ -50,5 +50,4 @@ public final class UserData {
         this.passHash = passHash;
     }
 
-
 }

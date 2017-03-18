@@ -4,6 +4,8 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.context.MessageSource;
 import sample.Controllers.LogInController;
+import sample.Models.LogInModel;
+import sample.Models.UserInfoModel;
 import sample.Views.ResponseCode;
 import sample.Models.UserData;
 
@@ -16,6 +18,7 @@ import sample.Views.UserInfo;
 
 @Service
 public class AccountService {
+    public enum  ErrorCodes{OK, INVALID_LOGIN, INVALID_PASSWORD, LOGIN_OCCUPIED, INVALID_AUTH_DATA, INVALID_SESSION}
     private final MessageSource messageSource;
     private final Map<String, UserData> userNameToUserProfile = new HashMap<>();
 
@@ -24,92 +27,78 @@ public class AccountService {
         this.messageSource = messageSource;
     }
 
+
     @SuppressWarnings("unused")
     @NotNull
-    public ResponseCode register(@NotNull UserData data) {
-        String msg = "ok";
+    public ErrorCodes register(@NotNull UserData data) {
         final String login = data.getUserLogin();
         if (login == null) {
-            msg = messageSource.getMessage("msgs.invalid_auth_data", null, Locale.ENGLISH);
-            return new ResponseCode(false, msg);
+            return ErrorCodes.INVALID_LOGIN;
         }
         if (userNameToUserProfile.containsKey(login)) {
-            msg = messageSource.getMessage("msgs.login_occupied", null, Locale.ENGLISH);
-            return new ResponseCode(false, msg);
+            return ErrorCodes.LOGIN_OCCUPIED;
         }
         userNameToUserProfile.put(login, data);
-        final boolean result = true;
-        return new ResponseCode(result, msg);
+        return ErrorCodes.OK;
     }
 
-    public ResponseCode login(@NotNull LogInController.LogInData data) {
-        final String msg;
+    public ErrorCodes login(@NotNull LogInModel data) {
         final String login = data.getUserLogin();
         if (login == null) {
-            msg = messageSource.getMessage("msgs.invalid_auth_data", null, Locale.ENGLISH);
-            return new ResponseCode(false, msg);
+            return ErrorCodes.INVALID_AUTH_DATA;
         }
         final UserData record = userNameToUserProfile.get(login);
         if (record == null) {
-            msg = messageSource.getMessage("msgs.invalid_auth_data", null, Locale.ENGLISH);
-            return new ResponseCode(false, msg);
+            return  ErrorCodes.INVALID_LOGIN;
         }
         final String hash = record.getPassHash();
         if (!hash.equals(data.getPassHash())) {
-            msg = messageSource.getMessage("msgs.invalid_auth_data", null, Locale.ENGLISH);
-            return new ResponseCode(false, msg);
+            return ErrorCodes.INVALID_PASSWORD;
         }
-
-        return new ResponseCode(true, "ok");
+        return ErrorCodes.OK;
     }
 
     @SuppressWarnings("unused")
-    public ResponseCode changeMail(@NotNull String newMail, @NotNull String login) {
-        String msg = "ok";
+    public ErrorCodes changeMail(@NotNull String newMail, @NotNull String login) {
         final UserData data = userNameToUserProfile.get(login);
         if (data == null) {
-            msg = messageSource.getMessage("msgs.invalid_session", null, Locale.ENGLISH);
-            return new ResponseCode(false, msg);
+            return ErrorCodes.INVALID_SESSION;
         }
         data.setUserMail(newMail);
-        return new ResponseCode(true, msg);
+        return ErrorCodes.OK;
     }
 
     @SuppressWarnings("unused")
-    public ResponseCode changePassHash(@NotNull String newPassHash, @NotNull String login) {
-        String msg = "ok";
+    public ErrorCodes changePassHash(@NotNull String newPassHash, @NotNull String login) {
         final UserData data = userNameToUserProfile.get(login);
         if (data == null) {
-            msg = messageSource.getMessage("msgs.invalid_session", null, Locale.ENGLISH);
-            return new ResponseCode(false, msg);
+            return ErrorCodes.INVALID_SESSION;
         }
         data.setPassHash(newPassHash);
-        return new ResponseCode(true, msg);
+        return ErrorCodes.OK;
     }
 
-    public ResponseCode checkPass(@NotNull String passHash, @NotNull String login) {
-        String msg = "ok";
+    public boolean checkPass(@NotNull String passHash, @NotNull String login) {
         final UserData data = userNameToUserProfile.get(login);
         if (data == null) {
-            msg = messageSource.getMessage("msgs.invalid_session", null, Locale.ENGLISH);
-            return new ResponseCode(false, msg);
+            return false;
         }
         final String passH = data.getPassHash();
         if (!passHash.equals(passH)) {
-            msg = messageSource.getMessage("msgs.invalid_password", null, Locale.ENGLISH);
-            return new ResponseCode(false, msg);
+            return false;
         }
-        return new ResponseCode(true, msg);
+        return true;
     }
 
 
     @SuppressWarnings("unused")
-    public UserInfo getUserData(@NotNull String login) {
+    public ErrorCodes getUserData(@NotNull String login, UserInfoModel[] model) {
         final UserData data = userNameToUserProfile.get(login);
         if (data != null) {
-            return new UserInfo(data.getUserMail(), data.getUserLogin());
+            model[0] = new UserInfoModel(data.getUserMail(),data.getUserLogin());
+            return ErrorCodes.OK;
         }
-        return new UserInfo("", "");
+        return ErrorCodes.INVALID_LOGIN;
     }
 
 }

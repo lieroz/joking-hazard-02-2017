@@ -3,6 +3,7 @@ package sample.Views;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import sample.Models.UserInfoModel;
 /**
  * Created by ksg on 17.03.17.
  */
@@ -25,5 +26,9 @@ public final class UserInfo {
     @SuppressWarnings("unused")
     public String getUserMail() {
         return userMail;
+    }
+
+    public UserInfoModel getData(){
+        return new UserInfoModel(userMail, userLogin);
     }
 }
