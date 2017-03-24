@@ -14,7 +14,6 @@ import sample.Application;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -35,32 +34,46 @@ public class SignUpControllerTest {
     private final String pass = "examplePass";
 
     @Test
-    public void userCreateA() throws Exception {
+    public void userCreate1OK() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/signup")
                         .contentType("application/json")
                         .content("{\"userMail\":\"" + userMail + "\"," +
                                 "\"userLogin\":\"" + userLogin + "\"," +
-                                "\"pass\":\"" + pass + "\"}")
-                        .sessionAttr("userLogin", userLogin))
+                                "\"pass\":\"" + pass + "\"}"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$.result").value("true"))
-                .andExpect(jsonPath("$.errorMsg").value("OK en"));
+                .andExpect(content().contentType("application/json;charset=UTF-8"));
     }
 
     @Test
-    public void userCreateB() throws Exception {
+    public void userCreate2Conflict() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/signup")
                         .contentType("application/json")
                         .content("{\"userMail\":\"" + userMail + "\"," +
                                 "\"userLogin\":\"" + userLogin + "\"," +
-                                "\"pass\":\"" + pass + "\"}")
-                        .sessionAttr("userLogin", userLogin))
+                                "\"pass\":\"" + pass + "\"}"))
                 .andExpect(status().isConflict())
-                .andExpect(content().contentType("application/json;charset=UTF-8"))
-                .andExpect(jsonPath("$.result").value("false"))
-                .andExpect(jsonPath("$.errorMsg").value("Login is occupied en"));
+                .andExpect(content().contentType("application/json;charset=UTF-8"));
+    }
+
+    @Test
+    public void userCreate3BadRequestLogin() throws Exception {
+        this.mockMvc.perform(
+                post("/api/user/signup")
+                        .contentType("application/json")
+                        .content("{\"userMail\":\"" + userMail + "\"," +
+                                "\"userLogin\":" + null + "," +
+                                "\"pass\":\"" + pass + "\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType("application/json;charset=UTF-8"));
+    }
+
+    @Test
+    public void userCreate4BadRequestContent() throws Exception {
+        this.mockMvc.perform(
+                post("/api/user/signup")
+                        .contentType("text/html"))
+                .andExpect(status().isUnsupportedMediaType());
     }
 }

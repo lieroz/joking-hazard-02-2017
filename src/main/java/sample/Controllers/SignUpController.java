@@ -19,12 +19,12 @@ import java.util.Locale;
 @RestController
 public class SignUpController {
     private final MessageSource messageSource;
+
     @SuppressWarnings("unused")
     @NotNull
     final AccountService accServ;
 
     @SuppressWarnings("unused")
-    @Autowired
     public SignUpController(@NotNull AccountService accountService, @NotNull MessageSource messageSource) {
         this.messageSource = messageSource;
         this.accServ = accountService;
@@ -66,7 +66,7 @@ public class SignUpController {
             case INVALID_LOGIN:
                 resCode = false;
                 msg =  messageSource.getMessage("msgs.invalid_auth_data", null, Locale.ENGLISH);
-                status = HttpStatus.FORBIDDEN;
+                status = HttpStatus.BAD_REQUEST;
                 break;
 
             case LOGIN_OCCUPIED:
