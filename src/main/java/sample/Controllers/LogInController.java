@@ -13,13 +13,15 @@ import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 import java.util.Locale;
 
+@SuppressWarnings("Duplicates")
 //@CrossOrigin(origins = "https://jokinghazard.herokuapp.com")
 @RestController
 public class LogInController {
+    private final MessageSource messageSource;
+
     @SuppressWarnings("unused")
     @NotNull
     final AccountService accServ;
-    private final MessageSource messageSource;
 
     @SuppressWarnings("unused")
     public LogInController(@NotNull AccountService accountService, @NotNull MessageSource messageSource) {
@@ -29,41 +31,60 @@ public class LogInController {
 
     @RequestMapping(path = "/api/user/login", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     public ResponseEntity<ResponseCode> getMsg(@RequestBody LogInData body, HttpSession httpSession) {
-        boolean resCode = false;
+        Boolean resCode = false;
         String msg =  messageSource.getMessage("msgs.error", null, Locale.ENGLISH);
-        LogInData.ViewError viewRes = body.valid();
-        if(viewRes !=  LogInData.ViewError.OK){
-            switch (viewRes){
-                case INVALID_DATA_ERROR:
-                    msg = messageSource.getMessage("msgs.invalid_auth_data", null, Locale.CANADA);
-                    //HA CANADA
+        HttpStatus status = HttpStatus.OK;
+        final LogInData.ViewError viewRes = body.valid();
+
+        if(viewRes !=  LogInData.ViewError.OK) {
+
+            switch (viewRes) {
+
+                case INVALID_DATA_ERROR: {
+                    msg = messageSource.getMessage("msgs.invalid_auth_data", null, Locale.ENGLISH);
                     resCode = false;
+                    status = HttpStatus.FORBIDDEN;
                     break;
-                default:
+                }
+
+                default: {
                     msg = messageSource.getMessage("msgs.error", null, Locale.ENGLISH);
                     resCode = false;
+                    status = HttpStatus.NOT_FOUND;
+                }
             }
-            return new ResponseEntity<ResponseCode>(new ResponseCode(resCode,msg), HttpStatus.OK);
+
+            return new ResponseEntity<ResponseCode>(new ResponseCode(resCode,msg), status);
         }
-        LogInModel body_model = new LogInModel(body.getUserLogin(), body.getPassHash());
+
+        final LogInModel body_model = new LogInModel(body.getUserLogin(), body.getPassHash());
         final AccountService.ErrorCodes resp = accServ.login(body_model);
-        switch (resp){
-            case INVALID_LOGIN:
+
+        switch (resp) {
+
+            case INVALID_LOGIN: {
                 resCode = false;
-                msg =  messageSource.getMessage("msgs.invalid_auth_data", null, Locale.ENGLISH);
+                msg = messageSource.getMessage("msgs.invalid_auth_data", null, Locale.ENGLISH);
+                status = HttpStatus.BAD_REQUEST;
                 break;
-            case INVALID_PASSWORD:
+            }
+
+            case INVALID_PASSWORD: {
                 resCode = false;
-                msg =  messageSource.getMessage("msgs.invalid_auth_data", null, Locale.ENGLISH);
+                msg = messageSource.getMessage("msgs.invalid_auth_data", null, Locale.ENGLISH);
+                status = HttpStatus.BAD_REQUEST;
                 break;
-            case OK:
+            }
+
+            case OK: {
                 resCode = true;
-                msg =  messageSource.getMessage("msgs.ok", null, Locale.ENGLISH);
+                msg = messageSource.getMessage("msgs.ok", null, Locale.ENGLISH);
+                status = HttpStatus.OK;
                 httpSession.setAttribute("userLogin", body.getUserLogin());
                 break;
-            default:
-
+            }
         }
-        return new ResponseEntity<ResponseCode>(new ResponseCode(resCode,msg), HttpStatus.OK);
+
+        return new ResponseEntity<ResponseCode>(new ResponseCode(resCode,msg), status);
     }
 }

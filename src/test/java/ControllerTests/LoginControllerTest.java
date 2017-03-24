@@ -12,8 +12,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import sample.Application;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -24,56 +24,55 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class SignUpControllerTest {
+public class LoginControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    private final String userMail = "example@mail.ru";
     private final String userLogin = "exampleUser";
     private final String pass = "examplePass";
 
     @Test
-    public void userCreate1Created() throws Exception {
+    public void userLogin1Ok() throws Exception {
         this.mockMvc.perform(
-                post("/api/user/signup")
+                post("/api/user/login")
                         .contentType("application/json")
-                        .content("{\"userMail\":\"" + userMail + "\"," +
-                                "\"userLogin\":\"" + userLogin + "\"," +
+                        .content("{\"userLogin\":\"" + userLogin + "\"," +
                                 "\"pass\":\"" + pass + "\"}"))
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"));
     }
 
     @Test
-    public void userCreate2Conflict() throws Exception {
+    public void userLogin2BadRequestNullLogin() throws Exception {
         this.mockMvc.perform(
-                post("/api/user/signup")
+                post("/api/user/login")
                         .contentType("application/json")
-                        .content("{\"userMail\":\"" + userMail + "\"," +
-                                "\"userLogin\":\"" + userLogin + "\"," +
-                                "\"pass\":\"" + pass + "\"}"))
-                .andExpect(status().isConflict())
-                .andExpect(content().contentType("application/json;charset=UTF-8"));
-    }
-
-    @Test
-    public void userCreate3BadRequestLogin() throws Exception {
-        this.mockMvc.perform(
-                post("/api/user/signup")
-                        .contentType("application/json")
-                        .content("{\"userMail\":\"" + userMail + "\"," +
-                                "\"userLogin\":" + null + "," +
+                        .content("{\"userLogin\":\"" + null + "\"," +
                                 "\"pass\":\"" + pass + "\"}"))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType("application/json;charset=UTF-8"));
     }
 
     @Test
-    public void userCreate4BadRequestContent() throws Exception {
+    public void userLogin2BadRequestLoginNotExist() throws Exception {
         this.mockMvc.perform(
-                post("/api/user/signup")
-                        .contentType("text/html"))
-                .andExpect(status().isUnsupportedMediaType());
+                post("/api/user/login")
+                        .contentType("application/json")
+                        .content("{\"userLogin\":\"TEST_IT_BRO_LOGIN\"," +
+                                "\"pass\":\"" + pass + "\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType("application/json;charset=UTF-8"));
+    }
+
+    @Test
+    public void userLogin2BadRequestIncorrectPass() throws Exception {
+        this.mockMvc.perform(
+                post("/api/user/login")
+                        .contentType("application/json")
+                        .content("{\"userLogin\":\"" + userLogin + "\"," +
+                                "\"pass\":\"TEST_IT_BRO_PASS\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType("application/json;charset=UTF-8"));
     }
 }

@@ -20,10 +20,11 @@ import sample.Views.UserInfo;
 @RestController
 public class UserController {
     @SuppressWarnings("unused")
+    private final MessageSource messageSource;
+
+    @SuppressWarnings("unused")
     @NotNull
     final AccountService accServ;
-    @SuppressWarnings("unused")
-    private final MessageSource messageSource;
 
     @SuppressWarnings("unused")
     public UserController(@NotNull AccountService accountService, MessageSource messageSource) {

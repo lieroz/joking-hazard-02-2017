@@ -1,6 +1,5 @@
 package sample.Controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +13,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 import java.util.Locale;
 
-
+@SuppressWarnings("Duplicates")
 //@CrossOrigin(origins = "https://jokinghazard.herokuapp.com")
 @RestController
 public class SignUpController {
@@ -34,7 +33,7 @@ public class SignUpController {
     public ResponseEntity<ResponseCode> getMsg(@RequestBody UserDataView body, HttpSession httpSession) {
         Boolean resCode = false;
         String msg =  messageSource.getMessage("msgs.error", null, Locale.ENGLISH);
-        HttpStatus status = HttpStatus.OK;
+        HttpStatus status = HttpStatus.CREATED;
         final UserDataView.ViewError viewRes = body.valid();
 
         if(viewRes != UserDataView.ViewError.OK){
@@ -78,8 +77,9 @@ public class SignUpController {
             case OK:
                 resCode = true;
                 msg = messageSource.getMessage("msgs.ok", null, Locale.ENGLISH);
-                status = HttpStatus.OK;
+                status = HttpStatus.CREATED;
                 httpSession.setAttribute("userLogin", body.getUserLogin());
+                break;
         }
 
         return new ResponseEntity<ResponseCode>(new ResponseCode(resCode,msg), status);
