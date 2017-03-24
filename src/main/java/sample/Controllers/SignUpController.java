@@ -1,5 +1,6 @@
 package sample.Controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ public class SignUpController {
     final AccountService accServ;
 
     @SuppressWarnings("unused")
+    @Autowired
     public SignUpController(@NotNull AccountService accountService, @NotNull MessageSource messageSource) {
         this.messageSource = messageSource;
         this.accServ = accountService;
@@ -31,7 +33,6 @@ public class SignUpController {
     @RequestMapping(path = "/api/user/signup", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     public ResponseEntity<ResponseCode> getMsg(@RequestBody UserDataView body, HttpSession httpSession) {
         boolean resCode = false;
-        System.out.println(body.getPass());
         String msg =  messageSource.getMessage("msgs.error", null, Locale.ENGLISH);
         UserDataView.ViewError viewRes = body.valid();
         if(viewRes != UserDataView.ViewError.OK){
