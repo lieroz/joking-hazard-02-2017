@@ -32,37 +32,56 @@ public class SignUpController {
 
     @RequestMapping(path = "/api/user/signup", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     public ResponseEntity<ResponseCode> getMsg(@RequestBody UserDataView body, HttpSession httpSession) {
-        boolean resCode = false;
+        Boolean resCode = false;
         String msg =  messageSource.getMessage("msgs.error", null, Locale.ENGLISH);
-        UserDataView.ViewError viewRes = body.valid();
+        HttpStatus status = HttpStatus.OK;
+        final UserDataView.ViewError viewRes = body.valid();
+
         if(viewRes != UserDataView.ViewError.OK){
-            switch (viewRes){
-                case INVALID_DATA_ERROR:
+
+            switch (viewRes) {
+
+                case INVALID_DATA_ERROR: {
                     msg = messageSource.getMessage("msgs.invalid_auth_data", null, Locale.ENGLISH);
                     resCode = false;
+                    status = HttpStatus.FORBIDDEN;
                     break;
-                default:
+                }
+
+                default: {
                     msg = messageSource.getMessage("msgs.error", null, Locale.ENGLISH);
                     resCode = false;
+                    status = HttpStatus.NOT_FOUND;
+                }
             }
-            return new ResponseEntity<ResponseCode>(new ResponseCode(resCode,msg), HttpStatus.OK);
+
+            return new ResponseEntity<ResponseCode>(new ResponseCode(resCode,msg), status);
         }
-        UserData body_model = new UserData(body.getUserMail(),body.getUserLogin(),body.getPass());
-        AccountService.ErrorCodes result = accServ.register(body_model);
-        switch (result){
+
+        final UserData body_model = new UserData(body.getUserMail(),body.getUserLogin(),body.getPass());
+        final AccountService.ErrorCodes result = accServ.register(body_model);
+
+        switch (result) {
+
             case INVALID_LOGIN:
                 resCode = false;
                 msg =  messageSource.getMessage("msgs.invalid_auth_data", null, Locale.ENGLISH);
+                status = HttpStatus.FORBIDDEN;
                 break;
+
             case LOGIN_OCCUPIED:
                 resCode = false;
                 msg = messageSource.getMessage("msgs.login_occupied", null, Locale.ENGLISH);
+                status = HttpStatus.CONFLICT;
                 break;
+
             case OK:
                 resCode = true;
                 msg = messageSource.getMessage("msgs.ok", null, Locale.ENGLISH);
+                status = HttpStatus.OK;
                 httpSession.setAttribute("userLogin", body.getUserLogin());
         }
-        return new ResponseEntity<ResponseCode>(new ResponseCode(resCode,msg), HttpStatus.OK);
+
+        return new ResponseEntity<ResponseCode>(new ResponseCode(resCode,msg), status);
     }
 }
