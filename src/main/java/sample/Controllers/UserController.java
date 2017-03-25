@@ -8,7 +8,7 @@ import sample.Models.UserInfoModel;
 import sample.Services.AccountService;
 import sample.Views.ResponseCode;
 import sample.Views.PassForm;
-import sample.Views.StringContainer;
+import sample.Views.MailForm;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
@@ -36,20 +36,27 @@ public class UserController {
     public ResponseEntity<ResponseCode<UserInfo>> getWho(HttpSession httpSession) {
         final UserInfoModel data[] = {null,};
         String msg = "Ok";
-        boolean result = false;
+        Boolean result = false;
         final String id = (String) httpSession.getAttribute("userLogin");
+
         if (id == null) {
             msg = messageSource.getMessage("msgs.invalid_session", null, Locale.ENGLISH);
-            return new ResponseEntity<ResponseCode<UserInfo>>(new ResponseCode<UserInfo>(false,msg),HttpStatus.FORBIDDEN);
+
+            return new ResponseEntity<ResponseCode<UserInfo>>(new ResponseCode<UserInfo>(false, msg), HttpStatus.FORBIDDEN);
         }
-        AccountService.ErrorCodes retCode = accServ.getUserData(id,data);
+
+        AccountService.ErrorCodes retCode = accServ.getUserData(id, data);
+
         if (retCode != AccountService.ErrorCodes.OK){
             msg = messageSource.getMessage("msgs.invalid_session", null, Locale.ENGLISH);
-            return new ResponseEntity<ResponseCode<UserInfo>>(new ResponseCode<UserInfo>(false,msg),HttpStatus.FORBIDDEN);
+
+            return new ResponseEntity<ResponseCode<UserInfo>>(new ResponseCode<UserInfo>(false, msg), HttpStatus.FORBIDDEN);
         }
-        UserInfoModel dataMod = data[0];
-        UserInfo dataView = new UserInfo(dataMod.getUserMail(),dataMod.getUserLogin());
-        return new ResponseEntity<ResponseCode<UserInfo>>(new ResponseCode<UserInfo>(result,msg, dataView),
+
+        final UserInfoModel dataMod = data[0];
+        final UserInfo dataView = new UserInfo(dataMod.getUserMail(),dataMod.getUserLogin());
+
+        return new ResponseEntity<ResponseCode<UserInfo>>(new ResponseCode<UserInfo>(result, msg, dataView),
                 HttpStatus.OK);
     }
 
@@ -59,17 +66,32 @@ public class UserController {
     }
 
     @RequestMapping(path = "/api/user/changeMail", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-    public ResponseEntity<ResponseCode> changeMail(@RequestBody StringContainer str, HttpSession httpSession) {
-        final ResponseCode resp;
-        String msg;
+    public ResponseEntity<ResponseCode> changeMail(@RequestBody MailForm str, HttpSession httpSession) {
+        Boolean resCode = false;
+        HttpStatus status = HttpStatus.OK;
+        String msg = messageSource.getMessage("msgs.ok", null, Locale.ENGLISH);
+
         final String login = (String) httpSession.getAttribute("userLogin");
-        if (login == null) {
-            msg = messageSource.getMessage("msgs.invalid_session", null, Locale.ENGLISH);
-            return new ResponseEntity<ResponseCode>(new ResponseCode(false,msg),HttpStatus.FORBIDDEN);
+        final AccountService.ErrorCodes result = accServ.changeMail(str.getStrCont(), login);
+
+        switch (result) {
+
+            case INVALID_SESSION: {
+                resCode = false;
+                msg = messageSource.getMessage("msgs.invalid_session", null, Locale.ENGLISH);
+                status = HttpStatus.NOT_FOUND;
+                break;
+            }
+
+            case OK: {
+                resCode = true;
+                msg = messageSource.getMessage("msgs.ok", null, Locale.ENGLISH);
+                status = HttpStatus.OK;
+                break;
+            }
         }
-        final boolean result = false;
-        msg = messageSource.getMessage("msgs.error", null, Locale.ENGLISH);
-        return new ResponseEntity<ResponseCode>( new ResponseCode(false, msg), HttpStatus.FORBIDDEN);
+
+        return new ResponseEntity<ResponseCode>(new ResponseCode(resCode, msg), status);
 
     }
 
@@ -77,22 +99,32 @@ public class UserController {
     public  ResponseEntity<ResponseCode> changePass(@RequestBody PassForm form, HttpSession httpSession) {
         final String msg;
         final String login = (String) httpSession.getAttribute("userLogin");
+
         if (login == null) {
             msg = messageSource.getMessage("msgs.invalid_session", null, Locale.ENGLISH);
+
             return new  ResponseEntity<ResponseCode>(new ResponseCode(false, msg), HttpStatus.FORBIDDEN);
         }
+
         if (!accServ.checkPass(form.getOldPassHash(), login)) {
             msg = messageSource.getMessage("msgs.invalid_password", null, Locale.ENGLISH);
+
             return new  ResponseEntity<ResponseCode>(new ResponseCode(false, msg), HttpStatus.OK);
         }
-        AccountService.ErrorCodes err =  accServ.changePassHash(form.getNewPassHash(), login);
-        switch (err){
-            case INVALID_SESSION:
-                msg = messageSource.getMessage("msgs.invalid_session", null, Locale.ENGLISH);
-                return new  ResponseEntity<ResponseCode>(new ResponseCode(false, msg), HttpStatus.OK);
 
+        AccountService.ErrorCodes err =  accServ.changePassHash(form.getNewPassHash(), login);
+
+        switch (err) {
+
+            case INVALID_SESSION: {
+                msg = messageSource.getMessage("msgs.invalid_session", null, Locale.ENGLISH);
+
+                return new ResponseEntity<ResponseCode>(new ResponseCode(false, msg), HttpStatus.OK);
+            }
         }
+
         msg = messageSource.getMessage("msgs.ok", null, Locale.ENGLISH);
+
         return new  ResponseEntity<ResponseCode>(new ResponseCode(true, msg), HttpStatus.OK);
     }
 
