@@ -16,6 +16,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Locale;
 import sample.Views.UserInfo;
 
+@SuppressWarnings("Duplicates")
 //@CrossOrigin(origins = "https://jokinghazard.herokuapp.com")
 @RestController
 public class UserController {
@@ -36,25 +37,27 @@ public class UserController {
     public ResponseEntity<ResponseCode<UserInfo>> getWho(HttpSession httpSession) {
         final UserInfoModel data[] = {null,};
         String msg = "Ok";
-        Boolean result = false;
+        Boolean result = true;
         final String id = (String) httpSession.getAttribute("userLogin");
 
         if (id == null) {
             msg = messageSource.getMessage("msgs.invalid_session", null, Locale.ENGLISH);
+            result = false;
 
-            return new ResponseEntity<ResponseCode<UserInfo>>(new ResponseCode<UserInfo>(false, msg), HttpStatus.FORBIDDEN);
+            return new ResponseEntity<ResponseCode<UserInfo>>(new ResponseCode<UserInfo>(result, msg), HttpStatus.FORBIDDEN);
         }
 
         AccountService.ErrorCodes retCode = accServ.getUserData(id, data);
 
         if (retCode != AccountService.ErrorCodes.OK){
             msg = messageSource.getMessage("msgs.invalid_session", null, Locale.ENGLISH);
+            result = false;
 
-            return new ResponseEntity<ResponseCode<UserInfo>>(new ResponseCode<UserInfo>(false, msg), HttpStatus.FORBIDDEN);
+            return new ResponseEntity<ResponseCode<UserInfo>>(new ResponseCode<UserInfo>(result, msg), HttpStatus.FORBIDDEN);
         }
 
         final UserInfoModel dataMod = data[0];
-        final UserInfo dataView = new UserInfo(dataMod.getUserMail(),dataMod.getUserLogin());
+        final UserInfo dataView = new UserInfo(dataMod.getUserMail(), dataMod.getUserLogin());
 
         return new ResponseEntity<ResponseCode<UserInfo>>(new ResponseCode<UserInfo>(result, msg, dataView),
                 HttpStatus.OK);
@@ -68,26 +71,28 @@ public class UserController {
     @RequestMapping(path = "/api/user/changeMail", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     public ResponseEntity<ResponseCode> changeMail(@RequestBody MailForm str, HttpSession httpSession) {
         Boolean resCode = false;
-        HttpStatus status = HttpStatus.OK;
-        String msg = messageSource.getMessage("msgs.ok", null, Locale.ENGLISH);
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        String msg = messageSource.getMessage("msgs.error", null, Locale.ENGLISH);
 
-        final String login = (String) httpSession.getAttribute("userLogin");
-        final AccountService.ErrorCodes result = accServ.changeMail(str.getStrCont(), login);
+        if (str.getStrCont() != null) {
+            final String login = (String) httpSession.getAttribute("userLogin");
+            final AccountService.ErrorCodes result = accServ.changeMail(str.getStrCont(), login);
 
-        switch (result) {
+            switch (result) {
 
-            case INVALID_SESSION: {
-                resCode = false;
-                msg = messageSource.getMessage("msgs.invalid_session", null, Locale.ENGLISH);
-                status = HttpStatus.NOT_FOUND;
-                break;
-            }
+                case INVALID_SESSION: {
+                    resCode = false;
+                    msg = messageSource.getMessage("msgs.invalid_session", null, Locale.ENGLISH);
+                    status = HttpStatus.NOT_FOUND;
+                    break;
+                }
 
-            case OK: {
-                resCode = true;
-                msg = messageSource.getMessage("msgs.ok", null, Locale.ENGLISH);
-                status = HttpStatus.OK;
-                break;
+                case OK: {
+                    resCode = true;
+                    msg = messageSource.getMessage("msgs.ok", null, Locale.ENGLISH);
+                    status = HttpStatus.OK;
+                    break;
+                }
             }
         }
 
@@ -97,35 +102,43 @@ public class UserController {
 
     @RequestMapping(path = "/api/user/changePass", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
     public  ResponseEntity<ResponseCode> changePass(@RequestBody PassForm form, HttpSession httpSession) {
-        final String msg;
+        Boolean resCode = false;
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        String msg = messageSource.getMessage("msgs.invalid_session", null, Locale.ENGLISH);
+
         final String login = (String) httpSession.getAttribute("userLogin");
 
         if (login == null) {
-            msg = messageSource.getMessage("msgs.invalid_session", null, Locale.ENGLISH);
-
-            return new  ResponseEntity<ResponseCode>(new ResponseCode(false, msg), HttpStatus.FORBIDDEN);
+            return new  ResponseEntity<ResponseCode>(new ResponseCode(resCode, msg), status);
         }
 
-        if (!accServ.checkPass(form.getOldPassHash(), login)) {
+        if (form.getOldPassHash() == null || form.getNewPassHash() ==null || !accServ.checkPass(form.getOldPassHash(), login)) {
             msg = messageSource.getMessage("msgs.invalid_password", null, Locale.ENGLISH);
+            resCode = false;
+            status = HttpStatus.FORBIDDEN;
 
-            return new  ResponseEntity<ResponseCode>(new ResponseCode(false, msg), HttpStatus.OK);
-        }
+        } else {
+            final AccountService.ErrorCodes error = accServ.changePassHash(form.getNewPassHash(), login);
 
-        AccountService.ErrorCodes err =  accServ.changePassHash(form.getNewPassHash(), login);
+            switch (error) {
 
-        switch (err) {
+                case INVALID_SESSION: {
+                    resCode = false;
+                    msg = messageSource.getMessage("msgs.invalid_session", null, Locale.ENGLISH);
+                    status = HttpStatus.NOT_FOUND;
+                    break;
+                }
 
-            case INVALID_SESSION: {
-                msg = messageSource.getMessage("msgs.invalid_session", null, Locale.ENGLISH);
-
-                return new ResponseEntity<ResponseCode>(new ResponseCode(false, msg), HttpStatus.OK);
+                case OK: {
+                    resCode = true;
+                    msg = messageSource.getMessage("msgs.ok", null, Locale.ENGLISH);
+                    status = HttpStatus.OK;
+                    break;
+                }
             }
         }
 
-        msg = messageSource.getMessage("msgs.ok", null, Locale.ENGLISH);
-
-        return new  ResponseEntity<ResponseCode>(new ResponseCode(true, msg), HttpStatus.OK);
+        return new  ResponseEntity<ResponseCode>(new ResponseCode(resCode, msg), status);
     }
 
 }

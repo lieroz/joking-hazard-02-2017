@@ -48,7 +48,7 @@ public class LoginControllerTest {
         this.mockMvc.perform(
                 post("/api/user/login")
                         .contentType("application/json")
-                        .content("{\"userLogin\":\"" + null + "\"," +
+                        .content("{\"userLogin\":" + null + "," +
                                 "\"pass\":\"" + pass + "\"}"))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType("application/json;charset=UTF-8"));

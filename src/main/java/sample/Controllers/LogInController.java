@@ -33,7 +33,7 @@ public class LogInController {
     public ResponseEntity<ResponseCode> getMsg(@RequestBody LogInData body, HttpSession httpSession) {
         Boolean resCode = false;
         String msg =  messageSource.getMessage("msgs.error", null, Locale.ENGLISH);
-        HttpStatus status = HttpStatus.OK;
+        HttpStatus status = HttpStatus.BAD_REQUEST;
         final LogInData.ViewError viewRes = body.valid();
 
         if(viewRes !=  LogInData.ViewError.OK) {
@@ -57,34 +57,36 @@ public class LogInController {
             return new ResponseEntity<ResponseCode>(new ResponseCode(resCode,msg), status);
         }
 
-        final LogInModel body_model = new LogInModel(body.getUserLogin(), body.getPassHash());
-        final AccountService.ErrorCodes resp = accServ.login(body_model);
+        if (body.getUserLogin() != null) {
+            final LogInModel body_model = new LogInModel(body.getUserLogin(), body.getPassHash());
+            final AccountService.ErrorCodes resp = accServ.login(body_model);
 
-        switch (resp) {
+            switch (resp) {
 
-            case INVALID_LOGIN: {
-                resCode = false;
-                msg = messageSource.getMessage("msgs.invalid_auth_data", null, Locale.ENGLISH);
-                status = HttpStatus.BAD_REQUEST;
-                break;
-            }
+                case INVALID_LOGIN: {
+                    resCode = false;
+                    msg = messageSource.getMessage("msgs.invalid_auth_data", null, Locale.ENGLISH);
+                    status = HttpStatus.BAD_REQUEST;
+                    break;
+                }
 
-            case INVALID_PASSWORD: {
-                resCode = false;
-                msg = messageSource.getMessage("msgs.invalid_auth_data", null, Locale.ENGLISH);
-                status = HttpStatus.BAD_REQUEST;
-                break;
-            }
+                case INVALID_PASSWORD: {
+                    resCode = false;
+                    msg = messageSource.getMessage("msgs.invalid_auth_data", null, Locale.ENGLISH);
+                    status = HttpStatus.BAD_REQUEST;
+                    break;
+                }
 
-            case OK: {
-                resCode = true;
-                msg = messageSource.getMessage("msgs.ok", null, Locale.ENGLISH);
-                status = HttpStatus.OK;
-                httpSession.setAttribute("userLogin", body.getUserLogin());
-                break;
+                case OK: {
+                    resCode = true;
+                    msg = messageSource.getMessage("msgs.ok", null, Locale.ENGLISH);
+                    status = HttpStatus.OK;
+                    httpSession.setAttribute("userLogin", body.getUserLogin());
+                    break;
+                }
             }
         }
 
-        return new ResponseEntity<ResponseCode>(new ResponseCode(resCode,msg), status);
+        return new ResponseEntity<ResponseCode>(new ResponseCode(resCode, msg), status);
     }
 }

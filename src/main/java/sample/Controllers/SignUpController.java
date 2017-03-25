@@ -34,6 +34,7 @@ public class SignUpController {
         Boolean resCode = false;
         String msg =  messageSource.getMessage("msgs.error", null, Locale.ENGLISH);
         HttpStatus status = HttpStatus.CREATED;
+
         final UserDataView.ViewError viewRes = body.valid();
 
         if(viewRes != UserDataView.ViewError.OK){
@@ -82,6 +83,6 @@ public class SignUpController {
                 break;
         }
 
-        return new ResponseEntity<ResponseCode>(new ResponseCode(resCode,msg), status);
+        return new ResponseEntity<ResponseCode>(new ResponseCode(resCode, msg), status);
     }
 }

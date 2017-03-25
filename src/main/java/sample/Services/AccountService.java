@@ -84,8 +84,7 @@ public class AccountService {
         return ErrorCodes.OK;
     }
 
-    @SuppressWarnings("unused")
-    public ErrorCodes changePassHash(@NotNull String newPassHash, @NotNull String login) {
+    public ErrorCodes changePassHash(@NotNull  String newPassHash, @NotNull String login) {
         final UserData data = userNameToUserProfile.get(login);
 
         if (data == null) {
@@ -113,8 +112,6 @@ public class AccountService {
         return true;
     }
 
-
-    @SuppressWarnings("unused")
     public ErrorCodes getUserData(@NotNull String login, UserInfoModel[] model) {
         final UserData data = userNameToUserProfile.get(login);
 

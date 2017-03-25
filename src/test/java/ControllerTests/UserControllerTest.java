@@ -34,16 +34,16 @@ public class UserControllerTest {
     private final String pass = "examplePass";
 
     @Test
-    public void user1GetDataOk() throws Exception {
+    public void user0GetDataOk() throws Exception {
         this.mockMvc.perform(
                 get("/api/user/data")
-                        .sessionAttr("userLogin", "exampleUser"))
+                        .sessionAttr("userLogin", userLogin))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"));
     }
 
     @Test
-    public void user2GetDataInvalidLogin() throws Exception {
+    public void user1GetDataInvalidLogin() throws Exception {
         this.mockMvc.perform(
                 get("/api/user/data")
                         .sessionAttr("userLogin", "THIS_IS_TEST_LOGIN_BRO"))
@@ -52,10 +52,21 @@ public class UserControllerTest {
     }
 
     @Test
-    public void user3GetDataNullLogin() throws Exception {
+    public void user2GetDataNullLogin() throws Exception {
         this.mockMvc.perform(
                 get("/api/user/data"))
                 .andExpect(status().isForbidden())
+                .andExpect(content().contentType("application/json;charset=UTF-8"));
+    }
+
+    @Test
+    public void user3ChangeMailNull() throws Exception {
+        this.mockMvc.perform(
+                post("/api/user/changeMail")
+                        .contentType("application/json")
+                        .content("{\"strCont\":" + null + "}")
+                        .sessionAttr("userLogin", userLogin))
+                .andExpect(status().isBadRequest())
                 .andExpect(content().contentType("application/json;charset=UTF-8"));
     }
 
@@ -65,19 +76,78 @@ public class UserControllerTest {
                 post("/api/user/changeMail")
                         .contentType("application/json")
                         .content("{\"strCont\":\"EXAMPLE@GMAIL.COM\"}")
-                        .sessionAttr("userLogin", "exampleUser"))
+                        .sessionAttr("userLogin", userLogin))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"));
     }
 
     @Test
-    public void user4ChangeMailInvalidSession() throws Exception {
+    public void user5ChangeMailInvalidSession() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/changeMail")
                         .contentType("application/json")
                         .content("{\"strCont\":\"EXAMPLE@GMAIL.COM\"}")
                         .sessionAttr("userLogin", "INVALID_LOGIN"))
                 .andExpect(status().isNotFound())
+                .andExpect(content().contentType("application/json;charset=UTF-8"));
+    }
+
+    @Test
+    public void user6ChangePassInvalidSession() throws Exception {
+        this.mockMvc.perform(
+                post("/api/user/changePass")
+                        .contentType("application/json")
+                        .content("{\"oldPass\":\"" + pass + "\"," +
+                        "\"newPass\":\"EXAMPLE_PASS\"}"))
+                .andExpect(status().isNotFound())
+                .andExpect(content().contentType("application/json;charset=UTF-8"));
+    }
+
+    @Test
+    public void user7ChangePassNullOldPass() throws Exception {
+        this.mockMvc.perform(
+                post("/api/user/changePass")
+                        .contentType("application/json")
+                        .content("{\"oldPass\":" + null + "," +
+                        "\"newPass\":\"EXAMPLE_PASS\"}")
+                        .sessionAttr("userLogin", userLogin))
+                .andExpect(status().isForbidden())
+                .andExpect(content().contentType("application/json;charset=UTF-8"));
+    }
+
+    @Test
+    public void user8ChangePassNullNewPass() throws Exception {
+        this.mockMvc.perform(
+                post("/api/user/changePass")
+                        .contentType("application/json")
+                        .content("{\"oldPass\":\"" + pass + "\"," +
+                        "\"newPass\":" + null + "}")
+                        .sessionAttr("userLogin", userLogin))
+                .andExpect(status().isForbidden())
+                .andExpect(content().contentType("application/json;charset=UTF-8"));
+    }
+
+    @Test
+    public void user9ChangePassInvalidOldPass() throws Exception {
+        this.mockMvc.perform(
+                post("/api/user/changePass")
+                        .contentType("application/json")
+                        .content("{\"oldPass\":\"123456789\"," +
+                        "\"newPass\":\"NEW_PASS_HERE\"}")
+                        .sessionAttr("userLogin", userLogin))
+                .andExpect(status().isForbidden())
+                .andExpect(content().contentType("application/json;charset=UTF-8"));
+    }
+
+    @Test
+    public void userrr1ChangePassOk() throws Exception {
+        this.mockMvc.perform(
+                post("/api/user/changePass")
+                        .contentType("application/json")
+                        .content("{\"oldPass\":\"" + pass + "\"," +
+                        "\"newPass\":\"NEW_PASS_HERE\"}")
+                        .sessionAttr("userLogin", userLogin))
+                .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"));
     }
 }
