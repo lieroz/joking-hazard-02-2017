@@ -1,19 +1,16 @@
 package ControllerTests;
 
-import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import sample.Application;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -21,9 +18,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 
 @SpringBootTest(classes = Application.class)
-@RunWith(SpringRunner.class)
+@RunWith(OrderedRunner.class)
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SignUpControllerTest {
 
     @Autowired
@@ -34,7 +30,8 @@ public class SignUpControllerTest {
     private final String pass = "examplePass";
 
     @Test
-    public void userCreate1Created() throws Exception {
+    @Order(order = 1)
+    public void userCreateCreated() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/signup")
                         .contentType("application/json")
@@ -46,7 +43,8 @@ public class SignUpControllerTest {
     }
 
     @Test
-    public void userCreate2Conflict() throws Exception {
+    @Order(order = 2)
+    public void userCreateConflict() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/signup")
                         .contentType("application/json")
@@ -58,7 +56,8 @@ public class SignUpControllerTest {
     }
 
     @Test
-    public void userCreate3BadRequestLogin() throws Exception {
+    @Order(order = 3)
+    public void userCreateBadRequestLogin() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/signup")
                         .contentType("application/json")
@@ -70,7 +69,8 @@ public class SignUpControllerTest {
     }
 
     @Test
-    public void userCreate4BadRequestContent() throws Exception {
+    @Order(order = 4)
+    public void userCreate4adRequestContent() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/signup")
                         .contentType("text/html"))
