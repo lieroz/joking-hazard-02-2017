@@ -15,9 +15,11 @@ import tests.OrderedRunner;
 
 import java.util.Locale;
 
+import static org.hamcrest.core.Is.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -54,8 +56,10 @@ public class GetDataIT {
                         .content("{\"userMail\":\"" + userMail + "\"," +
                                 "\"userLogin\":\"" + userLogin + "\"," +
                                 "\"pass\":\"" + pass + "\"}"))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isCreated())
-                .andExpect(content().contentType("application/json;charset=UTF-8"));
+                .andExpect(jsonPath("$.result", is(true)))
+                .andExpect(jsonPath("$.errorMsg", is("User created successfully! en")));
     }
 
     @Test
@@ -64,8 +68,10 @@ public class GetDataIT {
         this.mockMvc.perform(
                 get("/api/user/data")
                         .sessionAttr("userLogin", userLogin))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"));
+                .andExpect(jsonPath("$.result", is(true)))
+                .andExpect(jsonPath("$.errorMsg", is("Ok! en")));
     }
 
     @Test
@@ -74,8 +80,10 @@ public class GetDataIT {
         this.mockMvc.perform(
                 get("/api/user/data")
                         .sessionAttr("userLogin", faker.name().username()))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isForbidden())
-                .andExpect(content().contentType("application/json;charset=UTF-8"));
+                .andExpect(jsonPath("$.result", is(false)))
+                .andExpect(jsonPath("$.errorMsg", is("Invalid authentication data! en")));
     }
 
     @Test
@@ -83,7 +91,9 @@ public class GetDataIT {
     public void nullSession() throws Exception {
         this.mockMvc.perform(
                 get("/api/user/data"))
-                .andExpect(status().isForbidden())
-                .andExpect(content().contentType("application/json;charset=UTF-8"));
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.result", is(false)))
+                .andExpect(jsonPath("$.errorMsg", is("Invalid session! en")));
     }
 }

@@ -15,8 +15,10 @@ import tests.OrderedRunner;
 
 import java.util.Locale;
 
+import static org.hamcrest.core.Is.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -53,8 +55,10 @@ public class SignUpIT {
                         .content("{\"userMail\":\"" + userMail + "\"," +
                                 "\"userLogin\":\"" + userLogin + "\"," +
                                 "\"pass\":\"" + pass + "\"}"))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isCreated())
-                .andExpect(content().contentType("application/json;charset=UTF-8"));
+                .andExpect(jsonPath("$.result", is(true)))
+                .andExpect(jsonPath("$.errorMsg", is("User created successfully! en")));
     }
 
     @Test
@@ -66,8 +70,10 @@ public class SignUpIT {
                         .content("{\"userMail\":\"" + userMail + "\"," +
                                 "\"userLogin\":\"" + userLogin + "\"," +
                                 "\"pass\":\"" + pass + "\"}"))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isConflict())
-                .andExpect(content().contentType("application/json;charset=UTF-8"));
+                .andExpect(jsonPath("$.result", is(false)))
+                .andExpect(jsonPath("$.errorMsg", is("Login already occupied! en")));
     }
 
     @Test
@@ -79,8 +85,10 @@ public class SignUpIT {
                         .content("{\"userMail\":\"" + faker.internet().emailAddress() + "\"," +
                                 "\"userLogin\":" + null + "," +
                                 "\"pass\":\"" + faker.internet().password() + "\"}"))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().contentType("application/json;charset=UTF-8"));
+                .andExpect(jsonPath("$.result", is(false)))
+                .andExpect(jsonPath("$.errorMsg", is("Json contains null fields! en")));
     }
 
     @Test
@@ -92,8 +100,10 @@ public class SignUpIT {
                         .content("{\"userMail\":" + null + "," +
                                 "\"userLogin\":\"" + faker.name().username() + "\"," +
                                 "\"pass\":\"" + faker.internet().password() + "\"}"))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().contentType("application/json;charset=UTF-8"));
+                .andExpect(jsonPath("$.result", is(false)))
+                .andExpect(jsonPath("$.errorMsg", is("Json contains null fields! en")));
     }
 
     @Test
@@ -105,8 +115,10 @@ public class SignUpIT {
                         .content("{\"userMail\":\"" + faker.internet().emailAddress() + "\"," +
                                 "\"userLogin\":\"" + faker.name().username() + "\"," +
                                 "\"pass\":" + null + "}"))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().contentType("application/json;charset=UTF-8"));
+                .andExpect(jsonPath("$.result", is(false)))
+                .andExpect(jsonPath("$.errorMsg", is("Json contains null fields! en")));
     }
 
     @Test

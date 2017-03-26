@@ -15,8 +15,10 @@ import tests.OrderedRunner;
 
 import java.util.Locale;
 
+import static org.hamcrest.core.Is.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -53,8 +55,10 @@ public class ChangePassIT {
                         .content("{\"userMail\":\"" + userMail + "\"," +
                                 "\"userLogin\":\"" + userLogin + "\"," +
                                 "\"pass\":\"" + pass + "\"}"))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isCreated())
-                .andExpect(content().contentType("application/json;charset=UTF-8"));
+                .andExpect(jsonPath("$.result", is(true)))
+                .andExpect(jsonPath("$.errorMsg", is("User created successfully! en")));
     }
 
     @Test
@@ -65,8 +69,10 @@ public class ChangePassIT {
                         .contentType("application/json")
                         .content("{\"oldPass\":\"" + pass + "\"," +
                                 "\"newPass\":\"" + faker.internet().password() + "\"}"))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isNotFound())
-                .andExpect(content().contentType("application/json;charset=UTF-8"));
+                .andExpect(jsonPath("$.result", is(false)))
+                .andExpect(jsonPath("$.errorMsg", is("Invalid session! en")));
     }
 
     @Test
@@ -78,8 +84,10 @@ public class ChangePassIT {
                         .content("{\"oldPass\":\"" + pass + "\"," +
                                 "\"newPass\":\"" + faker.internet().password() + "\"}")
                         .sessionAttr("userLogin", faker.name().username()))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isForbidden())
-                .andExpect(content().contentType("application/json;charset=UTF-8"));
+                .andExpect(jsonPath("$.result", is(false)))
+                .andExpect(jsonPath("$.errorMsg", is("Invalid authentication data! en")));
     }
 
     @Test
@@ -91,8 +99,10 @@ public class ChangePassIT {
                         .content("{\"oldPass\":" + null + "," +
                                 "\"newPass\":\"" + faker.internet().password() + "\"}")
                         .sessionAttr("userLogin", userLogin))
-                .andExpect(status().isForbidden())
-                .andExpect(content().contentType("application/json;charset=UTF-8"));
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.result", is(false)))
+                .andExpect(jsonPath("$.errorMsg", is("Json contains null fields! en")));
     }
 
     @Test
@@ -104,8 +114,10 @@ public class ChangePassIT {
                         .content("{\"oldPass\":\"" + pass + "\"," +
                                 "\"newPass\":" + null + "}")
                         .sessionAttr("userLogin", userLogin))
-                .andExpect(status().isForbidden())
-                .andExpect(content().contentType("application/json;charset=UTF-8"));
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.result", is(false)))
+                .andExpect(jsonPath("$.errorMsg", is("Json contains null fields! en")));
     }
 
     @Test
@@ -117,8 +129,10 @@ public class ChangePassIT {
                         .content("{\"oldPass\":\"" + faker.internet().password() + "\"," +
                                 "\"newPass\":\"" + faker.internet().password() + "\"}")
                         .sessionAttr("userLogin", userLogin))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isForbidden())
-                .andExpect(content().contentType("application/json;charset=UTF-8"));
+                .andExpect(jsonPath("$.result", is(false)))
+                .andExpect(jsonPath("$.errorMsg", is("Invalid authentication data! en")));
     }
 
     @Test
@@ -131,8 +145,10 @@ public class ChangePassIT {
                         .content("{\"oldPass\":\"" + pass + "\"," +
                                 "\"newPass\":\"" + newPass + "\"}")
                         .sessionAttr("userLogin", userLogin))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"));
+                .andExpect(jsonPath("$.result", is(true)))
+                .andExpect(jsonPath("$.errorMsg", is("Ok! en")));
         pass = newPass;
     }
 
@@ -144,8 +160,10 @@ public class ChangePassIT {
                         .contentType("application/json")
                         .content("{\"userLogin\":\"" + userLogin + "\"," +
                                 "\"pass\":\"" + pass + "\"}"))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"));
+                .andExpect(jsonPath("$.result", is(true)))
+                .andExpect(jsonPath("$.errorMsg", is("Ok! en")));
     }
 
     @Test

@@ -20,6 +20,7 @@ public class AccountService {
         INVALID_PASSWORD,
         LOGIN_OCCUPIED,
         INVALID_AUTH_DATA,
+        INVALID_REG_DATA,
         INVALID_SESSION
     }
 
@@ -36,10 +37,8 @@ public class AccountService {
     @SuppressWarnings("unused")
     @NotNull
     public ErrorCodes register(@NotNull UserData data) {
-        final String login = data.getUserLogin();
-
-        if (login == null) {
-            return ErrorCodes.INVALID_LOGIN;
+        if (data.getUserLogin() == null || data.getUserMail() == null || data.getPassHash() == null) {
+            return ErrorCodes.INVALID_REG_DATA;
         }
 
         try {
@@ -55,7 +54,7 @@ public class AccountService {
     public ErrorCodes login(@NotNull LogInModel data) {
         final String login = data.getUserLogin();
 
-        if (login == null) {
+        if (login == null || data.getPassHash() == null) {
             return ErrorCodes.INVALID_AUTH_DATA;
         }
 

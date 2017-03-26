@@ -15,8 +15,10 @@ import tests.OrderedRunner;
 
 import java.util.Locale;
 
+import static org.hamcrest.core.Is.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -53,8 +55,10 @@ public class LogInIT {
                         .content("{\"userMail\":\"" + userMail + "\"," +
                                 "\"userLogin\":\"" + userLogin + "\"," +
                                 "\"pass\":\"" + pass + "\"}"))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isCreated())
-                .andExpect(content().contentType("application/json;charset=UTF-8"));
+                .andExpect(jsonPath("$.result", is(true)))
+                .andExpect(jsonPath("$.errorMsg", is("User created successfully! en")));
     }
 
     @Test
@@ -65,8 +69,10 @@ public class LogInIT {
                         .contentType("application/json")
                         .content("{\"userLogin\":\"" + userLogin + "\"," +
                                 "\"pass\":\"" + pass + "\"}"))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json;charset=UTF-8"));
+                .andExpect(jsonPath("$.result", is(true)))
+                .andExpect(jsonPath("$.errorMsg", is("Ok! en")));
     }
 
     @Test
@@ -77,8 +83,10 @@ public class LogInIT {
                         .contentType("application/json")
                         .content("{\"userLogin\":" + null + "," +
                                 "\"pass\":\"" + pass + "\"}"))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().contentType("application/json;charset=UTF-8"));
+                .andExpect(jsonPath("$.result", is(false)))
+                .andExpect(jsonPath("$.errorMsg", is("Json contains null fields! en")));
     }
 
     @Test
@@ -89,8 +97,10 @@ public class LogInIT {
                         .contentType("application/json")
                         .content("{\"userLogin\":\"" + userLogin + "\"," +
                                 "\"pass\":" + null + "}"))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().contentType("application/json;charset=UTF-8"));
+                .andExpect(jsonPath("$.result", is(false)))
+                .andExpect(jsonPath("$.errorMsg", is("Json contains null fields! en")));
     }
 
     @Test
@@ -101,8 +111,10 @@ public class LogInIT {
                         .contentType("application/json")
                         .content("{\"userLogin\":\"" + faker.name().username() + "\"," +
                                 "\"pass\":\"" + pass + "\"}"))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isForbidden())
-                .andExpect(content().contentType("application/json;charset=UTF-8"));
+                .andExpect(jsonPath("$.result", is(false)))
+                .andExpect(jsonPath("$.errorMsg", is("Invalid authentication data! en")));
     }
 
     @Test
@@ -113,8 +125,10 @@ public class LogInIT {
                         .contentType("application/json")
                         .content("{\"userLogin\":\"" + userLogin + "\"," +
                                 "\"pass\":\"" + faker.internet().password() + "\"}"))
+                .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isForbidden())
-                .andExpect(content().contentType("application/json;charset=UTF-8"));
+                .andExpect(jsonPath("$.result", is(false)))
+                .andExpect(jsonPath("$.errorMsg", is("Invalid authentication data! en")));
     }
 
     @Test
