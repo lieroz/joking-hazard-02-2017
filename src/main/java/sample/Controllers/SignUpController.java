@@ -33,54 +33,56 @@ public class SignUpController {
     public ResponseEntity<ResponseCode> getMsg(@RequestBody UserDataView body, HttpSession httpSession) {
         Boolean resCode = false;
         String msg =  messageSource.getMessage("msgs.error", null, Locale.ENGLISH);
-        HttpStatus status = HttpStatus.CREATED;
+        HttpStatus status = HttpStatus.BAD_REQUEST;
 
-        final UserDataView.ViewError viewRes = body.valid();
+        if (body.getUserLogin() != null && body.getUserMail() != null && body.getPass() != null) {
+            final UserDataView.ViewError viewRes = body.valid();
 
-        if(viewRes != UserDataView.ViewError.OK){
+            if (viewRes != UserDataView.ViewError.OK) {
 
-            switch (viewRes) {
+                switch (viewRes) {
 
-                case INVALID_DATA_ERROR: {
-                    msg = messageSource.getMessage("msgs.invalid_auth_data", null, Locale.ENGLISH);
-                    resCode = false;
-                    status = HttpStatus.FORBIDDEN;
-                    break;
+                    case INVALID_DATA_ERROR: {
+                        msg = messageSource.getMessage("msgs.invalid_auth_data", null, Locale.ENGLISH);
+                        resCode = false;
+                        status = HttpStatus.FORBIDDEN;
+                        break;
+                    }
+
+                    default: {
+                        msg = messageSource.getMessage("msgs.error", null, Locale.ENGLISH);
+                        resCode = false;
+                        status = HttpStatus.NOT_FOUND;
+                    }
                 }
 
-                default: {
-                    msg = messageSource.getMessage("msgs.error", null, Locale.ENGLISH);
-                    resCode = false;
-                    status = HttpStatus.NOT_FOUND;
-                }
+                return new ResponseEntity<ResponseCode>(new ResponseCode(resCode, msg), status);
             }
 
-            return new ResponseEntity<ResponseCode>(new ResponseCode(resCode,msg), status);
-        }
+            final UserData body_model = new UserData(body.getUserMail(), body.getUserLogin(), body.getPass());
+            final AccountService.ErrorCodes result = accServ.register(body_model);
 
-        final UserData body_model = new UserData(body.getUserMail(),body.getUserLogin(),body.getPass());
-        final AccountService.ErrorCodes result = accServ.register(body_model);
+            switch (result) {
 
-        switch (result) {
+                case INVALID_LOGIN:
+                    resCode = false;
+                    msg = messageSource.getMessage("msgs.invalid_auth_data", null, Locale.ENGLISH);
+                    status = HttpStatus.BAD_REQUEST;
+                    break;
 
-            case INVALID_LOGIN:
-                resCode = false;
-                msg =  messageSource.getMessage("msgs.invalid_auth_data", null, Locale.ENGLISH);
-                status = HttpStatus.BAD_REQUEST;
-                break;
+                case LOGIN_OCCUPIED:
+                    resCode = false;
+                    msg = messageSource.getMessage("msgs.login_occupied", null, Locale.ENGLISH);
+                    status = HttpStatus.CONFLICT;
+                    break;
 
-            case LOGIN_OCCUPIED:
-                resCode = false;
-                msg = messageSource.getMessage("msgs.login_occupied", null, Locale.ENGLISH);
-                status = HttpStatus.CONFLICT;
-                break;
-
-            case OK:
-                resCode = true;
-                msg = messageSource.getMessage("msgs.ok", null, Locale.ENGLISH);
-                status = HttpStatus.CREATED;
-                httpSession.setAttribute("userLogin", body.getUserLogin());
-                break;
+                case OK:
+                    resCode = true;
+                    msg = messageSource.getMessage("msgs.ok", null, Locale.ENGLISH);
+                    status = HttpStatus.CREATED;
+                    httpSession.setAttribute("userLogin", body.getUserLogin());
+                    break;
+            }
         }
 
         return new ResponseEntity<ResponseCode>(new ResponseCode(resCode, msg), status);

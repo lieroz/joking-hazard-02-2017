@@ -21,8 +21,8 @@ final public class AccountDAO {
 
         return jdbcTemplate.queryForObject(sql, new Object[] {login}, (rs, rowNum) ->
                 new UserData(
-                        rs.getString("login"),
                         rs.getString("email"),
+                        rs.getString("login"),
                         rs.getString("password")
                 )
         );

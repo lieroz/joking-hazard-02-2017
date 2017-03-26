@@ -60,6 +60,12 @@
             <artifactId>h2</artifactId>
             <version>1.4.194</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>0.13</version>
+        </dependency>
     </dependencies>
 
     <build>

@@ -78,6 +78,7 @@ public class AccountService {
     public ErrorCodes changeMail(@NotNull String newMail, @NotNull String login) {
         try {
             final UserData data = accountDAO.getUserByLogin(login);
+            System.out.println(data.getUserLogin());
             data.setUserMail(newMail);
             accountDAO.changeUserMail(data);
 

@@ -18,14 +18,10 @@ public final class OrderedRunner extends SpringJUnit4ClassRunner {
         List<FrameworkMethod> list = super.computeTestMethods();
         List<FrameworkMethod> copy = new ArrayList<>(list);
         copy.sort((f1, f2) -> {
-                Order o1 = f1.getAnnotation(Order.class);
-                Order o2 = f2.getAnnotation(Order.class);
+                final Order o1 = f1.getAnnotation(Order.class);
+                final Order o2 = f2.getAnnotation(Order.class);
 
-                if (o1 == null || o2 == null) {
-                    return -1;
-                }
-
-                return o1.order() - o2.order();
+                return o1 == null || o2 == null ? -1 : o1.order() - o2.order();
             }
         );
 
