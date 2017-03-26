@@ -25,7 +25,7 @@ public class AccountService {
     }
 
     @SuppressWarnings("unused")
-    private final MessageSource messageSource;
+    private MessageSource messageSource;
     private final AccountDAO accountDAO;
 
     @Autowired
