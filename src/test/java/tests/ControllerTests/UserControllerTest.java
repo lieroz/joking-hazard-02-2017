@@ -1,16 +1,15 @@
-package ControllerTests;
+package tests.ControllerTests;
 
-import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import sample.Application;
+import tests.Order;
+import tests.OrderedRunner;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -22,9 +21,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 
 @SpringBootTest(classes = Application.class)
-@RunWith(SpringRunner.class)
+@RunWith(OrderedRunner.class)
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class UserControllerTest {
 
     @Autowired
@@ -34,7 +32,8 @@ public class UserControllerTest {
     private final String pass = "examplePass";
 
     @Test
-    public void user0GetDataOk() throws Exception {
+    @Order(order = 1)
+    public void userGetDataOk() throws Exception {
         this.mockMvc.perform(
                 get("/api/user/data")
                         .sessionAttr("userLogin", userLogin))
@@ -43,6 +42,7 @@ public class UserControllerTest {
     }
 
     @Test
+    @Order(order = 2)
     public void user1GetDataInvalidLogin() throws Exception {
         this.mockMvc.perform(
                 get("/api/user/data")
@@ -52,7 +52,8 @@ public class UserControllerTest {
     }
 
     @Test
-    public void user2GetDataNullLogin() throws Exception {
+    @Order(order = 3)
+    public void userGetDataNullLogin() throws Exception {
         this.mockMvc.perform(
                 get("/api/user/data"))
                 .andExpect(status().isForbidden())
@@ -60,7 +61,8 @@ public class UserControllerTest {
     }
 
     @Test
-    public void user3ChangeMailNull() throws Exception {
+    @Order(order = 4)
+    public void userChangeMailNull() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/changeMail")
                         .contentType("application/json")
@@ -71,7 +73,8 @@ public class UserControllerTest {
     }
 
     @Test
-    public void user4ChangeMailOk() throws Exception {
+    @Order(order = 5)
+    public void userChangeMailOk() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/changeMail")
                         .contentType("application/json")
@@ -82,7 +85,8 @@ public class UserControllerTest {
     }
 
     @Test
-    public void user5ChangeMailInvalidSession() throws Exception {
+    @Order(order = 6)
+    public void userChangeMailInvalidSession() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/changeMail")
                         .contentType("application/json")
@@ -93,7 +97,8 @@ public class UserControllerTest {
     }
 
     @Test
-    public void user6ChangePassInvalidSession() throws Exception {
+    @Order(order = 7)
+    public void userChangePassInvalidSession() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/changePass")
                         .contentType("application/json")
@@ -104,7 +109,8 @@ public class UserControllerTest {
     }
 
     @Test
-    public void user7ChangePassNullOldPass() throws Exception {
+    @Order(order = 8)
+    public void userChangePassNullOldPass() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/changePass")
                         .contentType("application/json")
@@ -116,7 +122,8 @@ public class UserControllerTest {
     }
 
     @Test
-    public void user8ChangePassNullNewPass() throws Exception {
+    @Order(order = 9)
+    public void userChangePassNullNewPass() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/changePass")
                         .contentType("application/json")
@@ -128,7 +135,8 @@ public class UserControllerTest {
     }
 
     @Test
-    public void user9ChangePassInvalidOldPass() throws Exception {
+    @Order(order = 10)
+    public void userChangePassInvalidOldPass() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/changePass")
                         .contentType("application/json")
@@ -140,7 +148,8 @@ public class UserControllerTest {
     }
 
     @Test
-    public void userrr1ChangePassOk() throws Exception {
+    @Order(order = 11)
+    public void userChangePassOk() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/changePass")
                         .contentType("application/json")

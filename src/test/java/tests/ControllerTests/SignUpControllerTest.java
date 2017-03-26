@@ -1,5 +1,6 @@
-package ControllerTests;
+package tests.ControllerTests;
 
+import tests.Order;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import sample.Application;
+import tests.OrderedRunner;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -70,7 +72,7 @@ public class SignUpControllerTest {
 
     @Test
     @Order(order = 4)
-    public void userCreate4adRequestContent() throws Exception {
+    public void userCreateBadRequestInvalidContent() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/signup")
                         .contentType("text/html"))

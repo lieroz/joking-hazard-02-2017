@@ -1,16 +1,15 @@
-package ControllerTests;
+package tests.ControllerTests;
 
-import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import sample.Application;
+import tests.Order;
+import tests.OrderedRunner;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -21,9 +20,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 
 @SpringBootTest(classes = Application.class)
-@RunWith(SpringRunner.class)
+@RunWith(OrderedRunner.class)
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class LoginControllerTest {
 
     @Autowired
@@ -33,7 +31,8 @@ public class LoginControllerTest {
     private final String pass = "examplePass";
 
     @Test
-    public void userLogin1Ok() throws Exception {
+    @Order(order = 1)
+    public void userLoginOk() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/login")
                         .contentType("application/json")
@@ -44,7 +43,8 @@ public class LoginControllerTest {
     }
 
     @Test
-    public void userLogin2BadRequestNullLogin() throws Exception {
+    @Order(order = 2)
+    public void userLoginBadRequestNullLogin() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/login")
                         .contentType("application/json")
@@ -55,7 +55,8 @@ public class LoginControllerTest {
     }
 
     @Test
-    public void userLogin2BadRequestLoginNotExist() throws Exception {
+    @Order(order = 3)
+    public void userLoginBadRequestLoginNotExist() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/login")
                         .contentType("application/json")
@@ -66,7 +67,8 @@ public class LoginControllerTest {
     }
 
     @Test
-    public void userLogin2BadRequestIncorrectPass() throws Exception {
+    @Order(order = 4)
+    public void userLoginBadRequestIncorrectPass() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/login")
                         .contentType("application/json")
