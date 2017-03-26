@@ -1,14 +1,16 @@
 package sample.Services;
 
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.context.MessageSource;
+import sample.DAO.AccountDAO;
 import sample.Models.LogInModel;
 import sample.Models.UserInfoModel;
 import sample.Models.UserData;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class AccountService {
@@ -23,13 +25,13 @@ public class AccountService {
 
     @SuppressWarnings("unused")
     private final MessageSource messageSource;
-    private final Map<String, UserData> userNameToUserProfile = new HashMap<>();
+    private final AccountDAO accountDAO;
 
-    @SuppressWarnings("unused")
-    public AccountService(MessageSource messageSource) {
+    @Autowired
+    public AccountService(final MessageSource messageSource, final JdbcTemplate jdbcTemplate) {
         this.messageSource = messageSource;
+        this.accountDAO = new AccountDAO(jdbcTemplate);
     }
-
 
     @SuppressWarnings("unused")
     @NotNull
@@ -40,11 +42,12 @@ public class AccountService {
             return ErrorCodes.INVALID_LOGIN;
         }
 
-        if (userNameToUserProfile.containsKey(login)) {
+        try {
+            accountDAO.insertUserIntoDb(data);
+
+        } catch (DuplicateKeyException ex) {
             return ErrorCodes.LOGIN_OCCUPIED;
         }
-
-        userNameToUserProfile.put(login, data);
 
         return ErrorCodes.OK;
     }
@@ -56,16 +59,16 @@ public class AccountService {
             return ErrorCodes.INVALID_AUTH_DATA;
         }
 
-        final UserData record = userNameToUserProfile.get(login);
+        try {
+            final UserData record = accountDAO.getUserByLogin(login);
+            final String hash = record.getPassHash();
 
-        if (record == null) {
+            if (!hash.equals(data.getPassHash())) {
+                return ErrorCodes.INVALID_PASSWORD;
+            }
+
+        } catch (EmptyResultDataAccessException ex) {
             return  ErrorCodes.INVALID_LOGIN;
-        }
-
-        final String hash = record.getPassHash();
-
-        if (!hash.equals(data.getPassHash())) {
-            return ErrorCodes.INVALID_PASSWORD;
         }
 
         return ErrorCodes.OK;
@@ -73,39 +76,41 @@ public class AccountService {
 
     @SuppressWarnings("unused")
     public ErrorCodes changeMail(@NotNull String newMail, @NotNull String login) {
-        final UserData data = userNameToUserProfile.get(login);
+        try {
+            final UserData data = accountDAO.getUserByLogin(login);
+            data.setUserMail(newMail);
+            accountDAO.changeUserMail(data);
 
-        if (data == null) {
+        } catch (EmptyResultDataAccessException ex) {
             return ErrorCodes.INVALID_SESSION;
         }
-
-        data.setUserMail(newMail);
 
         return ErrorCodes.OK;
     }
 
     public ErrorCodes changePassHash(@NotNull  String newPassHash, @NotNull String login) {
-        final UserData data = userNameToUserProfile.get(login);
+        try {
+            final UserData data = accountDAO.getUserByLogin(login);
+            data.setPassHash(newPassHash);
+            accountDAO.changeUserPass(data);
 
-        if (data == null) {
+        } catch (EmptyResultDataAccessException ex) {
             return ErrorCodes.INVALID_SESSION;
         }
-
-        data.setPassHash(newPassHash);
 
         return ErrorCodes.OK;
     }
 
     public boolean checkPass(@NotNull String passHash, @NotNull String login) {
-        final UserData data = userNameToUserProfile.get(login);
+        try {
+            final UserData data = accountDAO.getUserByLogin(login);
+            final String passH = data.getPassHash();
 
-        if (data == null) {
-            return false;
-        }
+            if (!passHash.equals(passH)) {
+                return false;
+            }
 
-        final String passH = data.getPassHash();
-
-        if (!passHash.equals(passH)) {
+        } catch (EmptyResultDataAccessException ex) {
             return false;
         }
 
@@ -113,15 +118,14 @@ public class AccountService {
     }
 
     public ErrorCodes getUserData(@NotNull String login, UserInfoModel[] model) {
-        final UserData data = userNameToUserProfile.get(login);
+        try {
+            final UserData data = accountDAO.getUserByLogin(login);
+            model[0] = new UserInfoModel(data.getUserMail(), data.getUserLogin());
 
-        if (data != null) {
-            model[0] = new UserInfoModel(data.getUserMail(),data.getUserLogin());
-
-            return ErrorCodes.OK;
+        } catch (EmptyResultDataAccessException ex) {
+            return ErrorCodes.INVALID_LOGIN;
         }
 
-        return ErrorCodes.INVALID_LOGIN;
+        return ErrorCodes.OK;
     }
-
 }
