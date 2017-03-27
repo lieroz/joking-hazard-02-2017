@@ -72,7 +72,7 @@ public class ChangeMailIT {
         this.mockMvc.perform(
                 post("/api/user/changeMail")
                         .contentType("application/json")
-                        .content("{\"strCont\":\"" + faker.internet().emailAddress() + "\"}")
+                        .content("{\"userMail\":\"" + faker.internet().emailAddress() + "\"}")
                         .sessionAttr("userLogin", userLogin))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isOk())
@@ -86,7 +86,7 @@ public class ChangeMailIT {
         this.mockMvc.perform(
                 post("/api/user/changeMail")
                         .contentType("application/json")
-                        .content("{\"strCont\":" + null + "}")
+                        .content("{\"userMail\":" + null + "}")
                         .sessionAttr("userLogin", userLogin))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isBadRequest())
@@ -100,7 +100,7 @@ public class ChangeMailIT {
         this.mockMvc.perform(
                 post("/api/user/changeMail")
                         .contentType("application/json")
-                        .content("{\"strCont\":\"" + faker.internet().emailAddress() + "\"}")
+                        .content("{\"userMail\":\"" + faker.internet().emailAddress() + "\"}")
                         .sessionAttr("userLogin", faker.name().username()))
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(status().isNotFound())
