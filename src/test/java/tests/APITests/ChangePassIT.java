@@ -31,7 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = Application.class)
 @RunWith(OrderedRunner.class)
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
-@TestPropertySource(locations = "classpath:test.properties")
 @Category(IntegrationTest.class)
 public class ChangePassIT {
 
