@@ -2,7 +2,9 @@ package tests.APITests;
 
 import com.github.javafaker.Faker;
 import org.junit.BeforeClass;
+import org.junit.experimental.categories.Category;
 import org.springframework.test.context.TestPropertySource;
+import tests.IntegrationTest;
 import tests.Order;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = Application.class)
 @RunWith(OrderedRunner.class)
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
-@TestPropertySource(locations = "classpath:test.properties")
+@Category(IntegrationTest.class)
 public class SignUpIT {
 
     @Autowired

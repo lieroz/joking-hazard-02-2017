@@ -8,20 +8,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 // Changed name to merge pull request
 public final class MailForm {
-    String strCont;
+    private String userMail;
 
     @SuppressWarnings("unused")
-    public MailForm(@JsonProperty("strCont") String strCont) {
-        this.strCont = strCont;
+    public MailForm(@JsonProperty("userMail") String userMail) {
+        this.userMail = userMail;
     }
 
     @SuppressWarnings("unused")
-    public String getStrCont() {
-        return strCont;
+    public String getUserMail() {
+        return userMail;
     }
 
     @SuppressWarnings("unused")
-    public void setStrCont(String strCont) {
-        this.strCont = strCont;
+    public void setUserMail(String userMail) {
+        this.userMail = userMail;
     }
 }

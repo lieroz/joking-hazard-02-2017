@@ -70,14 +70,14 @@ public class UserController {
     }
 
     @RequestMapping(path = "/api/user/changeMail", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-    public ResponseEntity<ResponseCode> changeMail(@RequestBody MailForm str, HttpSession httpSession) {
+    public ResponseEntity<ResponseCode> changeMail(@RequestBody MailForm body, HttpSession httpSession) {
         Boolean resCode = false;
         HttpStatus status = HttpStatus.BAD_REQUEST;
         String msg = messageSource.getMessage("msgs.bad_request", null, Locale.ENGLISH);
 
-        if (str.getStrCont() != null) {
+        if (body.getUserMail() != null) {
             final String login = (String) httpSession.getAttribute("userLogin");
-            final AccountService.ErrorCodes result = accServ.changeMail(str.getStrCont(), login);
+            final AccountService.ErrorCodes result = accServ.changeMail(body.getUserMail(), login);
 
             switch (result) {
 
