@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Locale;
 
 @SuppressWarnings("Duplicates")
-//@CrossOrigin(origins = "https://jokinghazard.herokuapp.com")
+@CrossOrigin(origins = "https://jokinghazard.herokuapp.com")
 @RestController
 public class SignUpController {
     @NotNull
