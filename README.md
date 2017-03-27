@@ -3,7 +3,7 @@
 
 ###Состав команды:
 * [*Асриян Эдуар*](https://github.com/ed-asriyan), АПО-22, ИУ7-43
-* [*Балякин Данила*](https://github.com/Pacman29) АПО-22, ИУ7-62
+* [*Балякин Данила*](https://github.com/Pacman29), АПО-22, ИУ7-62
 * [*Камакин Андрей*](https://github.com/lieroz), АПО-22, ИУ7-43
 * [*Крестов Сергей*](https://github.com/wolf1996), АПО-22, ИУ7-82
 
