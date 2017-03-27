@@ -3,6 +3,7 @@ package tests.APITests;
 import com.github.javafaker.Faker;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import sample.Application;
+import tests.IntegrationTest;
 import tests.Order;
 import tests.OrderedRunner;
 
@@ -30,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(OrderedRunner.class)
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
 @TestPropertySource(locations = "classpath:test.properties")
+@Category(IntegrationTest.class)
 public class ChangeMailIT {
 
     @Autowired
