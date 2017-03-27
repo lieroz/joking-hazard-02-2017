@@ -1,6 +1,7 @@
 package sample.Controllers;
 
 import org.springframework.context.MessageSource;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
@@ -21,47 +22,42 @@ import sample.Views.UserInfo;
 //@CrossOrigin(origins = "https://jokinghazard.herokuapp.com")
 @RestController
 public class UserController {
-    @SuppressWarnings("unused")
+    @NotNull
     private final MessageSource messageSource;
 
-    @SuppressWarnings("unused")
     @NotNull
-    final AccountService accServ;
+    private final AccountService accountService;
 
-    @SuppressWarnings("unused")
     public UserController(@NotNull AccountService accountService, MessageSource messageSource) {
         this.messageSource = messageSource;
-        this.accServ = accountService;
+        this.accountService = accountService;
     }
 
-    @RequestMapping(path = "/api/user/data", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(path = "/api/user/data", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCode<UserInfo>> getWho(HttpSession httpSession) {
         final UserInfoModel data[] = {null,};
         String msg = messageSource.getMessage("msgs.ok", null, Locale.ENGLISH);
-        Boolean result = true;
 
         final String id = (String) httpSession.getAttribute("userLogin");
 
         if (id == null) {
             msg = messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH);
-            result = false;
 
-            return new ResponseEntity<ResponseCode<UserInfo>>(new ResponseCode<UserInfo>(result, msg), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new ResponseCode<>(false, msg), HttpStatus.NOT_FOUND);
         }
 
-        final AccountService.ErrorCodes retCode = accServ.getUserData(id, data);
+        final AccountService.ErrorCodes retCode = accountService.getUserData(id, data);
 
         if (retCode != AccountService.ErrorCodes.OK) {
             msg = messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH);
-            result = false;
 
-            return new ResponseEntity<ResponseCode<UserInfo>>(new ResponseCode<UserInfo>(result, msg), HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(new ResponseCode<>(false, msg), HttpStatus.FORBIDDEN);
         }
 
         final UserInfoModel dataMod = data[0];
         final UserInfo dataView = new UserInfo(dataMod.getUserMail(), dataMod.getUserLogin());
 
-        return new ResponseEntity<ResponseCode<UserInfo>>(new ResponseCode<UserInfo>(result, msg, dataView), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseCode<>(true, msg, dataView), HttpStatus.OK);
     }
 
     @RequestMapping(path = "/api/logout", method = RequestMethod.GET)
@@ -69,7 +65,8 @@ public class UserController {
         httpSession.invalidate();
     }
 
-    @RequestMapping(path = "/api/user/changeMail", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @RequestMapping(path = "/api/user/changeMail", method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCode> changeMail(@RequestBody MailForm body, HttpSession httpSession) {
         Boolean resCode = false;
         HttpStatus status = HttpStatus.BAD_REQUEST;
@@ -77,7 +74,7 @@ public class UserController {
 
         if (body.getUserMail() != null) {
             final String login = (String) httpSession.getAttribute("userLogin");
-            final AccountService.ErrorCodes result = accServ.changeMail(body.getUserMail(), login);
+            final AccountService.ErrorCodes result = accountService.changeMail(body.getUserMail(), login);
 
             switch (result) {
 
@@ -97,11 +94,12 @@ public class UserController {
             }
         }
 
-        return new ResponseEntity<ResponseCode>(new ResponseCode(resCode, msg), status);
+        return new ResponseEntity<>(new ResponseCode(resCode, msg), status);
 
     }
 
-    @RequestMapping(path = "/api/user/changePass", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @RequestMapping(path = "/api/user/changePass", method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCode> changePass(@RequestBody PassForm form, HttpSession httpSession) {
         Boolean resCode = false;
         HttpStatus status = HttpStatus.NOT_FOUND;
@@ -110,18 +108,18 @@ public class UserController {
         final String login = (String) httpSession.getAttribute("userLogin");
 
         if (login == null) {
-            return new ResponseEntity<ResponseCode>(new ResponseCode(resCode, msg), status);
+            return new ResponseEntity<>(new ResponseCode(false, msg), status);
         }
 
 
         if (form.getOldPassHash() != null && form.getNewPassHash() != null) {
 
-            if (!accServ.checkPass(form.getOldPassHash(), login)) {
+            if (!accountService.checkPass(form.getOldPassHash(), login)) {
                 msg = messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH);
                 status = HttpStatus.FORBIDDEN;
 
             } else {
-                final AccountService.ErrorCodes error = accServ.changePassHash(form.getNewPassHash(), login);
+                final AccountService.ErrorCodes error = accountService.changePassHash(form.getNewPassHash(), login);
 
                 switch (error) {
 
@@ -139,7 +137,7 @@ public class UserController {
             status = HttpStatus.BAD_REQUEST;
         }
 
-        return new ResponseEntity<ResponseCode>(new ResponseCode(resCode, msg), status);
+        return new ResponseEntity<>(new ResponseCode(resCode, msg), status);
     }
 
 }

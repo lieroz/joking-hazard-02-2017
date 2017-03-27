@@ -9,12 +9,16 @@ import javax.validation.constraints.NotNull;
  * Created by ksg on 03.03.17.
  */
 public final class UserDataView {
-    public enum  ViewError {OK,INVALID_DATA_ERROR, }
-    final String userLogin;
-    String userMail;
-    String pass;
-
     @SuppressWarnings("unused")
+    public enum  ViewError {
+        OK,
+        INVALID_DATA_ERROR
+    }
+
+    private final String userLogin;
+    private String userMail;
+    private String pass;
+
     @JsonCreator
     public UserDataView(@JsonProperty("userMail") String userMail,
                     @JsonProperty("userLogin") String userLogin,
@@ -24,7 +28,6 @@ public final class UserDataView {
         this.userMail = userMail;
     }
 
-    @SuppressWarnings("unused")
     public String getUserLogin() {
         return userLogin;
     }
@@ -50,6 +53,7 @@ public final class UserDataView {
         this.pass = pass;
     }
 
+    @SuppressWarnings("unused")
     public ViewError valid(){
         return ViewError.OK;
     }

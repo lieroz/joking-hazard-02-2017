@@ -1,6 +1,5 @@
 package sample.DAO;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import sample.Models.UserData;
 
@@ -9,9 +8,8 @@ import sample.Models.UserData;
  */
 
 final public class AccountDAO {
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
     public AccountDAO(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }

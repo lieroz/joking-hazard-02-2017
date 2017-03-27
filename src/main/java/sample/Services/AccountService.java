@@ -6,7 +6,6 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.context.MessageSource;
 import sample.DAO.AccountDAO;
 import sample.Models.LogInModel;
 import sample.Models.UserInfoModel;
@@ -24,13 +23,10 @@ public class AccountService {
         INVALID_SESSION
     }
 
-    @SuppressWarnings("unused")
-    private MessageSource messageSource;
     private final AccountDAO accountDAO;
 
     @Autowired
-    public AccountService(final MessageSource messageSource, final JdbcTemplate jdbcTemplate) {
-        this.messageSource = messageSource;
+    public AccountService(final JdbcTemplate jdbcTemplate) {
         this.accountDAO = new AccountDAO(jdbcTemplate);
     }
 
@@ -73,7 +69,6 @@ public class AccountService {
         return ErrorCodes.OK;
     }
 
-    @SuppressWarnings("unused")
     public ErrorCodes changeMail(@NotNull String newMail, @NotNull String login) {
         try {
             final UserData data = accountDAO.getUserByLogin(login);

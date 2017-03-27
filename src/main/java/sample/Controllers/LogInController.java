@@ -2,6 +2,7 @@ package sample.Controllers;
 
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sample.Models.LogInModel;
@@ -17,26 +18,26 @@ import java.util.Locale;
 //@CrossOrigin(origins = "https://jokinghazard.herokuapp.com")
 @RestController
 public class LogInController {
+    @NotNull
     private final MessageSource messageSource;
 
-    @SuppressWarnings("unused")
     @NotNull
-    final AccountService accServ;
+    private final AccountService accountService;
 
-    @SuppressWarnings("unused")
     public LogInController(@NotNull AccountService accountService, @NotNull MessageSource messageSource) {
-        this.accServ = accountService;
+        this.accountService = accountService;
         this.messageSource = messageSource;
     }
 
-    @RequestMapping(path = "/api/user/login", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+    @RequestMapping(path = "/api/user/login", method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCode> getMsg(@RequestBody LogInData body, HttpSession httpSession) {
         Boolean resCode = true;
         String msg = messageSource.getMessage("msgs.ok", null, Locale.ENGLISH);
         HttpStatus status = HttpStatus.OK;
 
         final LogInModel body_model = new LogInModel(body.getUserLogin(), body.getPassHash());
-        final AccountService.ErrorCodes resp = accServ.login(body_model);
+        final AccountService.ErrorCodes resp = accountService.login(body_model);
 
         switch (resp) {
 
@@ -60,6 +61,6 @@ public class LogInController {
             }
         }
 
-        return new ResponseEntity<ResponseCode>(new ResponseCode(resCode, msg), status);
+        return new ResponseEntity<>(new ResponseCode(resCode, msg), status);
     }
 }

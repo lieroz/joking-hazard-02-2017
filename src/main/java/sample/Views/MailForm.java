@@ -10,17 +10,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public final class MailForm {
     private String userMail;
 
-    @SuppressWarnings("unused")
     public MailForm(@JsonProperty("userMail") String userMail) {
         this.userMail = userMail;
     }
 
-    @SuppressWarnings("unused")
     public String getUserMail() {
         return userMail;
     }
 
-    @SuppressWarnings("unused")
     public void setUserMail(String userMail) {
         this.userMail = userMail;
     }

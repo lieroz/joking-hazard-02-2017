@@ -7,17 +7,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Created by ksg on 18.03.17.
  */
 public final class LogInData {
-    final String userLogin;
-    final String pass;
-    public enum  ViewError {OK,INVALID_DATA_ERROR};
+    private final String userLogin;
+    private final String pass;
+
     @SuppressWarnings("unused")
+    public enum  ViewError {
+        OK,
+        INVALID_DATA_ERROR
+    }
+
     @JsonCreator
-    public LogInData(@JsonProperty("userId") String userLogin, @JsonProperty("pass") String pass) {
+    public LogInData(@JsonProperty("userId") String userLogin,
+                     @JsonProperty("pass") String pass) {
         this.userLogin = userLogin;
         this.pass = pass;
     }
 
-    @SuppressWarnings("unused")
     public String getUserLogin() {
         return userLogin;
     }
@@ -26,6 +31,7 @@ public final class LogInData {
         return pass;
     }
 
+    @SuppressWarnings("unused")
     public ViewError valid(){
         return ViewError.OK;
     }

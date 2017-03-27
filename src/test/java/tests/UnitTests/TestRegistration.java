@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 import sample.Application;
 import sample.Models.UserData;
 import sample.Services.AccountService;
@@ -26,7 +25,6 @@ import java.util.Locale;
 @SpringBootTest(classes = Application.class)
 @RunWith(OrderedRunner.class)
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)
-@TestPropertySource(locations = "classpath:test.properties")
 public class TestRegistration {
     @Autowired
     private AccountService accountService;
