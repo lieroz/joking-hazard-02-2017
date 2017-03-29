@@ -1,6 +1,7 @@
 package tests.APITests;
 
 import com.github.javafaker.Faker;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -12,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import sample.Application;
 import tests.IntegrationTest;
-import tests.Order;
 import tests.OrderedRunner;
 
 import java.util.Locale;
@@ -42,15 +42,10 @@ public class ChangeMailIT {
     private static String pass;
 
     @BeforeClass
-    public static void setUp() {
+    public static void setUpFaker() {
         faker = new Faker(new Locale("en-US"));
-        userMail = faker.internet().emailAddress();
-        userLogin = faker.name().username();
-        pass = faker.internet().password();
     }
 
-    @Test
-    @Order(order = 1)
     public void createUser() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/signup")
@@ -64,8 +59,21 @@ public class ChangeMailIT {
                 .andExpect(jsonPath("$.errorMsg", is("User created successfully! en")));
     }
 
+    @Before
+    public void setUp() {
+        userMail = faker.internet().emailAddress();
+        userLogin = faker.name().username();
+        pass = faker.internet().password();
+
+        try {
+            createUser();
+
+        } catch (Exception ex) {
+            throw new RuntimeException();
+        }
+    }
+
     @Test
-    @Order(order = 2)
     public void changeMailOk() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/changeMail")
@@ -79,7 +87,6 @@ public class ChangeMailIT {
     }
 
     @Test
-    @Order(order = 3)
     public void changeMailNull() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/changeMail")
@@ -93,7 +100,6 @@ public class ChangeMailIT {
     }
 
     @Test
-    @Order(order = 4)
     public void changeMailInvalidSession() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/changeMail")
@@ -107,7 +113,6 @@ public class ChangeMailIT {
     }
 
     @Test
-    @Order(order = 5)
     public void invalidContent() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/changeMail")

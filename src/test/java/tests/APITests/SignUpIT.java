@@ -1,10 +1,10 @@
 package tests.APITests;
 
 import com.github.javafaker.Faker;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.experimental.categories.Category;
 import tests.IntegrationTest;
-import tests.Order;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,15 +42,10 @@ public class SignUpIT {
     private static String pass;
 
     @BeforeClass
-    public static void setUp() {
+    public static void setUpFaker() {
         faker = new Faker(new Locale("en-US"));
-        userMail = faker.internet().emailAddress();
-        userLogin = faker.name().username();
-        pass = faker.internet().password();
     }
 
-    @Test
-    @Order(order = 1)
     public void createUserOk() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/signup")
@@ -64,8 +59,21 @@ public class SignUpIT {
                 .andExpect(jsonPath("$.errorMsg", is("User created successfully! en")));
     }
 
+    @Before
+    public void setUp() {
+        userMail = faker.internet().emailAddress();
+        userLogin = faker.name().username();
+        pass = faker.internet().password();
+
+        try {
+            createUserOk();
+
+        } catch (Exception ex) {
+            throw new RuntimeException();
+        }
+    }
+
     @Test
-    @Order(order = 2)
     public void createUserConflict() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/signup")
@@ -80,7 +88,6 @@ public class SignUpIT {
     }
 
     @Test
-    @Order(order = 3)
     public void createNullLogin() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/signup")
@@ -95,7 +102,6 @@ public class SignUpIT {
     }
 
     @Test
-    @Order(order = 4)
     public void createNullMail() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/signup")
@@ -110,7 +116,6 @@ public class SignUpIT {
     }
 
     @Test
-    @Order(order = 5)
     public void createNullPass() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/signup")
@@ -125,7 +130,6 @@ public class SignUpIT {
     }
 
     @Test
-    @Order(order = 6)
     public void invalidContent() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/signup")

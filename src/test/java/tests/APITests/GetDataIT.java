@@ -1,6 +1,7 @@
 package tests.APITests;
 
 import com.github.javafaker.Faker;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -43,15 +44,10 @@ public class GetDataIT {
     private static String pass;
 
     @BeforeClass
-    public static void setUp() {
+    public static void setUpFaker() {
         faker = new Faker(new Locale("en-US"));
-        userMail = faker.internet().emailAddress();
-        userLogin = faker.name().username();
-        pass = faker.internet().password();
     }
 
-    @Test
-    @Order(order = 1)
     public void createUser() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/signup")
@@ -65,8 +61,21 @@ public class GetDataIT {
                 .andExpect(jsonPath("$.errorMsg", is("User created successfully! en")));
     }
 
+    @Before
+    public void setUp() {
+        userMail = faker.internet().emailAddress();
+        userLogin = faker.name().username();
+        pass = faker.internet().password();
+
+        try {
+            createUser();
+
+        } catch (Exception ex) {
+            throw new RuntimeException();
+        }
+    }
+
     @Test
-    @Order(order = 2)
     public void getDataOk() throws Exception {
         this.mockMvc.perform(
                 get("/api/user/data")
@@ -78,7 +87,6 @@ public class GetDataIT {
     }
 
     @Test
-    @Order(order = 3)
     public void invalidSession() throws Exception {
         this.mockMvc.perform(
                 get("/api/user/data")
@@ -90,7 +98,6 @@ public class GetDataIT {
     }
 
     @Test
-    @Order(order = 4)
     public void nullSession() throws Exception {
         this.mockMvc.perform(
                 get("/api/user/data"))
