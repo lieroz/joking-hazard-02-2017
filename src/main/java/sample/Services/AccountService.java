@@ -2,6 +2,7 @@ package sample.Services;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -20,7 +21,8 @@ public class AccountService {
         LOGIN_OCCUPIED,
         INVALID_AUTH_DATA,
         INVALID_REG_DATA,
-        INVALID_SESSION
+        INVALID_SESSION,
+        DATABASE_ERROR
     }
 
     private final AccountDAO accountDAO;
@@ -42,6 +44,9 @@ public class AccountService {
 
         } catch (DuplicateKeyException ex) {
             return ErrorCodes.LOGIN_OCCUPIED;
+
+        } catch (DataAccessException ex) {
+            return ErrorCodes.DATABASE_ERROR;
         }
 
         return ErrorCodes.OK;
@@ -64,6 +69,9 @@ public class AccountService {
 
         } catch (EmptyResultDataAccessException ex) {
             return  ErrorCodes.INVALID_LOGIN;
+
+        } catch (DataAccessException ex) {
+            return ErrorCodes.DATABASE_ERROR;
         }
 
         return ErrorCodes.OK;
@@ -78,6 +86,9 @@ public class AccountService {
 
         } catch (EmptyResultDataAccessException ex) {
             return ErrorCodes.INVALID_SESSION;
+
+        } catch (DataAccessException ex) {
+            return ErrorCodes.DATABASE_ERROR;
         }
 
         return ErrorCodes.OK;
@@ -91,6 +102,9 @@ public class AccountService {
 
         } catch (EmptyResultDataAccessException ex) {
             return ErrorCodes.INVALID_SESSION;
+
+        } catch (DataAccessException ex) {
+            return ErrorCodes.DATABASE_ERROR;
         }
 
         return ErrorCodes.OK;
@@ -105,20 +119,24 @@ public class AccountService {
                 return false;
             }
 
-        } catch (EmptyResultDataAccessException ex) {
+        } catch (DataAccessException ex) {
             return false;
         }
 
         return true;
     }
 
-    public ErrorCodes getUserData(@NotNull String login, UserInfoModel[] model) {
+    public ErrorCodes getUserData(@NotNull String login, UserInfoModel model) {
         try {
             final UserData data = accountDAO.getUserByLogin(login);
-            model[0] = new UserInfoModel(data.getUserMail(), data.getUserLogin());
+            model.setUserLogin(data.getUserLogin());
+            model.setUserMail(data.getUserMail());
 
         } catch (EmptyResultDataAccessException ex) {
             return ErrorCodes.INVALID_LOGIN;
+
+        } catch (DataAccessException ex) {
+            return ErrorCodes.DATABASE_ERROR;
         }
 
         return ErrorCodes.OK;

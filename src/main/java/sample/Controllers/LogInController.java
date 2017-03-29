@@ -32,35 +32,33 @@ public class LogInController {
     @RequestMapping(path = "/api/user/login", method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCode> getMsg(@RequestBody LogInData body, HttpSession httpSession) {
-        Boolean resCode = true;
-        String msg = messageSource.getMessage("msgs.ok", null, Locale.ENGLISH);
-        HttpStatus status = HttpStatus.OK;
-
         final LogInModel body_model = new LogInModel(body.getUserLogin(), body.getPassHash());
         final AccountService.ErrorCodes resp = accountService.login(body_model);
 
         switch (resp) {
 
             case INVALID_AUTH_DATA: {
-                msg = messageSource.getMessage("msgs.bad_request", null, Locale.ENGLISH);
-                resCode = false;
-                status = HttpStatus.BAD_REQUEST;
-                break;
+                return new ResponseEntity<>(new ResponseCode(false,
+                        messageSource.getMessage("msgs.bad_request", null, Locale.ENGLISH)),
+                        HttpStatus.BAD_REQUEST);
             }
 
             case INVALID_LOGIN: case INVALID_PASSWORD: {
-                resCode = false;
-                msg = messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH);
-                status = HttpStatus.FORBIDDEN;
-                break;
+                return new ResponseEntity<>(new ResponseCode(false,
+                        messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH)),
+                        HttpStatus.FORBIDDEN);
             }
 
             case OK: {
                 httpSession.setAttribute("userLogin", body.getUserLogin());
-                break;
+                return new ResponseEntity<>(new ResponseCode(true,
+                        messageSource.getMessage("msgs.ok", null, Locale.ENGLISH)),
+                        HttpStatus.OK);
             }
         }
 
-        return new ResponseEntity<>(new ResponseCode(resCode, msg), status);
+        return new ResponseEntity<>(new ResponseCode(false,
+                messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH)),
+                HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

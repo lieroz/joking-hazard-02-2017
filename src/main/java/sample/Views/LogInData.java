@@ -30,10 +30,4 @@ public final class LogInData {
     public String getPassHash() {
         return pass;
     }
-
-    @SuppressWarnings("unused")
-    public ViewError valid(){
-        return ViewError.OK;
-    }
-
 }

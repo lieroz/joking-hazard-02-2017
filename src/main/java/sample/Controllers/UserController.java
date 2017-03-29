@@ -35,29 +35,27 @@ public class UserController {
 
     @RequestMapping(path = "/api/user/data", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCode<UserInfo>> getWho(HttpSession httpSession) {
-        final UserInfoModel data[] = {null,};
-        String msg = messageSource.getMessage("msgs.ok", null, Locale.ENGLISH);
-
+        final UserInfoModel data = new UserInfoModel(null, null);
         final String id = (String) httpSession.getAttribute("userLogin");
 
         if (id == null) {
-            msg = messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH);
-
-            return new ResponseEntity<>(new ResponseCode<>(false, msg), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new ResponseCode<>(false,
+                    messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH)),
+                    HttpStatus.NOT_FOUND);
         }
 
         final AccountService.ErrorCodes retCode = accountService.getUserData(id, data);
 
         if (retCode != AccountService.ErrorCodes.OK) {
-            msg = messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH);
-
-            return new ResponseEntity<>(new ResponseCode<>(false, msg), HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(new ResponseCode<>(false,
+                    messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH)),
+                    HttpStatus.FORBIDDEN);
         }
 
-        final UserInfoModel dataMod = data[0];
-        final UserInfo dataView = new UserInfo(dataMod.getUserMail(), dataMod.getUserLogin());
-
-        return new ResponseEntity<>(new ResponseCode<>(true, msg, dataView), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseCode<>(true,
+                messageSource.getMessage("msgs.ok", null, Locale.ENGLISH),
+                new UserInfo(data.getUserMail(), data.getUserLogin())),
+                HttpStatus.OK);
     }
 
     @RequestMapping(path = "/api/logout", method = RequestMethod.GET)
@@ -68,55 +66,53 @@ public class UserController {
     @RequestMapping(path = "/api/user/changeMail", method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCode> changeMail(@RequestBody MailForm body, HttpSession httpSession) {
-        Boolean resCode = false;
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        String msg = messageSource.getMessage("msgs.bad_request", null, Locale.ENGLISH);
+        if (body.getUserMail() == null) {
+            return new ResponseEntity<>(new ResponseCode(false,
+                    messageSource.getMessage("msgs.bad_request", null, Locale.ENGLISH)),
+                    HttpStatus.BAD_REQUEST);
+        }
 
-        if (body.getUserMail() != null) {
-            final String login = (String) httpSession.getAttribute("userLogin");
-            final AccountService.ErrorCodes result = accountService.changeMail(body.getUserMail(), login);
+        final String login = (String) httpSession.getAttribute("userLogin");
+        final AccountService.ErrorCodes result = accountService.changeMail(body.getUserMail(), login);
 
-            switch (result) {
+        switch (result) {
 
-                case INVALID_SESSION: {
-                    resCode = false;
-                    msg = messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH);
-                    status = HttpStatus.NOT_FOUND;
-                    break;
-                }
+            case INVALID_SESSION: {
+                return new ResponseEntity<>(new ResponseCode(false,
+                        messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH)),
+                        HttpStatus.NOT_FOUND);
+            }
 
-                case OK: {
-                    resCode = true;
-                    msg = messageSource.getMessage("msgs.ok", null, Locale.ENGLISH);
-                    status = HttpStatus.OK;
-                    break;
-                }
+            case OK: {
+                return new ResponseEntity<>(new ResponseCode(true,
+                        messageSource.getMessage("msgs.ok", null, Locale.ENGLISH)),
+                        HttpStatus.OK);
             }
         }
 
-        return new ResponseEntity<>(new ResponseCode(resCode, msg), status);
-
+        return new ResponseEntity<>(new ResponseCode(false,
+                messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH)),
+                HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @RequestMapping(path = "/api/user/changePass", method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCode> changePass(@RequestBody PassForm form, HttpSession httpSession) {
-        Boolean resCode = false;
-        HttpStatus status = HttpStatus.NOT_FOUND;
-        String msg = messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH);
-
         final String login = (String) httpSession.getAttribute("userLogin");
 
         if (login == null) {
-            return new ResponseEntity<>(new ResponseCode(false, msg), status);
+            return new ResponseEntity<>(new ResponseCode(false,
+                    messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH)),
+                    HttpStatus.NOT_FOUND);
         }
-
 
         if (form.getOldPassHash() != null && form.getNewPassHash() != null) {
 
             if (!accountService.checkPass(form.getOldPassHash(), login)) {
-                msg = messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH);
-                status = HttpStatus.FORBIDDEN;
+                return new ResponseEntity<>(new ResponseCode(false,
+                        messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH)),
+                        HttpStatus.FORBIDDEN);
+
 
             } else {
                 final AccountService.ErrorCodes error = accountService.changePassHash(form.getNewPassHash(), login);
@@ -124,20 +120,17 @@ public class UserController {
                 switch (error) {
 
                     case OK: {
-                        resCode = true;
-                        msg = messageSource.getMessage("msgs.ok", null, Locale.ENGLISH);
-                        status = HttpStatus.OK;
-                        break;
+                        return new ResponseEntity<>(new ResponseCode(true,
+                                messageSource.getMessage("msgs.ok", null, Locale.ENGLISH)),
+                                HttpStatus.OK);
                     }
                 }
             }
 
-        } else {
-            msg = messageSource.getMessage("msgs.bad_request", null, Locale.ENGLISH);
-            status = HttpStatus.BAD_REQUEST;
         }
 
-        return new ResponseEntity<>(new ResponseCode(resCode, msg), status);
+        return new ResponseEntity<>(new ResponseCode(false,
+                messageSource.getMessage("msgs.bad_request", null, Locale.ENGLISH)),
+                HttpStatus.BAD_REQUEST);
     }
-
 }

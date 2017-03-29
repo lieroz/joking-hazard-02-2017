@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Created by ksg on 18.03.17.
  */
 
-// Changed name to merge pull request
 public final class MailForm {
     private String userMail;
 

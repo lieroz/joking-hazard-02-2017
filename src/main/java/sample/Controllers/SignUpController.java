@@ -32,32 +32,33 @@ public class SignUpController {
     @RequestMapping(path = "/api/user/signup", method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCode> getMsg(@RequestBody UserDataView body, HttpSession httpSession) {
-        Boolean resCode = true;
-        String msg = messageSource.getMessage("msgs.created", null, Locale.ENGLISH);
-        HttpStatus status = HttpStatus.CREATED;
-
         final UserData body_model = new UserData(body.getUserMail(), body.getUserLogin(), body.getPass());
         final AccountService.ErrorCodes result = accountService.register(body_model);
 
         switch (result) {
 
-            case INVALID_REG_DATA:
-                resCode = false;
-                msg = messageSource.getMessage("msgs.bad_request", null, Locale.ENGLISH);
-                status = HttpStatus.BAD_REQUEST;
-                break;
+            case INVALID_REG_DATA: {
+                return new ResponseEntity<>(new ResponseCode(false,
+                        messageSource.getMessage("msgs.bad_request", null, Locale.ENGLISH)),
+                        HttpStatus.BAD_REQUEST);
+            }
 
-            case LOGIN_OCCUPIED:
-                resCode = false;
-                msg = messageSource.getMessage("msgs.conflict", null, Locale.ENGLISH);
-                status = HttpStatus.CONFLICT;
-                break;
+            case LOGIN_OCCUPIED: {
+                return new ResponseEntity<>(new ResponseCode(false,
+                        messageSource.getMessage("msgs.conflict", null, Locale.ENGLISH)),
+                        HttpStatus.CONFLICT);
+            }
 
-            case OK:
+            case OK: {
                 httpSession.setAttribute("userLogin", body.getUserLogin());
-                break;
+                return new ResponseEntity<>(new ResponseCode(true,
+                        messageSource.getMessage("msgs.created", null, Locale.ENGLISH)),
+                        HttpStatus.CREATED);
+            }
         }
 
-        return new ResponseEntity<>(new ResponseCode(resCode, msg), status);
+        return new ResponseEntity<>(new ResponseCode(false,
+                messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH)),
+                HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

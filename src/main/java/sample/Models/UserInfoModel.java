@@ -9,8 +9,8 @@ import sample.Views.UserInfo;
  * Created by ksg on 17.03.17.
  */
 public final class UserInfoModel {
-    private final String userMail;
-    private final String userLogin;
+    private String userMail;
+    private String userLogin;
 
     @JsonCreator
     public UserInfoModel(@JsonProperty("userMail") String userMail,
@@ -23,8 +23,17 @@ public final class UserInfoModel {
         return userLogin;
     }
 
+    public void setUserLogin(final String userLogin) {
+        this.userLogin =  userLogin;
+    }
+
     public String getUserMail() {
         return userMail;
     }
+
+    public void setUserMail(final String userMail) {
+        this.userMail = userMail;
+    }
+
 
 }
