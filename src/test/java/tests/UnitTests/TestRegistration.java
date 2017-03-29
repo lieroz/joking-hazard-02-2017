@@ -1,6 +1,7 @@
 package tests.UnitTests;
 
 import com.github.javafaker.Faker;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import sample.Application;
 import sample.Models.UserData;
 import sample.Services.AccountService;
-import tests.Order;
 import tests.OrderedRunner;
 
 import static org.junit.Assert.*;
@@ -35,23 +35,25 @@ public class TestRegistration {
     private static String pass;
 
     @BeforeClass
-    public static void setUp() {
+    public static void setUpFaker() {
         faker = new Faker(new Locale("en-US"));
-        userMail = faker.internet().emailAddress();
-        userLogin = faker.name().username();
-        pass = faker.internet().password();
     }
 
-    @Test
-    @Order(order = 1)
     public void registerUserOk() {
         final UserData userData = new UserData(userMail, userLogin, pass);
         final AccountService.ErrorCodes error = accountService.register(userData);
         assertSame(error, AccountService.ErrorCodes.OK);
     }
 
+    @Before
+    public void setUp() {
+        userMail = faker.internet().emailAddress();
+        userLogin = faker.name().username();
+        pass = faker.internet().password();
+        registerUserOk();
+    }
+
     @Test
-    @Order(order = 2)
     public void registerUserConflict() {
         final UserData userData = new UserData(userMail, userLogin, pass);
         final AccountService.ErrorCodes error = accountService.register(userData);
@@ -59,7 +61,6 @@ public class TestRegistration {
     }
 
     @Test
-    @Order(order = 3)
     public void registerUserNullMail() {
         final UserData userData = new UserData(
                 null,
@@ -70,7 +71,6 @@ public class TestRegistration {
     }
 
     @Test
-    @Order(order = 4)
     public void registerNullLogin() {
         final UserData userData = new UserData(
                 faker.internet().emailAddress(),
@@ -81,7 +81,6 @@ public class TestRegistration {
     }
 
     @Test
-    @Order(order = 5)
     public void registerUserNullPass() {
         final UserData userData = new UserData(
                 faker.internet().emailAddress(),

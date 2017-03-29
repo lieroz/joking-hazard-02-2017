@@ -1,6 +1,7 @@
 package tests.APITests;
 
 import com.github.javafaker.Faker;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -12,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import sample.Application;
 import tests.IntegrationTest;
-import tests.Order;
 import tests.OrderedRunner;
 
 import java.util.Locale;
@@ -42,15 +42,10 @@ public class ChangePassIT {
     private static String pass;
 
     @BeforeClass
-    public static void setUp() {
+    public static void setUpFaker() {
         faker = new Faker(new Locale("en-US"));
-        userMail = faker.internet().emailAddress();
-        userLogin = faker.name().username();
-        pass = faker.internet().password();
     }
 
-    @Test
-    @Order(order = 1)
     public void createUser() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/signup")
@@ -64,8 +59,21 @@ public class ChangePassIT {
                 .andExpect(jsonPath("$.errorMsg", is("User created successfully! en")));
     }
 
+    @Before
+    public void setUp() {
+        userMail = faker.internet().emailAddress();
+        userLogin = faker.name().username();
+        pass = faker.internet().password();
+
+        try {
+            createUser();
+
+        } catch (Exception ex) {
+            throw new RuntimeException();
+        }
+    }
+
     @Test
-    @Order(order = 2)
     public void nullSession() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/changePass")
@@ -79,7 +87,6 @@ public class ChangePassIT {
     }
 
     @Test
-    @Order(order = 3)
     public void invalidSession() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/changePass")
@@ -94,7 +101,6 @@ public class ChangePassIT {
     }
 
     @Test
-    @Order(order = 4)
     public void nullOldPass() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/changePass")
@@ -109,7 +115,6 @@ public class ChangePassIT {
     }
 
     @Test
-    @Order(order = 5)
     public void nullNewPass() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/changePass")
@@ -124,7 +129,6 @@ public class ChangePassIT {
     }
 
     @Test
-    @Order(order = 6)
     public void invalidOldPass() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/changePass")
@@ -139,7 +143,6 @@ public class ChangePassIT {
     }
 
     @Test
-    @Order(order = 7)
     public void changePassOk() throws Exception {
         final String newPass = faker.internet().password();
         this.mockMvc.perform(
@@ -156,7 +159,6 @@ public class ChangePassIT {
     }
 
     @Test
-    @Order(order = 8)
     public void loginOk() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/login")
@@ -170,7 +172,6 @@ public class ChangePassIT {
     }
 
     @Test
-    @Order(order = 9)
     public void invalidContent() throws Exception {
         this.mockMvc.perform(
                 post("/api/user/changePass")

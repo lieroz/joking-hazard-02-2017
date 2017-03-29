@@ -3,3 +3,5 @@ create table if not exists users (
   email    VARCHAR(50) UNIQUE,
   password VARCHAR(50) UNIQUE
 );
+
+create index idx_login on users (login);
