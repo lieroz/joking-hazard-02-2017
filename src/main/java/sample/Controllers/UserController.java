@@ -44,18 +44,35 @@ public class UserController {
                     HttpStatus.NOT_FOUND);
         }
 
-        final AccountService.ErrorCodes retCode = accountService.getUserData(id, data);
+        final AccountService.ErrorCodes error = accountService.getUserData(id, data);
 
-        if (retCode != AccountService.ErrorCodes.OK) {
-            return new ResponseEntity<>(new ResponseCode<>(false,
-                    messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH)),
-                    HttpStatus.FORBIDDEN);
+        switch (error) {
+
+            case INVALID_LOGIN: {
+                return new ResponseEntity<>(new ResponseCode<>(false,
+                        messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH)),
+                        HttpStatus.FORBIDDEN);
+            }
+
+            case DATABASE_ERROR: {
+                return new ResponseEntity<>(new ResponseCode<>(false,
+                        messageSource.getMessage("msgs.error_database", null, Locale.ENGLISH)),
+                        HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            case OK: {
+                return new ResponseEntity<>(new ResponseCode<>(true,
+                        messageSource.getMessage("msgs.ok", null, Locale.ENGLISH),
+                        new UserInfo(data.getUserMail(), data.getUserLogin())),
+                        HttpStatus.OK);
+            }
+
+            default: {
+                return new ResponseEntity<>(new ResponseCode<>(false,
+                        messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH)),
+                        HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
-
-        return new ResponseEntity<>(new ResponseCode<>(true,
-                messageSource.getMessage("msgs.ok", null, Locale.ENGLISH),
-                new UserInfo(data.getUserMail(), data.getUserLogin())),
-                HttpStatus.OK);
     }
 
     @RequestMapping(path = "/api/logout", method = RequestMethod.GET)
@@ -77,6 +94,12 @@ public class UserController {
 
         switch (result) {
 
+            case DATABASE_ERROR: {
+                return new ResponseEntity<>(new ResponseCode(false,
+                        messageSource.getMessage("msgs.error_database", null, Locale.ENGLISH)),
+                        HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
             case INVALID_SESSION: {
                 return new ResponseEntity<>(new ResponseCode(false,
                         messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH)),
@@ -88,11 +111,13 @@ public class UserController {
                         messageSource.getMessage("msgs.ok", null, Locale.ENGLISH)),
                         HttpStatus.OK);
             }
-        }
 
-        return new ResponseEntity<>(new ResponseCode(false,
-                messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH)),
-                HttpStatus.INTERNAL_SERVER_ERROR);
+            default: {
+                return new ResponseEntity<>(new ResponseCode(false,
+                        messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH)),
+                        HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
     }
 
     @RequestMapping(path = "/api/user/changePass", method = RequestMethod.POST,
@@ -106,31 +131,39 @@ public class UserController {
                     HttpStatus.NOT_FOUND);
         }
 
-        if (form.getOldPassHash() != null && form.getNewPassHash() != null) {
-
-            if (!accountService.checkPass(form.getOldPassHash(), login)) {
-                return new ResponseEntity<>(new ResponseCode(false,
-                        messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH)),
-                        HttpStatus.FORBIDDEN);
-
-
-            } else {
-                final AccountService.ErrorCodes error = accountService.changePassHash(form.getNewPassHash(), login);
-
-                switch (error) {
-
-                    case OK: {
-                        return new ResponseEntity<>(new ResponseCode(true,
-                                messageSource.getMessage("msgs.ok", null, Locale.ENGLISH)),
-                                HttpStatus.OK);
-                    }
-                }
-            }
-
+        if (form.getOldPassHash() == null || form.getNewPassHash() == null) {
+            return new ResponseEntity<>(new ResponseCode(false,
+                    messageSource.getMessage("msgs.bad_request", null, Locale.ENGLISH)),
+                    HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(new ResponseCode(false,
-                messageSource.getMessage("msgs.bad_request", null, Locale.ENGLISH)),
-                HttpStatus.BAD_REQUEST);
+        if (!accountService.checkPass(form.getOldPassHash(), login)) {
+            return new ResponseEntity<>(new ResponseCode(false,
+                    messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH)),
+                    HttpStatus.FORBIDDEN);
+        }
+
+        final AccountService.ErrorCodes error = accountService.changePassHash(form.getNewPassHash(), login);
+
+        switch (error) {
+
+            case DATABASE_ERROR: {
+                return new ResponseEntity<>(new ResponseCode(false,
+                        messageSource.getMessage("msgs.error_database", null, Locale.ENGLISH)),
+                        HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            case OK: {
+                return new ResponseEntity<>(new ResponseCode(true,
+                        messageSource.getMessage("msgs.ok", null, Locale.ENGLISH)),
+                        HttpStatus.OK);
+            }
+
+            default: {
+                return new ResponseEntity<>(new ResponseCode(false,
+                        messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH)),
+                        HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
     }
 }

@@ -22,7 +22,8 @@ public class AccountService {
         INVALID_AUTH_DATA,
         INVALID_REG_DATA,
         INVALID_SESSION,
-        DATABASE_ERROR
+        DATABASE_ERROR,
+        SERVER_ERROR
     }
 
     private final AccountDAO accountDAO;
@@ -47,6 +48,9 @@ public class AccountService {
 
         } catch (DataAccessException ex) {
             return ErrorCodes.DATABASE_ERROR;
+
+        } catch (Exception ex) {
+            return ErrorCodes.SERVER_ERROR;
         }
 
         return ErrorCodes.OK;
@@ -72,6 +76,9 @@ public class AccountService {
 
         } catch (DataAccessException ex) {
             return ErrorCodes.DATABASE_ERROR;
+
+        } catch (Exception ex) {
+            return ErrorCodes.SERVER_ERROR;
         }
 
         return ErrorCodes.OK;
@@ -89,6 +96,9 @@ public class AccountService {
 
         } catch (DataAccessException ex) {
             return ErrorCodes.DATABASE_ERROR;
+
+        } catch (Exception ex) {
+            return ErrorCodes.SERVER_ERROR;
         }
 
         return ErrorCodes.OK;
@@ -105,6 +115,9 @@ public class AccountService {
 
         } catch (DataAccessException ex) {
             return ErrorCodes.DATABASE_ERROR;
+
+        } catch (Exception ex) {
+            return ErrorCodes.SERVER_ERROR;
         }
 
         return ErrorCodes.OK;
@@ -137,6 +150,9 @@ public class AccountService {
 
         } catch (DataAccessException ex) {
             return ErrorCodes.DATABASE_ERROR;
+
+        } catch (Exception ex) {
+            return ErrorCodes.SERVER_ERROR;
         }
 
         return ErrorCodes.OK;

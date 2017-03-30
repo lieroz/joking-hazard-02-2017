@@ -37,6 +37,12 @@ public class SignUpController {
 
         switch (result) {
 
+            case DATABASE_ERROR: {
+                return new ResponseEntity<>(new ResponseCode(false,
+                        messageSource.getMessage("msgs.error_database", null, Locale.ENGLISH)),
+                        HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
             case INVALID_REG_DATA: {
                 return new ResponseEntity<>(new ResponseCode(false,
                         messageSource.getMessage("msgs.bad_request", null, Locale.ENGLISH)),
@@ -55,10 +61,12 @@ public class SignUpController {
                         messageSource.getMessage("msgs.created", null, Locale.ENGLISH)),
                         HttpStatus.CREATED);
             }
-        }
 
-        return new ResponseEntity<>(new ResponseCode(false,
-                messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH)),
-                HttpStatus.INTERNAL_SERVER_ERROR);
+            default: {
+                return new ResponseEntity<>(new ResponseCode(false,
+                        messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH)),
+                        HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
     }
 }
