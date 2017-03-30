@@ -1,4 +1,3 @@
 create index idx_login on users (login);
 
-alter table users drop password;
-alter table users add column password VARCHAR(50);
+alter table users alter column password type VARCHAR(50);
