@@ -54,12 +54,6 @@ public class UserController {
                         HttpStatus.FORBIDDEN);
             }
 
-            case DATABASE_ERROR: {
-                return new ResponseEntity<>(new ResponseCode<>(false,
-                        messageSource.getMessage("msgs.error_database", null, Locale.ENGLISH)),
-                        HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-
             case OK: {
                 return new ResponseEntity<>(new ResponseCode<>(true,
                         messageSource.getMessage("msgs.ok", null, Locale.ENGLISH),
@@ -93,12 +87,6 @@ public class UserController {
         final AccountService.ErrorCodes result = accountService.changeMail(body.getUserMail(), login);
 
         switch (result) {
-
-            case DATABASE_ERROR: {
-                return new ResponseEntity<>(new ResponseCode(false,
-                        messageSource.getMessage("msgs.error_database", null, Locale.ENGLISH)),
-                        HttpStatus.INTERNAL_SERVER_ERROR);
-            }
 
             case INVALID_SESSION: {
                 return new ResponseEntity<>(new ResponseCode(false,
@@ -146,12 +134,6 @@ public class UserController {
         final AccountService.ErrorCodes error = accountService.changePassHash(form.getNewPassHash(), login);
 
         switch (error) {
-
-            case DATABASE_ERROR: {
-                return new ResponseEntity<>(new ResponseCode(false,
-                        messageSource.getMessage("msgs.error_database", null, Locale.ENGLISH)),
-                        HttpStatus.INTERNAL_SERVER_ERROR);
-            }
 
             case OK: {
                 return new ResponseEntity<>(new ResponseCode(true,

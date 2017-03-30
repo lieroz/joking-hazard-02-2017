@@ -37,12 +37,6 @@ public class LogInController {
 
         switch (resp) {
 
-            case DATABASE_ERROR: {
-                return new ResponseEntity<>(new ResponseCode(false,
-                        messageSource.getMessage("msgs.error_database", null, Locale.ENGLISH)),
-                        HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-
             case INVALID_AUTH_DATA: {
                 return new ResponseEntity<>(new ResponseCode(false,
                         messageSource.getMessage("msgs.bad_request", null, Locale.ENGLISH)),

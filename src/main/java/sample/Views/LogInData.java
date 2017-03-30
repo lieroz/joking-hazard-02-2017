@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Created by ksg on 18.03.17.
  */
+
 public final class LogInData {
     private final String userLogin;
     private final String pass;

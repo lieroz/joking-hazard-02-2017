@@ -1,5 +1,6 @@
 package sample.Services;
 
+import org.apache.catalina.User;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -22,8 +23,7 @@ public class AccountService {
         INVALID_AUTH_DATA,
         INVALID_REG_DATA,
         INVALID_SESSION,
-        DATABASE_ERROR,
-        SERVER_ERROR
+        DATABASE_ERROR
     }
 
     private final AccountDAO accountDAO;
@@ -48,9 +48,6 @@ public class AccountService {
 
         } catch (DataAccessException ex) {
             return ErrorCodes.DATABASE_ERROR;
-
-        } catch (Exception ex) {
-            return ErrorCodes.SERVER_ERROR;
         }
 
         return ErrorCodes.OK;
@@ -76,9 +73,6 @@ public class AccountService {
 
         } catch (DataAccessException ex) {
             return ErrorCodes.DATABASE_ERROR;
-
-        } catch (Exception ex) {
-            return ErrorCodes.SERVER_ERROR;
         }
 
         return ErrorCodes.OK;
@@ -96,9 +90,6 @@ public class AccountService {
 
         } catch (DataAccessException ex) {
             return ErrorCodes.DATABASE_ERROR;
-
-        } catch (Exception ex) {
-            return ErrorCodes.SERVER_ERROR;
         }
 
         return ErrorCodes.OK;
@@ -115,9 +106,6 @@ public class AccountService {
 
         } catch (DataAccessException ex) {
             return ErrorCodes.DATABASE_ERROR;
-
-        } catch (Exception ex) {
-            return ErrorCodes.SERVER_ERROR;
         }
 
         return ErrorCodes.OK;
@@ -150,9 +138,6 @@ public class AccountService {
 
         } catch (DataAccessException ex) {
             return ErrorCodes.DATABASE_ERROR;
-
-        } catch (Exception ex) {
-            return ErrorCodes.SERVER_ERROR;
         }
 
         return ErrorCodes.OK;
