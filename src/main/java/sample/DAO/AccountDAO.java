@@ -43,4 +43,9 @@ final public class AccountDAO {
         jdbcTemplate.update(sql, userData.getPassHash(),
                 userData.getUserLogin());
     }
+
+    public final void deleteUserFromDb(final String login) {
+        final String sql = "delete from users where login = ?";
+        jdbcTemplate.update(sql, login);
+    }
 }

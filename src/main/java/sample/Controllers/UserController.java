@@ -148,4 +148,34 @@ public class UserController {
             }
         }
     }
+
+    @RequestMapping(path = "/api/user/delete", method = RequestMethod.DELETE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseCode> deleteUser(HttpSession httpSession) {
+        final String login = (String) httpSession.getAttribute("userLogin");
+
+        if (login == null) {
+            return new ResponseEntity<>(new ResponseCode(false,
+                    messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH)),
+                    HttpStatus.NOT_FOUND);
+        }
+
+        final AccountService.ErrorCodes error = accountService.deleteUserData(login);
+
+        switch (error) {
+
+            case OK: {
+                httpSession.invalidate();
+                return new ResponseEntity<>(new ResponseCode(true,
+                        messageSource.getMessage("msgs.ok", null, Locale.ENGLISH)),
+                        HttpStatus.OK);
+            }
+
+            default: {
+                return new ResponseEntity<>(new ResponseCode(false,
+                        messageSource.getMessage("msgs.internal_server_error", null, Locale.ENGLISH)),
+                        HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
 }

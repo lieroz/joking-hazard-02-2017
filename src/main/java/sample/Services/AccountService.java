@@ -141,4 +141,18 @@ public class AccountService {
 
         return ErrorCodes.OK;
     }
+
+    public ErrorCodes deleteUserData(@NotNull String login) {
+        try {
+            accountDAO.deleteUserFromDb(login);
+
+        } catch (EmptyResultDataAccessException ex) {
+            return ErrorCodes.INVALID_SESSION;
+
+        } catch (DataAccessException ex) {
+            return ErrorCodes.DATABASE_ERROR;
+        }
+
+        return ErrorCodes.OK;
+    }
 }
