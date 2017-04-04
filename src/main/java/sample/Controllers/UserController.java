@@ -69,9 +69,21 @@ public class UserController {
         }
     }
 
-    @RequestMapping(path = "/api/logout", method = RequestMethod.GET)
-    public void logOut(HttpSession httpSession) {
+    @RequestMapping(path = "/api/user/logout", method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseCode> logOut(HttpSession httpSession) {
+        final String login = (String) httpSession.getAttribute("userLogin");
+
+        if (login == null) {
+            return new ResponseEntity<>(new ResponseCode(false,
+                    messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH)),
+                    HttpStatus.NOT_FOUND);
+        }
+
         httpSession.invalidate();
+        return new ResponseEntity<>(new ResponseCode(true,
+                messageSource.getMessage("msgs.ok", null, Locale.ENGLISH)),
+                HttpStatus.OK);
     }
 
     @RequestMapping(path = "/api/user/changeMail", method = RequestMethod.POST,
