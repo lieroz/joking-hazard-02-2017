@@ -2,10 +2,13 @@ package sample.Services;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import sample.DAO.AccountDAO;
 import sample.Models.LogInModel;
@@ -32,12 +35,19 @@ public class AccountService {
         this.accountDAO = new AccountDAO(jdbcTemplate);
     }
 
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
     @SuppressWarnings("unused")
     @NotNull
     public ErrorCodes register(@NotNull UserData data) {
         if (data.getUserLogin() == null || data.getUserMail() == null || data.getPassHash() == null) {
             return ErrorCodes.INVALID_REG_DATA;
         }
+
+        data.setPassHash(passwordEncoder().encode(data.getPassHash()));
 
         try {
             accountDAO.insertUserIntoDb(data);
@@ -61,9 +71,8 @@ public class AccountService {
 
         try {
             final UserData record = accountDAO.getUserByLogin(login);
-            final String hash = record.getPassHash();
 
-            if (!hash.equals(data.getPassHash())) {
+            if (!passwordEncoder().matches(data.getPassHash(), record.getPassHash())) {
                 return ErrorCodes.INVALID_PASSWORD;
             }
 
@@ -113,9 +122,8 @@ public class AccountService {
     public boolean checkPass(@NotNull String passHash, @NotNull String login) {
         try {
             final UserData data = accountDAO.getUserByLogin(login);
-            final String passH = data.getPassHash();
 
-            if (!passHash.equals(passH)) {
+            if (!passwordEncoder().matches(passHash, data.getPassHash())) {
                 return false;
             }
 
