@@ -19,7 +19,7 @@ import java.util.Locale;
 import sample.Views.UserInfo;
 
 @SuppressWarnings("Duplicates")
-//@CrossOrigin(origins = "https://jokinghazard.herokuapp.com")
+@CrossOrigin(origins = "https://jokinghazard.herokuapp.com")
 @RestController
 public class UserController {
     @NotNull
