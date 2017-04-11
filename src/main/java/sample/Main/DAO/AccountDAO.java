@@ -1,7 +1,7 @@
-package sample.DAO;
+package sample.main.DAO;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import sample.Models.UserData;
+import sample.main.Models.UserData;
 
 /**
  * Created by lieroz on 26.03.17.

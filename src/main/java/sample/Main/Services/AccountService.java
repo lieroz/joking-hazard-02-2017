@@ -1,4 +1,4 @@
-package sample.Services;
+package sample.main.Services;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +10,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import sample.DAO.AccountDAO;
-import sample.Models.LogInModel;
-import sample.Models.UserInfoModel;
-import sample.Models.UserData;
+import sample.main.DAO.AccountDAO;
+import sample.main.Models.LogInModel;
+import sample.main.Models.UserInfoModel;
+import sample.main.Models.UserData;
 
 @Service
 public class AccountService {

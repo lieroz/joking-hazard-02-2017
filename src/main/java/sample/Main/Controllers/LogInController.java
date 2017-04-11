@@ -1,14 +1,14 @@
-package sample.Controllers;
+package sample.main.Controllers;
 
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sample.Models.LogInModel;
-import sample.Views.ResponseCode;
-import sample.Services.AccountService;
-import sample.Views.LogInData;
+import sample.main.Models.LogInModel;
+import sample.main.Views.ResponseCode;
+import sample.main.Services.AccountService;
+import sample.main.Views.LogInData;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;

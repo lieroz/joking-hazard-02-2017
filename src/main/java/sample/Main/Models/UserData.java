@@ -1,6 +1,6 @@
-package sample.Models;
+package sample.main.Models;
 
-import sample.Views.UserInfo;
+import sample.main.Views.UserInfo;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
