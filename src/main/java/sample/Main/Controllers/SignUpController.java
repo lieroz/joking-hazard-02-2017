@@ -1,14 +1,14 @@
-package sample.main.Controllers;
+package sample.Main.Controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sample.main.Services.AccountService;
-import sample.main.Models.UserData;
-import sample.main.Views.ResponseCode;
-import sample.main.Views.UserDataView;
+import sample.Main.Services.AccountService;
+import sample.Main.Models.UserData;
+import sample.Main.Views.ResponseCode;
+import sample.Main.Views.UserDataView;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;

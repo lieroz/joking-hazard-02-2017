@@ -1,4 +1,4 @@
-package sample.Lobby.WebSockets;
+package sample.WebSockets;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.socket.WebSocketHandler;
@@ -7,22 +7,23 @@ import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 
+import sample.Lobby.WebSockets.LobbyWebSocketHandler;
 /**
  * Created by ksg on 11.04.17.
  */
 @EnableWebSocket
 public class LobbySocketConfig implements WebSocketConfigurer{
-    @NotNull
+    /*@NotNull
     private final WebSocketHandler webSocketHandler;
     public LobbySocketConfig (@NotNull WebSocketHandler webSocketHandler) {
         this.webSocketHandler = webSocketHandler;
-    }
-    // TODO: CORSWEBSOCKET!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    }*/
+    // TODO: CORSWEBSOCKET!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*
     // 403 FOREVER!!!!
     //
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(webSocketHandler, "/lobby")
+        registry.addHandler(new LobbyWebSocketHandler(), "/lobby")
                 .addInterceptors(new HttpSessionHandshakeInterceptor())
                 .setAllowedOrigins("*");
     }

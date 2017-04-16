@@ -10,8 +10,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.context.SpringBootTest;
 import sample.Application;
-import sample.Models.UserData;
-import sample.Services.AccountService;
+import sample.Main.Models.UserData;
+import sample.Main.Services.AccountService;
 import tests.OrderedRunner;
 
 import static org.junit.Assert.*;

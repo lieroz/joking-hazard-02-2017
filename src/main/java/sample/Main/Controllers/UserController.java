@@ -1,22 +1,22 @@
-package sample.main.Controllers;
+package sample.Main.Controllers;
 
 import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
-import sample.main.Models.UserInfoModel;
-import sample.main.Services.AccountService;
-import sample.main.Views.ResponseCode;
-import sample.main.Views.PassForm;
-import sample.main.Views.MailForm;
+import sample.Main.Models.UserInfoModel;
+import sample.Main.Services.AccountService;
+import sample.Main.Views.ResponseCode;
+import sample.Main.Views.PassForm;
+import sample.Main.Views.MailForm;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 
 import java.util.Locale;
 
-import sample.main.Views.UserInfo;
+import sample.Main.Views.UserInfo;
 
 @SuppressWarnings("Duplicates")
 @CrossOrigin(origins = "https://jokinghazard.herokuapp.com")

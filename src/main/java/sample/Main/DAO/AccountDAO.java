@@ -1,11 +1,12 @@
-package sample.main.DAO;
+package sample.Main.DAO;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import sample.main.Models.UserData;
+import sample.Main.Models.UserData;
 
 /**
  * Created by lieroz on 26.03.17.
  */
+
 
 final public class AccountDAO {
     private final JdbcTemplate jdbcTemplate;

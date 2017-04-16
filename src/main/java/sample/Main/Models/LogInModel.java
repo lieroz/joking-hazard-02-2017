@@ -1,4 +1,4 @@
-package sample.main.Models;
+package sample.Main.Models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -1,7 +1,9 @@
-package sample.main.Models;
+package sample.Main.Models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import sample.Main.Views.UserInfo;
 
 /**
  * Created by ksg on 17.03.17.
@@ -34,5 +36,7 @@ public final class UserInfoModel {
         this.userMail = userMail;
     }
 
-
+    public UserInfo getUserInfo(){
+        return new UserInfo(userMail,userLogin);
+    }
 }
