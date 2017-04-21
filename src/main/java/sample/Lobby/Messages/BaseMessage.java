@@ -1,16 +1,18 @@
 package sample.Lobby.Messages;
 
+import sample.Lobby.Services.LobbyService;
+import sample.Lobby.Services.MyBeanConfig;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.beans.factory.annotation.Autowired;
 /**
  * Created by ksg on 12.04.17.
  */
 public class BaseMessage {
-    @Autowired
     @JsonIgnore
+    @Autowired
     ObjectMapper mapper;
     public String getType(){
         return "NoType";

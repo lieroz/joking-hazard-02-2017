@@ -10,6 +10,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import sample.Lobby.Services.LobbyService;
 import sample.Main.DAO.AccountDAO;
 import sample.Main.Models.LogInModel;
 import sample.Main.Models.UserInfoModel;
@@ -29,6 +34,7 @@ public class AccountService {
     }
 
     private final AccountDAO accountDAO;
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccountService.class);
 
     @Autowired
     public AccountService(final JdbcTemplate jdbcTemplate) {
@@ -43,6 +49,7 @@ public class AccountService {
     @SuppressWarnings("unused")
     @NotNull
     public ErrorCodes register(@NotNull UserData data) {
+        LOGGER.info("User registered"); // TODO: more info in log
         if (data.getUserLogin() == null || data.getUserMail() == null || data.getPassHash() == null) {
             return ErrorCodes.INVALID_REG_DATA;
         }

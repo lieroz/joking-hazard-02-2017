@@ -9,7 +9,9 @@ import org.springframework.context.annotation.ComponentScan;
         "sample.Main.Services",
         "sample.Main.DAO",
         "sample.Main.Models",
-        "sample.Main.Views"
+        "sample.Main.Views",
+        "sample.WebSockets",
+        "sample.Lobby.Services"
 })
 public class Application {
     public static void main(String[] args) throws Exception {

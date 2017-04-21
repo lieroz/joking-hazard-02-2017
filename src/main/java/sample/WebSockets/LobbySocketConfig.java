@@ -1,7 +1,11 @@
 package sample.WebSockets;
 
 import org.jetbrains.annotations.NotNull;
+import org.springframework.context.annotation.Bean;
 import org.springframework.web.socket.WebSocketHandler;
+import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
@@ -11,6 +15,7 @@ import sample.Lobby.WebSockets.LobbyWebSocketHandler;
 /**
  * Created by ksg on 11.04.17.
  */
+@Configuration
 @EnableWebSocket
 public class LobbySocketConfig implements WebSocketConfigurer{
     /*@NotNull
@@ -23,9 +28,11 @@ public class LobbySocketConfig implements WebSocketConfigurer{
     //
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(new LobbyWebSocketHandler(), "/lobby")
-                .addInterceptors(new HttpSessionHandshakeInterceptor())
-                .setAllowedOrigins("*");
+        registry.addHandler(LobbyWebSocketHandler(), "/lobby");
+    }
+    @Bean
+    public WebSocketHandler LobbyWebSocketHandler(){
+        return new LobbyWebSocketHandler();
     }
 
 }
