@@ -26,13 +26,12 @@ public class LobbyUserModel {
     @Autowired
     AccountService accountService;
 
-    public LobbyUserModel(){
-        this.session = null;
+    public LobbyUserModel(WebSocketSession session){
+        this.session = session;
         this.userInfo = null;
     }
 
-    public ErrorCodes lobbyUserModelInit(String userId, WebSocketSession session){
-        this.session = session;
+    public ErrorCodes lobbyUserModelInit(String userId){
         final UserInfoModel userInfoModel = new UserInfoModel(null, null);
         final AccountService.ErrorCodes resp = accountService.getUserData(userId, userInfoModel);
         switch (resp) {

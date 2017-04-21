@@ -40,12 +40,15 @@ public class LobbyController {
     int maxPlayers;
 
     Map<String, LobbyUserController> users;
-
-    public LobbyController(int maxPlayers){
+    ObjectMapper mapper;
+    public LobbyController(int maxPlayers, ObjectMapper mapper)
+    {
+        this.mapper = mapper;
         this.maxPlayers = maxPlayers;
     }
 
-    public LobbyController(){
+    public LobbyController(ObjectMapper mapper){
+        this.mapper = mapper;
         this.users = new ConcurrentHashMap<String, LobbyUserController>();
         this.maxPlayers = DEFAULT_MAX_NUMBER;
     }
@@ -62,7 +65,7 @@ public class LobbyController {
         if(users.size() > maxPlayers){
             return  ErrorCodes.SERVER_ERROR;
         }
-        return sendMessageAll(new UserAddedMessage(user.getUserDataView()));
+        return sendMessageAll(new UserAddedMessage(user.getUserDataView(), mapper));
     }
 
 
@@ -73,7 +76,7 @@ public class LobbyController {
         LobbyUserController user = users.get(userId);
         users.remove(userId);
         user.close();
-        return sendMessageAll(new UserExitedMessage(user.getUserDataView()));
+        return sendMessageAll(new UserExitedMessage(user.getUserDataView(), mapper));
     }
 
     public boolean isFool(){
@@ -125,7 +128,7 @@ public class LobbyController {
     }
 
     public ErrorCodes gameStart(){
-        return  sendMessageAll(new GameReadyMessage());
+        return  sendMessageAll(new GameReadyMessage(mapper));
     }
 
 }

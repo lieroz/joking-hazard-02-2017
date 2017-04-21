@@ -1,5 +1,7 @@
 package sample.Lobby.Services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -13,7 +15,7 @@ import sample.Lobby.Messages.ErrorMessage;
 /**
  * Created by ksg on 11.04.17.
  */
-
+//TODO: Message fabric
 @Service
 public class LobbyService {
     enum  ErrorCodes{
@@ -25,19 +27,21 @@ public class LobbyService {
         OK,
     }
     private static final Logger LOGGER = LoggerFactory.getLogger(LobbyService.class);
-    LobbyController currentLobby;
+    @Autowired
+    ObjectMapper mapper;
 
+    LobbyController currentLobby;
     void resetLobby(){
         LOGGER.debug("Lobby reseted");
         if(currentLobby != null) {
             currentLobby.closeConnections();
         }
-        currentLobby = new LobbyController();
+        currentLobby = new LobbyController(mapper);
     }
 
     void createLobby(){
         LOGGER.debug("Lobby created");
-        currentLobby = new LobbyController();
+        currentLobby = new LobbyController(mapper);
     }
 
 
@@ -56,25 +60,25 @@ public class LobbyService {
             }
             case INVALID_LOGIN:{
                 LOGGER.debug("Login is invalid");
-                user.sendMessageToUser(new ErrorMessage("Invalid Login"));
+                user.sendMessageToUser(new ErrorMessage("Invalid Login", mapper));
                 user.close();
                 return ErrorCodes.INVALID_LOGIN;
             }
             case DATABASE_ERROR:{
                 LOGGER.debug("Database error");
-                user.sendMessageToUser(new ErrorMessage("Database Error"));
+                user.sendMessageToUser(new ErrorMessage("Database Error", mapper));
                 user.close();
                 return  ErrorCodes.DATABASE_ERROR;
             }
             case INVALID_SESSION:{
                 LOGGER.debug("Invalid session");
-                user.sendMessageToUser(new ErrorMessage("Invalid Session"));
+                user.sendMessageToUser(new ErrorMessage("Invalid Session", mapper));
                 user.close();
                 return ErrorCodes.INVALID_SESSION;
             }
             case SERVER_ERROR:{
                 LOGGER.error("Server error in user Lobby Controller initialisation");
-                user.sendMessageToUser(new ErrorMessage("Server Error"));
+                user.sendMessageToUser(new ErrorMessage("Server Error", mapper));
                 user.close();
                 return ErrorCodes.SERVER_ERROR;
             }
@@ -95,13 +99,13 @@ public class LobbyService {
             }
             case INVALID_LOGIN: {
                 LOGGER.debug("Login is invalid");
-                user.sendMessageToUser(new ErrorMessage("Invalid Login"));
+                user.sendMessageToUser(new ErrorMessage("Invalid Login", mapper));
                 user.close();
                 return ErrorCodes.INVALID_LOGIN;
             }
             case SERVER_ERROR: {
                 LOGGER.error("Server error in user adding");
-                user.sendMessageToUser(new ErrorMessage("Server Error"));
+                user.sendMessageToUser(new ErrorMessage("Server Error", mapper));
                 user.close();
                 resetLobby();
                 return ErrorCodes.SERVER_RESETED;

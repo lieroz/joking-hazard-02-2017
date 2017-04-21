@@ -38,12 +38,12 @@ public class LobbyUserController {
     }
 
     public ErrorCodes lobbyUserControllerInit(WebSocketSession session){
-        final String userId = (String) session.getAttributes().get("userId");
+        final String userId = (String) session.getAttributes().get("userLogin");
+        model = new LobbyUserModel(session);
         if (userId == null) {
             return ErrorCodes.INVALID_SESSION;
         }
-        model = new LobbyUserModel();
-        LobbyUserModel.ErrorCodes result = model.lobbyUserModelInit(userId, session);
+        LobbyUserModel.ErrorCodes result = model.lobbyUserModelInit(userId);
         switch (result) {
             case OK: {
                 break;

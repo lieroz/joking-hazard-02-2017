@@ -1,6 +1,7 @@
 package sample.Lobby.Messages;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import sample.Main.Views.UserDataView;
 import sample.Main.Views.UserInfo;
 
@@ -11,7 +12,8 @@ public class UserAddedMessage extends  BaseMessage {
 
     UserInfo view;
 
-    public UserAddedMessage(UserInfo view){
+    public UserAddedMessage(UserInfo view, ObjectMapper mapper){
+        super(mapper);
         this.view = view;
     }
 
