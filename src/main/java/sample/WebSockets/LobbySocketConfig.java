@@ -28,7 +28,8 @@ public class LobbySocketConfig implements WebSocketConfigurer{
     //
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(LobbyWebSocketHandler(), "/lobby");
+        registry.addHandler(LobbyWebSocketHandler(), "/lobby")
+                .addInterceptors(new HttpSessionHandshakeInterceptor());
     }
     @Bean
     public WebSocketHandler LobbyWebSocketHandler(){

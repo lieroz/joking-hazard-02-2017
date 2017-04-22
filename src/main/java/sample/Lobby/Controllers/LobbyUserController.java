@@ -8,7 +8,9 @@ import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import sample.Lobby.Messages.BaseMessage;
 import sample.Lobby.Models.LobbyUserModel;
+import sample.Lobby.Views.LobbyView;
 import sample.Main.Models.UserInfoModel;
+import sample.Main.Services.AccountService;
 import sample.Main.Views.UserDataView;
 import sample.Main.Views.UserInfo;
 
@@ -37,9 +39,9 @@ public class LobbyUserController {
     public   LobbyUserController(){
     }
 
-    public ErrorCodes lobbyUserControllerInit(WebSocketSession session){
+    public ErrorCodes lobbyUserControllerInit(WebSocketSession session, AccountService accountService){
         final String userId = (String) session.getAttributes().get("userLogin");
-        model = new LobbyUserModel(session);
+        model = new LobbyUserModel(session, accountService);
         if (userId == null) {
             return ErrorCodes.INVALID_SESSION;
         }
@@ -101,12 +103,20 @@ public class LobbyUserController {
         return  info.getUserInfo();
     }
 
-    public void close(){
-        WebSocketSession ses = model.getSession();
-        try {
-            ses.close();
-        } catch (IOException e){
+    //TODO: This
+    //public LobbyView getView(){
+    //    return LobbyView;
+    //}
 
+    public void close(){
+        WebSocketSession ses;
+        if(model != null) {
+            ses = model.getSession();
+            try {
+                ses.close();
+            } catch (IOException e){
+
+            }
         }
         model = null;
     }

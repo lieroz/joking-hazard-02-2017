@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import sample.Lobby.Controllers.LobbyController;
 import sample.Lobby.Controllers.LobbyUserController;
 import sample.Lobby.Messages.ErrorMessage;
+import sample.Main.Services.AccountService;
 
 /**
  * Created by ksg on 11.04.17.
@@ -27,10 +28,14 @@ public class LobbyService {
         OK,
     }
     private static final Logger LOGGER = LoggerFactory.getLogger(LobbyService.class);
+
     @Autowired
+    AccountService accountService;
+
     ObjectMapper mapper;
 
     LobbyController currentLobby;
+
     void resetLobby(){
         LOGGER.debug("Lobby reseted");
         if(currentLobby != null) {
@@ -45,14 +50,15 @@ public class LobbyService {
     }
 
 
-    public LobbyService() {
-
+    public LobbyService(ObjectMapper mapper) {
+        this.mapper = mapper;
+        createLobby();
     }
 
     public ErrorCodes addUser(WebSocketSession userSession){
         LOGGER.debug("User adding starts.");
         LobbyUserController user = new LobbyUserController();
-        LobbyUserController.ErrorCodes initErr = user.lobbyUserControllerInit(userSession);
+        LobbyUserController.ErrorCodes initErr = user.lobbyUserControllerInit(userSession,accountService);
         switch (initErr){
             case OK:{
                 LOGGER.debug("User inited");

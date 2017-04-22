@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 public class BaseMessage {
     @JsonIgnore
     ObjectMapper mapper; //Make it static? or make fabric?
-    BaseMessage (ObjectMapper mapper){
+    public BaseMessage (ObjectMapper mapper){
         this.mapper = mapper;
     }
     public String getType(){

@@ -7,6 +7,7 @@ import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import sample.Lobby.Controllers.LobbyController;
 import sample.Lobby.Controllers.LobbyUserController;
+import sample.Lobby.Views.LobbyView;
 import sample.Main.Models.UserInfoModel;
 import sample.Main.Services.AccountService;
 import sample.Main.Views.UserInfo;
@@ -23,10 +24,10 @@ public class LobbyUserModel {
     }
     WebSocketSession session;
     UserInfoModel userInfo;
-    @Autowired
     AccountService accountService;
 
-    public LobbyUserModel(WebSocketSession session){
+    public LobbyUserModel(WebSocketSession session, AccountService accountService){
+        this.accountService = accountService;
         this.session = session;
         this.userInfo = null;
     }
