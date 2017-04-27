@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Created by ksg on 15.04.17.
  */
+@SuppressWarnings("DefaultFileTemplate")
 @Configuration
 public class MyBeanConfig {
     @Bean

@@ -1,25 +1,23 @@
 package sample.Game.Mechanics.GameUser;
 
-import sample.Game.Mechanics.Cards.GameCard;
-import sample.Game.Messages.BaseGameMessage;
 import sample.Game.Messages.ServerMessages.BaseServerMessage;
 import sample.Game.Messages.ServerMessages.HandInfo;
-import sun.java2d.xr.MutableInteger;
-
-import java.util.Map;
-import java.util.Vector;
 
 /**
  * Created by ksg on 26.04.17.
  */
+@SuppressWarnings("DefaultFileTemplate")
 public interface GameUserInterface {
-    public enum ErrorCodes{
+    enum ErrorCodes{
         OK,
-        DISCONNECTED,
+        @SuppressWarnings("unused")DISCONNECTED,
     }
-    public void init(HandInfo hand);
-    public ErrorCodes getCardFromDeck();
-    public ErrorCodes chooseCardFromTable();
-    public ErrorCodes send(BaseServerMessage msg);
-    public void close();
+    void init(HandInfo hand);
+    @SuppressWarnings({"SameReturnValue", "unused"})
+    ErrorCodes getCardFromDeck();
+    @SuppressWarnings({"SameReturnValue", "unused"})
+    ErrorCodes chooseCardFromTable();
+    @SuppressWarnings({"UnusedReturnValue", "SameReturnValue"})
+    ErrorCodes send(BaseServerMessage msg);
+    void close();
 }

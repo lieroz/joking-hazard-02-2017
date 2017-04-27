@@ -5,10 +5,11 @@ import java.util.Vector;
 /**
  * Created by ksg on 25.04.17.
  */
+@SuppressWarnings("DefaultFileTemplate")
 public class LobbyGameView {
-    Vector<UserGameView> list;
-    int number;
-    int cardsInHand;
+    private final Vector<UserGameView> list;
+    private final int number;
+    private final int cardsInHand;
     public LobbyGameView(Vector<UserGameView> list, int number, int cardsInHand){
         this.list = list;
         this.number = number;

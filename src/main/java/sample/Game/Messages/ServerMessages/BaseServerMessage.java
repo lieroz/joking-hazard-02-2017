@@ -1,19 +1,21 @@
 package sample.Game.Messages.ServerMessages;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Created by ksg on 26.04.17.
  */
+@SuppressWarnings("DefaultFileTemplate")
 public class BaseServerMessage {
     @JsonIgnore
+    private final
     ObjectMapper mapper; //Make it static? or make fabric?
-    public BaseServerMessage (ObjectMapper mapper){
+    BaseServerMessage(ObjectMapper mapper){
         this.mapper = mapper;
     }
+    @SuppressWarnings("unused")
     public String getType(){
         return "NoType";
     }
@@ -22,7 +24,7 @@ public class BaseServerMessage {
         String res = null;
         try{
             res = mapper.writeValueAsString(this);
-        } catch (JsonProcessingException e){
+        } catch (JsonProcessingException ignored){
         }
         return res;
     }

@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 /**
  * Created by ksg on 03.03.17.
  */
+@SuppressWarnings("DefaultFileTemplate")
 public final class UserDataView {
     @SuppressWarnings("unused")
     public enum  ViewError {
@@ -19,6 +20,7 @@ public final class UserDataView {
     private String userMail;
     private String pass;
 
+    @SuppressWarnings("unused")
     @JsonCreator
     public UserDataView(@JsonProperty("userMail") String userMail,
                     @JsonProperty("userLogin") String userLogin,
@@ -45,15 +47,17 @@ public final class UserDataView {
         return new UserInfo(userMail, userLogin);
     }
 
+    @SuppressWarnings("unused")
     public void setUserMail(@NotNull String userMail) {
         this.userMail = userMail;
     }
 
+    @SuppressWarnings("unused")
     public void setPass(@NotNull String pass) {
         this.pass = pass;
     }
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "SameReturnValue"})
     public ViewError valid(){
         return ViewError.OK;
     }

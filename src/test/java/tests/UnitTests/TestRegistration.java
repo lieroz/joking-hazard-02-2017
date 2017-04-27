@@ -22,6 +22,7 @@ import java.util.Locale;
  * Created by lieroz on 27.03.17.
  */
 
+@SuppressWarnings("DefaultFileTemplate")
 @SpringBootTest(classes = Application.class)
 @RunWith(OrderedRunner.class)
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)

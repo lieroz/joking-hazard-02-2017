@@ -6,13 +6,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Created by ksg on 02.03.17.
  */
+@SuppressWarnings("DefaultFileTemplate")
 public final class ResponseCode<T> {
     private final boolean result;
     private final String errorMsg;
     private final T data;
 
     @JsonCreator
-    public ResponseCode(@JsonProperty("result") boolean result,
+    public ResponseCode(@SuppressWarnings("SameParameterValue") @JsonProperty("result") boolean result,
                         @JsonProperty("errorMsg") String errorMsg,
                         @JsonProperty("data") T data) {
         this.result = result;

@@ -1,24 +1,21 @@
 package sample.Lobby.Messages;
 
-import sample.Lobby.Services.LobbyService;
-import sample.Lobby.Services.MyBeanConfig;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.validation.constraints.NotNull;
 
 /**
  * Created by ksg on 12.04.17.
  */
+@SuppressWarnings("DefaultFileTemplate")
 public class BaseMessage {
     @JsonIgnore
+    private final
     ObjectMapper mapper; //Make it static? or make fabric?
-    public BaseMessage (ObjectMapper mapper){
+    protected BaseMessage(ObjectMapper mapper){
         this.mapper = mapper;
     }
+    @SuppressWarnings("unused")
     public String getType(){
         return "NoType";
     }
@@ -27,7 +24,7 @@ public class BaseMessage {
         String res = null;
         try{
             res = mapper.writeValueAsString(this);
-        } catch (JsonProcessingException e){
+        } catch (JsonProcessingException ignored){
         }
         return res;
     }

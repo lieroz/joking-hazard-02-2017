@@ -2,15 +2,15 @@ package sample.Lobby.Messages;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import sample.Main.Views.UserDataView;
 import sample.Main.Views.UserInfo;
 
 /**
  * Created by ksg on 12.04.17.
  */
+@SuppressWarnings("DefaultFileTemplate")
 public class UserExitedMessage extends  BaseMessage {
 
-    UserInfo view;
+    private final UserInfo view;
 
     public UserExitedMessage(UserInfo view, ObjectMapper mapper){
         super(mapper);
@@ -21,6 +21,7 @@ public class UserExitedMessage extends  BaseMessage {
     public String getType(){
         return "UserExitedMessage";
     }
+    @SuppressWarnings("unused")
     public UserInfo getUser(){
         return view;
     }

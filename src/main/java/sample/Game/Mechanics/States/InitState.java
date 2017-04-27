@@ -2,9 +2,7 @@ package sample.Game.Mechanics.States;
 
 import org.springframework.web.socket.WebSocketSession;
 import sample.Game.Mechanics.GameUser.GameUser;
-import sample.Game.Mechanics.GameUser.GameUserInterface;
 import sample.Game.Mechanics.MainMechanics;
-import sample.Game.Messages.BaseGameMessage;
 import sample.Game.Messages.SystemMessages.MessageContainer;
 import sample.Game.Mechanics.GameUser.GameUserItem;
 import sample.Game.Messages.SystemMessages.UserConnectedMessage;
@@ -12,16 +10,17 @@ import sample.Game.Messages.SystemMessages.UserConnectedMessage;
 /**
  * Created by ksg on 26.04.17.
  */
+@SuppressWarnings("DefaultFileTemplate")
 public class InitState implements GameState{
-    MainMechanics.GameContext context;
-    int num_connected;
+    private final MainMechanics.GameContext context;
+    private int num_connected;
 
     public InitState(MainMechanics.GameContext context){
         this.context = context;
         num_connected = 0;
     }
 
-    ErrorCodes addUser(MessageContainer msg){
+    private ErrorCodes addUser(MessageContainer msg){
         String userId = msg.getUserId();
         GameUserItem item = context.mp.get(userId);
         Class cls = msg.getMsg().getClassOfMessage();

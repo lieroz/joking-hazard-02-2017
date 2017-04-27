@@ -1,15 +1,15 @@
 package sample.Game.Messages.SystemMessages;
 
-import sample.Game.Messages.ServerMessages.BaseServerMessage;
 import sample.Game.Services.ServerManager;
 
 /**
  * Created by ksg on 26.04.17.
  */
+@SuppressWarnings("DefaultFileTemplate")
 public class MessageContainer {
-    String userId;
-    ServerManager.GameIndex index;
-    BaseSystemMessage msg;
+    private final String userId;
+    private final ServerManager.GameIndex index;
+    private final BaseSystemMessage msg;
     public MessageContainer(String userId, ServerManager.GameIndex index, BaseSystemMessage msg){
         this.userId = userId;
         this.index = index;

@@ -2,15 +2,15 @@ package sample.Lobby.Messages;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import sample.Main.Views.UserDataView;
 import sample.Main.Views.UserInfo;
 
 /**
  * Created by ksg on 12.04.17.
  */
+@SuppressWarnings("DefaultFileTemplate")
 public class UserAddedMessage extends  BaseMessage {
 
-    UserInfo view;
+    private final UserInfo view;
 
     public UserAddedMessage(UserInfo view, ObjectMapper mapper){
         super(mapper);
@@ -21,6 +21,7 @@ public class UserAddedMessage extends  BaseMessage {
     public String getType(){
         return "UserAddedMessage";
     }
+    @SuppressWarnings("unused")
     public UserInfo getUser(){
         return view;
     }

@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 /**
  * Created by ksg on 03.03.17.
  */
+@SuppressWarnings("DefaultFileTemplate")
 public final class UserData {
     private final String userLogin;
     private String userMail;

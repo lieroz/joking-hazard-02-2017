@@ -9,13 +9,14 @@ import sample.Main.Views.UserInfo;
  * Created by ksg on 17.03.17.
  */
 
+@SuppressWarnings("DefaultFileTemplate")
 public final class UserInfoModel {
     private String userMail;
     private String userLogin;
 
     @JsonCreator
-    public UserInfoModel(@JsonProperty("userMail") String userMail,
-                         @JsonProperty("userLogin") String userLogin) {
+    public UserInfoModel(@SuppressWarnings("SameParameterValue") @JsonProperty("userMail") String userMail,
+                         @SuppressWarnings("SameParameterValue") @JsonProperty("userLogin") String userLogin) {
         this.userLogin = userLogin;
         this.userMail = userMail;
     }

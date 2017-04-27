@@ -1,10 +1,7 @@
 package sample.WebSockets;
 
-import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.socket.WebSocketHandler;
-import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
@@ -16,6 +13,7 @@ import sample.Game.WebSockets.GameWebSocketHandler;
 /**
  * Created by ksg on 11.04.17.
  */
+@SuppressWarnings("DefaultFileTemplate")
 @Configuration
 @EnableWebSocket
 public class LobbySocketConfig implements WebSocketConfigurer{

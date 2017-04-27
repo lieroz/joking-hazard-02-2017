@@ -1,27 +1,22 @@
 package sample.Lobby.Controllers;
 
 
-import com.fasterxml.jackson.databind.deser.Deserializers;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import sample.Lobby.Messages.BaseMessage;
 import sample.Lobby.Models.LobbyUserModel;
-import sample.Lobby.Views.LobbyView;
 import sample.Lobby.Views.UserGameView;
 import sample.Main.Models.UserInfoModel;
 import sample.Main.Services.AccountService;
-import sample.Main.Views.UserDataView;
 import sample.Main.Views.UserInfo;
 
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 
 /**
  * Created by ksg on 13.04.17.
  */
+@SuppressWarnings("DefaultFileTemplate")
 public class LobbyUserController {
 
     public enum ErrorCodes{
@@ -35,7 +30,7 @@ public class LobbyUserController {
         ERROR_SERIALIZATION,
     }
 
-    LobbyUserModel model;
+    private LobbyUserModel model;
 
     public   LobbyUserController(){
     }
@@ -87,6 +82,7 @@ public class LobbyUserController {
         return ErrorCodes.OK;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public ErrorCodes sendMessageToUser(BaseMessage msg){
         String result;
         result = msg.getJson();
@@ -117,7 +113,7 @@ public class LobbyUserController {
             ses = model.getSession();
             try {
                 ses.close();
-            } catch (IOException e){
+            } catch (IOException ignored){
 
             }
         }

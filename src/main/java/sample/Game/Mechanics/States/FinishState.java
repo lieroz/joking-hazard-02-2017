@@ -10,6 +10,7 @@ import java.util.Map;
 /**
  * Created by ksg on 27.04.17.
  */
+@SuppressWarnings("DefaultFileTemplate")
 public class FinishState implements GameState {
     public FinishState(MainMechanics.GameContext context){
         ServerFinishedMessage msg = new ServerFinishedMessage(context.mapper);

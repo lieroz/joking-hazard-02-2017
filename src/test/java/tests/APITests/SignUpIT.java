@@ -27,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Created by lieroz on 24.03.17.
  */
 
+@SuppressWarnings("DefaultFileTemplate")
 @SpringBootTest(classes = Application.class)
 @RunWith(OrderedRunner.class)
 @AutoConfigureMockMvc(print = MockMvcPrint.NONE)

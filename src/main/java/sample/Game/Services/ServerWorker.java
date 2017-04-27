@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by ksg on 25.04.17.
  */
+@SuppressWarnings("DefaultFileTemplate")
 public class ServerWorker {
     enum ErrorCodes{
         OK,
@@ -29,17 +30,17 @@ public class ServerWorker {
         }
     }
 
-    ResourceManager manager;
-    KeyGenerator generator;
-    ObjectMapper mapper;
-    Map<Integer,MainMechanics> games;
-    ServerManager master;
+    private final ResourceManager manager;
+    private final KeyGenerator generator;
+    private final ObjectMapper mapper;
+    private final Map<Integer,MainMechanics> games;
+    private final ServerManager master;
 
     public ServerWorker(ServerManager master){
         manager = new ResourceManager();
         generator = new KeyGenerator();
         mapper = new ObjectMapper();
-        games = new ConcurrentHashMap<Integer, MainMechanics>();
+        games = new ConcurrentHashMap<>();
         this.master = master;
     }
     public Integer createGame(LobbyGameView players){
@@ -58,6 +59,7 @@ public class ServerWorker {
         return key;
     }
 
+    @SuppressWarnings({"UnusedReturnValue", "SameReturnValue"})
     public ErrorCodes handleMessage(MessageContainer container){
         Integer gameIndex = container.getIndex().getIndex();
         MainMechanics mechanics = games.get(gameIndex);

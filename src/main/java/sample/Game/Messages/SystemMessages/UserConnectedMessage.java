@@ -5,8 +5,9 @@ import org.springframework.web.socket.WebSocketSession;
 /**
  * Created by ksg on 26.04.17.
  */
+@SuppressWarnings("DefaultFileTemplate")
 public class UserConnectedMessage extends BaseSystemMessage {
-    WebSocketSession session;
+    private final WebSocketSession session;
     public UserConnectedMessage(WebSocketSession session){
         this.session = session;
     }

@@ -1,19 +1,12 @@
 package sample.ResourceManager;
 
-/**
- * Created by ksg on 26.04.17.
- */
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sample.Game.Mechanics.Cards.CardDeck;
 import sample.Game.Mechanics.Cards.GameCard;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import com.google.common.io.Resources;
@@ -26,21 +19,27 @@ class Props{
     public int numOfCardsInDeck;
     public int defaultMaxNumber;
     public int numberOfCardsInHand;
+    @SuppressWarnings("unused")
     public void setNumOfCardsInDeck(int n){
         numOfCardsInDeck = n;
     }
+    @SuppressWarnings("unused")
     public void setDefaultMaxNumber(int n ){
         defaultMaxNumber = n;
     }
+    @SuppressWarnings("unused")
     public void setNumberOfCardsInHand(int n){
         numberOfCardsInHand = n;
     }
+    @SuppressWarnings("unused")
     public int getNumOfCardsInDeck(){
         return numOfCardsInDeck;
     }
+    @SuppressWarnings("unused")
     public int getDefaultMaxNumber(){
         return defaultMaxNumber;
     }
+    @SuppressWarnings("unused")
     public int getNumberOfCardsInHand(){
         return numOfCardsInDeck;
     }
@@ -50,7 +49,7 @@ class Props{
 public class ResourceManager {
     private static final Logger logger = LoggerFactory.getLogger(ResourceManager.class);
 
-    Props props;
+    private Props props;
     public ResourceManager(){
         //numOfCardsInDeck = 50;
         //vdefaultMaxNumber = 4;

@@ -21,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 
+@SuppressWarnings("DefaultFileTemplate")
 @Service
 public class ServerManager {
 
@@ -29,7 +30,7 @@ public class ServerManager {
         ERROR_GAME_CREATION,
     }
     public class GameIndex{
-        int index;
+        final int index;
         public GameIndex(int index){
             this.index = index;
         }
@@ -38,9 +39,9 @@ public class ServerManager {
         }
     }
 
-    ServerWorker worker;
-    Map<String,GameIndex> indexMap;
-    ObjectMapper mapper;
+    private final ServerWorker worker;
+    private final Map<String,GameIndex> indexMap;
+    private final ObjectMapper mapper;
     public ServerManager(){
          indexMap = new ConcurrentHashMap<>();
          mapper = new ObjectMapper();
@@ -60,17 +61,19 @@ public class ServerManager {
         }
         return ErrorCodes.OK;
     }
-    ErrorCodes sendError(WebSocketSession session, String errorText){
+    @SuppressWarnings({"UnusedReturnValue", "SameReturnValue"})
+    private ErrorCodes sendError(WebSocketSession session, String errorText){
         ServerErrorMessage err = new ServerErrorMessage(mapper, errorText);
-        String ErrorText;
+        @SuppressWarnings("unused") String ErrorText;
         try {
             session.sendMessage(new TextMessage(err.getJson()));
-        } catch (IOException e){
+        } catch (IOException ignored){
 
         }
         return ErrorCodes.OK;
     }
     //TODO: обернуть websocketsession
+    @SuppressWarnings({"UnusedReturnValue", "SameReturnValue"})
     public ErrorCodes connectUser(WebSocketSession session){
         String userId = (String) session.getAttributes().get("userLogin");
         if(userId == null) {
@@ -84,6 +87,7 @@ public class ServerManager {
         worker.handleMessage(new MessageContainer(userId,index,msg));
         return ErrorCodes.OK;
     }
+    @SuppressWarnings({"UnusedReturnValue", "SameReturnValue"})
     public ErrorCodes deleteUsers(LobbyGameView view){
         Vector<UserGameView> ulist = view.getList();
         for(UserGameView user: ulist){

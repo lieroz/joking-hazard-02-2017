@@ -21,10 +21,11 @@ import java.util.Vector;
  */
 
 
+@SuppressWarnings("DefaultFileTemplate")
 public class MainMechanics {
     public enum  ErrorCodes{
         SERVER_ERROR,
-        RESOURCE_ERROR,
+        @SuppressWarnings("unused")RESOURCE_ERROR,
         INVALID_COMMAND,
         FINISHED,
         OK,
@@ -33,8 +34,9 @@ public class MainMechanics {
     private static final Logger LOGGER = LoggerFactory.getLogger(MainMechanics.class);
 
     public class GameContext{
-        public Map<String,GameUserItem> mp;
-        public Map<String, GameCard> table;
+        public final Map<String,GameUserItem> mp;
+        @SuppressWarnings("unused")
+        public final Map<String, GameCard> table;
         public CardDeck deck;
         public GameState state;
         public int numberOfPlayers;
@@ -42,13 +44,13 @@ public class MainMechanics {
         public int numberCardsInHand;
         public GameContext(){
             state = new InitState(this);
-            mp = new HashMap<String,GameUserItem>(); // TODO: Do it as user controller
-            table = new HashMap<String, GameCard>();
+            mp = new HashMap<>(); // TODO: Do it as user controller
+            table = new HashMap<>();
 
         }
     }
-    LobbyGameView view;
-    GameContext context;
+    private LobbyGameView view;
+    private final GameContext context;
     public MainMechanics(ObjectMapper mapper){
         context = new GameContext();
         context.mapper = mapper;
@@ -84,7 +86,7 @@ public class MainMechanics {
         GameState.ErrorCodes err = context.state.handle(msg);
         return errorHandler(err);
     }
-    ErrorCodes errorHandler(GameState.ErrorCodes err){
+    private ErrorCodes errorHandler(GameState.ErrorCodes err){
         switch (err){
             case OK: {
                 break;

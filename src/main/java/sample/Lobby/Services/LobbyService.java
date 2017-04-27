@@ -21,6 +21,7 @@ import sample.ResourceManager.ResourceManager;
  * Created by ksg on 11.04.17.
  */
 //TODO: Message fabric
+@SuppressWarnings("DefaultFileTemplate")
 @Service
 public class LobbyService {
     public enum  ErrorCodes{
@@ -33,18 +34,24 @@ public class LobbyService {
     }
     private static final Logger LOGGER = LoggerFactory.getLogger(LobbyService.class);
 
+    @SuppressWarnings("SpringAutowiredFieldsWarningInspection")
     @Autowired
+    private
     AccountService accountService;
+    @SuppressWarnings("SpringAutowiredFieldsWarningInspection")
     @Autowired
+    private
     ServerManager serverManager;
+    @SuppressWarnings("SpringAutowiredFieldsWarningInspection")
     @Autowired
+    private
     ResourceManager resourceManager;
 
-    ObjectMapper mapper;
+    private final ObjectMapper mapper;
 
-    LobbyController currentLobby;
+    private LobbyController currentLobby;
 
-    void resetLobby(){
+    private void resetLobby(){
         LOGGER.debug("Lobby reseted");
         if(currentLobby != null) {
             currentLobby.closeConnections();
@@ -55,7 +62,7 @@ public class LobbyService {
                );
     }
 
-    void createLobby(){
+    private void createLobby(){
         LOGGER.debug("Lobby created");
         currentLobby = new LobbyController(resourceManager.defaultMaxNumber(),
                 resourceManager.numberOfCardsInHand(),
@@ -63,7 +70,7 @@ public class LobbyService {
         );
     }
 
-    void startGame(){
+    private void startGame(){
         //TODO: StartGame, retry to add new lobby
         currentLobby.gameStart();
         LobbyGameView lb = currentLobby.getGameView();
@@ -85,6 +92,7 @@ public class LobbyService {
         createLobby();
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public synchronized ErrorCodes addUser(WebSocketSession userSession){
         LOGGER.debug("User adding starts.");
         LobbyUserController user = new LobbyUserController();

@@ -1,23 +1,18 @@
 package sample.Game.Mechanics.GameUser;
 
-import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.TextMessage;
-import sample.Game.Mechanics.Cards.GameCard;
-import sample.Game.Messages.BaseGameMessage;
 import sample.Game.Messages.ServerMessages.BaseServerMessage;
 import sample.Game.Messages.ServerMessages.HandInfo;
-import sun.java2d.xr.MutableInteger;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.Vector;
 
 /**
  * Created by ksg on 26.04.17.
  */
+@SuppressWarnings("DefaultFileTemplate")
 public class GameUser implements GameUserInterface {
-    WebSocketSession session;
+    private final WebSocketSession session;
     public GameUser(WebSocketSession session){
         this.session = session;
     }
@@ -37,7 +32,7 @@ public class GameUser implements GameUserInterface {
     public ErrorCodes send(BaseServerMessage msg){
         try {
             session.sendMessage(new TextMessage(msg.getJson()));
-        } catch (IOException e){
+        } catch (IOException ignored){
 
         }
         return ErrorCodes.OK;
@@ -45,7 +40,7 @@ public class GameUser implements GameUserInterface {
     public void close(){
         try {
             session.close();
-        }catch (IOException e){
+        }catch (IOException ignored){
 
         }
     }

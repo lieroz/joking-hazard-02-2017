@@ -8,6 +8,7 @@ import sample.Main.Models.UserData;
  */
 
 
+@SuppressWarnings("DefaultFileTemplate")
 final public class AccountDAO {
     private final JdbcTemplate jdbcTemplate;
 

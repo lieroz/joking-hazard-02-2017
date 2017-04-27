@@ -4,23 +4,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import sample.Game.Mechanics.Cards.GameCard;
 import sample.Game.Messages.ServerMessages.BaseServerMessage;
 import sample.Game.Messages.ServerMessages.HandInfo;
-import sun.java2d.xr.MutableInteger;
 
-import java.util.Map;
 import java.util.Vector;
 
 /**
  * Created by ksg on 26.04.17.
  */
+@SuppressWarnings("DefaultFileTemplate")
 public class GameUserItem {
-    Vector<GameCard> hand;
-    Integer score;
-    GameUserInterface user;
-    ObjectMapper mapper;
+    private final Vector<GameCard> hand;
+    @SuppressWarnings({"FieldCanBeLocal", "unused"})
+    private final Integer score;
+    private GameUserInterface user;
+    private final ObjectMapper mapper;
     public GameUserItem(Vector<GameCard> hand, ObjectMapper mapper){
         this.mapper = mapper;
-        this.hand = new Vector<GameCard>(hand);
-        score = new Integer(0);
+        this.hand = new Vector<>(hand);
+        score = 0;
 
     }
     public void setStrategy(GameUserInterface inter){

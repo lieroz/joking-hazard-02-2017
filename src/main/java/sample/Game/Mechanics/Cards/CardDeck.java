@@ -8,12 +8,14 @@ import java.util.List;
 /**
  * Created by ksg on 26.04.17.
  */
+@SuppressWarnings("DefaultFileTemplate")
 public class CardDeck {
-    List<GameCard> container;
+    private final List<GameCard> container;
     public CardDeck(List<GameCard> deck){
-        container = new ArrayList<GameCard>(deck);
+        container = new ArrayList<>(deck);
         Collections.shuffle(container);
     }
+    @SuppressWarnings("WeakerAccess")
     public GameCard popCard(){
         if(container.isEmpty()){
             return null;

@@ -5,9 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Created by ksg on 12.04.17.
  */
+@SuppressWarnings("DefaultFileTemplate")
 public class ErrorMessage extends  BaseMessage {
 
-        String errorMsg;
+        private final String errorMsg;
 
         public ErrorMessage(String errorMsg, ObjectMapper mapper){
             super(mapper);
@@ -18,6 +19,7 @@ public class ErrorMessage extends  BaseMessage {
         public String getType(){
             return "ErrorMessage";
         }
+        @SuppressWarnings("unused")
         public String getErrorMsg(){
             return errorMsg;
         }

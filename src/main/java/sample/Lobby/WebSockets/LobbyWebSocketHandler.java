@@ -20,8 +20,11 @@ import sample.Lobby.Services.LobbyService;
  * Created by ksg on 11.04.17.
  */
 
+@SuppressWarnings("DefaultFileTemplate")
 public class LobbyWebSocketHandler extends TextWebSocketHandler {
+    @SuppressWarnings("SpringJavaAutowiredMembersInspection")
     @Autowired
+    private
     LobbyService lobbyService;
     private static final Logger LOGGER = LoggerFactory.getLogger(LobbyService.class);
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -51,7 +54,7 @@ public class LobbyWebSocketHandler extends TextWebSocketHandler {
             String text_msg = msg.getJson();
             try {
                 session.sendMessage(new TextMessage(text_msg));
-            } catch (IOException e) {
+            } catch (IOException ignored) {
 
             }
         } else {
@@ -69,7 +72,7 @@ public class LobbyWebSocketHandler extends TextWebSocketHandler {
             ErrorMessage msg = new ErrorMessage("Invalid first level json format", objectMapper);
             try {
                 session.sendMessage(new TextMessage(msg.getJson()));
-            }catch (IOException e) {
+            }catch (IOException ignored) {
             }
             return;
         }
@@ -83,7 +86,7 @@ public class LobbyWebSocketHandler extends TextWebSocketHandler {
                 ErrorMessage msg = new ErrorMessage("Invalid command", objectMapper);
                 try {
                     session.sendMessage(new TextMessage(msg.getJson()));
-                }catch (IOException e) {
+                }catch (IOException ignored) {
                 }
             }
 
@@ -96,7 +99,7 @@ public class LobbyWebSocketHandler extends TextWebSocketHandler {
                 OkMessage msg = new OkMessage("Ok", objectMapper);
                 try {
                     session.sendMessage(new TextMessage(msg.getJson()));
-                }catch (IOException e) {
+                }catch (IOException ignored) {
                 }
                 break;
             }

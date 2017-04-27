@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Created by ksg on 18.03.17.
  */
 
+@SuppressWarnings("DefaultFileTemplate")
 public final class LogInData {
     private final String userLogin;
     private final String pass;
@@ -17,6 +18,7 @@ public final class LogInData {
         INVALID_DATA_ERROR
     }
 
+    @SuppressWarnings("unused")
     @JsonCreator
     public LogInData(@JsonProperty("userId") String userLogin,
                      @JsonProperty("pass") String pass) {

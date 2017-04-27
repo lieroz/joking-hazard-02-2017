@@ -2,9 +2,6 @@ package sample.Lobby.Controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketMessage;
-import org.springframework.web.socket.WebSocketSession;
 
 import sample.Lobby.Messages.GameReadyMessage;
 import sample.Lobby.Messages.UserAddedMessage;
@@ -12,14 +9,9 @@ import sample.Lobby.Messages.BaseMessage;
 import sample.Lobby.Views.LobbyGameView;
 import sample.Lobby.Views.LobbyView;
 import sample.Lobby.Views.UserGameView;
-import sample.Main.Controllers.UserController;
-import sample.Main.Models.UserInfoModel;
 import sample.Lobby.Messages.UserExitedMessage;
 
 import sample.Main.Views.UserInfo;
-import sun.font.TrueTypeFont;
-
-import java.io.IOException;
 
 import java.util.Map;
 import java.util.Vector;
@@ -28,29 +20,31 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by ksg on 11.04.17.
  */
+@SuppressWarnings("DefaultFileTemplate")
 public class LobbyController {
     public enum  ErrorCodes {
         OK,
         SERVER_ERROR,
         INVALID_LOGIN,
-        LOGIN_EXIST,
+        @SuppressWarnings("unused")LOGIN_EXIST,
         LOBBY_IS_FOOL,
         SEND_MESSAGE_ERROR,
         INVALID_USER,
         INVALID_USER_IN_LOBBY,
         ERROR_SERIALIZATION
-    };
+    }
 
+    @SuppressWarnings("unused")
     static final int DEFAULT_MAX_NUMBER = 4;
-    int maxPlayers;
-    int maxCardsInHand;
+    private final int maxPlayers;
+    private final int maxCardsInHand;
 
-    Map<String, LobbyUserController> users;
-    ObjectMapper mapper;
+    private final Map<String, LobbyUserController> users;
+    private final ObjectMapper mapper;
     public LobbyController(int maxPlayers,int maxCardsInHand, ObjectMapper mapper)
     {
         this.mapper = mapper;
-        this.users = new ConcurrentHashMap<String, LobbyUserController>();
+        this.users = new ConcurrentHashMap<>();
         this.maxPlayers = maxPlayers;
         this.maxCardsInHand = maxCardsInHand;
     }
@@ -88,10 +82,12 @@ public class LobbyController {
         return sendMessageAll(new UserExitedMessage(inf, mapper));
     }
 
+    @SuppressWarnings("unused")
     public boolean isFool(){
         return (maxPlayers == users.size());
     }
 
+    @SuppressWarnings({"UnusedReturnValue", "SameReturnValue"})
     public ErrorCodes closeConnections(){
         for(Map.Entry<String,LobbyUserController> entry: users.entrySet()) {
             LobbyUserController user = entry.getValue();
@@ -100,7 +96,7 @@ public class LobbyController {
         return ErrorCodes.OK;
     }
 
-    public ErrorCodes sendMessageAll(String msg){
+    private ErrorCodes sendMessageAll(String msg){
         boolean ok = true;
         for(Map.Entry<String,LobbyUserController> entry: users.entrySet()){
             LobbyUserController user = entry.getValue();
@@ -137,7 +133,7 @@ public class LobbyController {
     }
 
     public LobbyView getView(){
-        Vector<UserInfo> res = new Vector<UserInfo>();
+        Vector<UserInfo> res = new Vector<>();
         for(LobbyUserController tab: users.values()){
             UserInfo dat = tab.getUserDataView();
             res.add(dat);
@@ -145,12 +141,13 @@ public class LobbyController {
         return new LobbyView(mapper,res, maxPlayers);
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public ErrorCodes gameStart(){
         return  sendMessageAll(new GameReadyMessage(mapper));
     }
 
     public LobbyGameView getGameView(){
-        Vector<UserGameView> userList = new Vector<UserGameView>();
+        Vector<UserGameView> userList = new Vector<>();
         for(LobbyUserController tab: users.values()){
             UserGameView view = tab.getGameView();
             userList.add(view);
