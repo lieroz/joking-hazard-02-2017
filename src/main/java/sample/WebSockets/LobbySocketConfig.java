@@ -12,6 +12,7 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 
 import sample.Lobby.WebSockets.LobbyWebSocketHandler;
+import sample.Game.WebSockets.GameWebSocketHandler;
 /**
  * Created by ksg on 11.04.17.
  */
@@ -30,10 +31,15 @@ public class LobbySocketConfig implements WebSocketConfigurer{
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(LobbyWebSocketHandler(), "/lobby")
                 .addInterceptors(new HttpSessionHandshakeInterceptor());
+        registry.addHandler(GameWebSocketHandler(), "/game")
+                .addInterceptors(new HttpSessionHandshakeInterceptor());
     }
     @Bean
     public WebSocketHandler LobbyWebSocketHandler(){
         return new LobbyWebSocketHandler();
     }
-
+    @Bean
+    public WebSocketHandler GameWebSocketHandler(){
+        return new GameWebSocketHandler();
+    }
 }

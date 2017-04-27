@@ -9,6 +9,7 @@ import org.springframework.web.socket.WebSocketSession;
 import sample.Lobby.Messages.BaseMessage;
 import sample.Lobby.Models.LobbyUserModel;
 import sample.Lobby.Views.LobbyView;
+import sample.Lobby.Views.UserGameView;
 import sample.Main.Models.UserInfoModel;
 import sample.Main.Services.AccountService;
 import sample.Main.Views.UserDataView;
@@ -103,11 +104,13 @@ public class LobbyUserController {
         return  info.getUserInfo();
     }
 
-    //TODO: This
-    //public LobbyView getView(){
-    //    return LobbyView;
-    //}
+    public UserGameView getGameView(){
+        if(model == null){
+            return null;
+        }
 
+        return model.getGameView();
+    }
     public void close(){
         WebSocketSession ses;
         if(model != null) {
@@ -118,6 +121,5 @@ public class LobbyUserController {
 
             }
         }
-        model = null;
     }
 }

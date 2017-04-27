@@ -8,6 +8,7 @@ import org.springframework.web.socket.WebSocketSession;
 import sample.Lobby.Controllers.LobbyController;
 import sample.Lobby.Controllers.LobbyUserController;
 import sample.Lobby.Views.LobbyView;
+import sample.Lobby.Views.UserGameView;
 import sample.Main.Models.UserInfoModel;
 import sample.Main.Services.AccountService;
 import sample.Main.Views.UserInfo;
@@ -63,5 +64,13 @@ public class LobbyUserModel {
 
     public UserInfoModel getUserInfo(){
         return userInfo;
+    }
+
+    public UserGameView getGameView(){
+        if(userInfo == null){
+            return  null;
+        }
+        String  login = userInfo.getUserLogin();
+        return  new UserGameView(login);
     }
 }

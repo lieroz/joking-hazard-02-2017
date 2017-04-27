@@ -9,15 +9,20 @@ import org.springframework.web.socket.WebSocketSession;
 import sample.Lobby.Messages.GameReadyMessage;
 import sample.Lobby.Messages.UserAddedMessage;
 import sample.Lobby.Messages.BaseMessage;
+import sample.Lobby.Views.LobbyGameView;
+import sample.Lobby.Views.LobbyView;
+import sample.Lobby.Views.UserGameView;
 import sample.Main.Controllers.UserController;
 import sample.Main.Models.UserInfoModel;
 import sample.Lobby.Messages.UserExitedMessage;
 
+import sample.Main.Views.UserInfo;
 import sun.font.TrueTypeFont;
 
 import java.io.IOException;
 
 import java.util.Map;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -75,8 +80,9 @@ public class LobbyController {
         }
         LobbyUserController user = users.get(userId);
         users.remove(userId);
+        UserInfo inf = user.getUserDataView();
         user.close();
-        return sendMessageAll(new UserExitedMessage(user.getUserDataView(), mapper));
+        return sendMessageAll(new UserExitedMessage(inf, mapper));
     }
 
     public boolean isFool(){
@@ -127,8 +133,26 @@ public class LobbyController {
         return  sendMessageAll(result);
     }
 
+    public LobbyView getView(){
+        Vector<UserInfo> res = new Vector<UserInfo>();
+        for(LobbyUserController tab: users.values()){
+            UserInfo dat = tab.getUserDataView();
+            res.add(dat);
+        }
+        return new LobbyView(mapper,res);
+    }
+
     public ErrorCodes gameStart(){
         return  sendMessageAll(new GameReadyMessage(mapper));
+    }
+
+    public LobbyGameView getGameView(){
+        Vector<UserGameView> userList = new Vector<UserGameView>();
+        for(LobbyUserController tab: users.values()){
+            UserGameView view = tab.getGameView();
+            userList.add(view);
+        }
+        return new LobbyGameView(userList,maxPlayers);
     }
 
 }

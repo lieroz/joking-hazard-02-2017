@@ -8,10 +8,14 @@ import org.springframework.web.socket.WebSocketSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sample.Game.Services.ServerWorker;
 import sample.Lobby.Controllers.LobbyController;
 import sample.Lobby.Controllers.LobbyUserController;
 import sample.Lobby.Messages.ErrorMessage;
+import sample.Lobby.Views.LobbyGameView;
+import sample.Lobby.Views.LobbyView;
 import sample.Main.Services.AccountService;
+import sample.Game.Services.ServerManager;
 
 /**
  * Created by ksg on 11.04.17.
@@ -19,7 +23,7 @@ import sample.Main.Services.AccountService;
 //TODO: Message fabric
 @Service
 public class LobbyService {
-    enum  ErrorCodes{
+    public enum  ErrorCodes{
         DATABASE_ERROR,
         INVALID_LOGIN,
         SERVER_RESETED,
@@ -31,6 +35,8 @@ public class LobbyService {
 
     @Autowired
     AccountService accountService;
+    @Autowired
+    ServerManager serverManager;
 
     ObjectMapper mapper;
 
@@ -49,13 +55,28 @@ public class LobbyService {
         currentLobby = new LobbyController(mapper);
     }
 
+    void startGame(){
+        //TODO: StartGame, retry to add new lobby
+        currentLobby.gameStart();
+        LobbyGameView lb = currentLobby.getGameView();
+        ServerManager.ErrorCodes err =serverManager.createGame(lb);
+        switch (err){
+            case OK:{
+                break;
+            }
+            case ERROR_GAME_CREATION:{
+                currentLobby.sendMessageAll(new ErrorMessage("GameCreateionError",mapper));
+            }
+        }
+        resetLobby();
+    }
 
     public LobbyService(ObjectMapper mapper) {
         this.mapper = mapper;
         createLobby();
     }
 
-    public ErrorCodes addUser(WebSocketSession userSession){
+    public synchronized ErrorCodes addUser(WebSocketSession userSession){
         LOGGER.debug("User adding starts.");
         LobbyUserController user = new LobbyUserController();
         LobbyUserController.ErrorCodes initErr = user.lobbyUserControllerInit(userSession,accountService);
@@ -89,7 +110,8 @@ public class LobbyService {
                 return ErrorCodes.SERVER_ERROR;
             }
         }
-
+        LobbyView lv = currentLobby.getView();
+        user.sendMessageToUser(lv);
         LobbyController.ErrorCodes err = currentLobby.addUser(user);
         switch (err){
             case OK:{
@@ -98,9 +120,7 @@ public class LobbyService {
             }
             case LOBBY_IS_FOOL: {
                 LOGGER.debug("Lobby is fool, game start init");
-                //TODO: StartGame, retry to add new lobby
-                currentLobby.gameStart();
-                resetLobby();
+                startGame();
                 break;
             }
             case INVALID_LOGIN: {
@@ -120,9 +140,17 @@ public class LobbyService {
         return ErrorCodes.OK;
     }
 
-    public ErrorCodes removeUser(String UserId){
+    public synchronized ErrorCodes removeUser(String UserId){
         LOGGER.debug("User removing starts");
-        currentLobby.removeUser(UserId);
+        LobbyController.ErrorCodes err =  currentLobby.removeUser(UserId);
+        switch (err){
+            case OK:{
+                break;
+            }
+            case INVALID_LOGIN:{
+                return ErrorCodes.INVALID_LOGIN;
+            }
+        }
         LOGGER.debug("User removed");
         return ErrorCodes.OK;
     }
