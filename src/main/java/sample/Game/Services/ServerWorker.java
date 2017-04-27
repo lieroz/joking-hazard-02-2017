@@ -1,15 +1,11 @@
 package sample.Game.Services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.web.socket.WebSocketSession;
 import sample.Game.Mechanics.MainMechanics;
 import sample.Game.Messages.SystemMessages.MessageContainer;
-import sample.Game.Messages.SystemMessages.UserConnectedMessage;
 import sample.Lobby.Views.LobbyGameView;
-import sample.RecouceManager.ResourceManager;
-import sun.applet.Main;
+import sample.ResourceManager.ResourceManager;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

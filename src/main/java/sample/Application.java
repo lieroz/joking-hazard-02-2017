@@ -12,7 +12,8 @@ import org.springframework.context.annotation.ComponentScan;
         "sample.Main.Views",
         "sample.WebSockets",
         "sample.Lobby.Services",
-        "sample.Game.Services"
+        "sample.Game.Services",
+        "sample.ResourceManager"
 })
 public class Application {
     public static void main(String[] args) throws Exception {

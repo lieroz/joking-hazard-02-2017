@@ -4,14 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sample.Game.Mechanics.Cards.CardDeck;
-import sample.Game.Mechanics.GameUser.GameUserInterface;
 import sample.Game.Mechanics.GameUser.GameUserItem;
 import sample.Game.Messages.SystemMessages.MessageContainer;
-import sample.Lobby.Services.LobbyService;
 import sample.Lobby.Views.LobbyGameView;
 import sample.Lobby.Views.UserGameView;
 import sample.Game.Mechanics.Cards.GameCard;
-import sample.RecouceManager.ResourceManager;
+import sample.ResourceManager.ResourceManager;
 import sample.Game.Mechanics.States.*;
 
 import java.util.HashMap;
@@ -39,12 +37,14 @@ public class MainMechanics {
         public Map<String, GameCard> table;
         public CardDeck deck;
         public GameState state;
-        public int numberofplayers;
+        public int numberOfPlayers;
         public ObjectMapper mapper;
+        public int numberCardsInHand;
         public GameContext(){
             state = new InitState(this);
             mp = new HashMap<String,GameUserItem>(); // TODO: Do it as user controller
             table = new HashMap<String, GameCard>();
+
         }
     }
     LobbyGameView view;
@@ -69,14 +69,15 @@ public class MainMechanics {
                // if i'll do big lock in lobby - nevermore
             }
             String id = cur.getUserId();
-            Vector<GameCard> cards = context.deck.popCards(7);//TODO: resource this
+            context.numberCardsInHand = view.getCardsInHand();
+            Vector<GameCard> cards = context.deck.popCards(context.numberCardsInHand);//TODO: resource this
             if(cards==null){
                 LOGGER.error("deck is null some trouble with resources");
                 return ErrorCodes.SERVER_ERROR;
             }
             context.mp.put(id,new GameUserItem(cards,context.mapper));
         }
-        context.numberofplayers = view.getNumber();
+        context.numberOfPlayers = view.getNumber();
         return ErrorCodes.OK;
     }
     public ErrorCodes handleMessage(MessageContainer msg){

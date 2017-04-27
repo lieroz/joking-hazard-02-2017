@@ -8,7 +8,6 @@ import org.springframework.web.socket.WebSocketSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sample.Game.Services.ServerWorker;
 import sample.Lobby.Controllers.LobbyController;
 import sample.Lobby.Controllers.LobbyUserController;
 import sample.Lobby.Messages.ErrorMessage;
@@ -16,6 +15,7 @@ import sample.Lobby.Views.LobbyGameView;
 import sample.Lobby.Views.LobbyView;
 import sample.Main.Services.AccountService;
 import sample.Game.Services.ServerManager;
+import sample.ResourceManager.ResourceManager;
 
 /**
  * Created by ksg on 11.04.17.
@@ -37,6 +37,8 @@ public class LobbyService {
     AccountService accountService;
     @Autowired
     ServerManager serverManager;
+    @Autowired
+    ResourceManager resourceManager;
 
     ObjectMapper mapper;
 
@@ -47,12 +49,18 @@ public class LobbyService {
         if(currentLobby != null) {
             currentLobby.closeConnections();
         }
-        currentLobby = new LobbyController(mapper);
+        currentLobby = new LobbyController(resourceManager.defaultMaxNumber(),
+                resourceManager.numberOfCardsInHand(),
+                mapper
+               );
     }
 
     void createLobby(){
         LOGGER.debug("Lobby created");
-        currentLobby = new LobbyController(mapper);
+        currentLobby = new LobbyController(resourceManager.defaultMaxNumber(),
+                resourceManager.numberOfCardsInHand(),
+                mapper
+        );
     }
 
     void startGame(){
@@ -71,7 +79,8 @@ public class LobbyService {
         resetLobby();
     }
 
-    public LobbyService(ObjectMapper mapper) {
+    public LobbyService(ObjectMapper mapper, ResourceManager resourceManager) {
+        this.resourceManager = resourceManager;
         this.mapper = mapper;
         createLobby();
     }

@@ -43,20 +43,23 @@ public class LobbyController {
 
     static final int DEFAULT_MAX_NUMBER = 4;
     int maxPlayers;
+    int maxCardsInHand;
 
     Map<String, LobbyUserController> users;
     ObjectMapper mapper;
-    public LobbyController(int maxPlayers, ObjectMapper mapper)
+    public LobbyController(int maxPlayers,int maxCardsInHand, ObjectMapper mapper)
     {
         this.mapper = mapper;
+        this.users = new ConcurrentHashMap<String, LobbyUserController>();
         this.maxPlayers = maxPlayers;
+        this.maxCardsInHand = maxCardsInHand;
     }
 
-    public LobbyController(ObjectMapper mapper){
+    /*public LobbyController(ObjectMapper mapper){
         this.mapper = mapper;
         this.users = new ConcurrentHashMap<String, LobbyUserController>();
         this.maxPlayers = DEFAULT_MAX_NUMBER;
-    }
+    }*/
 
     public synchronized ErrorCodes addUser(@NotNull  LobbyUserController user) {
         String userId = user.getUserId();
@@ -139,7 +142,7 @@ public class LobbyController {
             UserInfo dat = tab.getUserDataView();
             res.add(dat);
         }
-        return new LobbyView(mapper,res);
+        return new LobbyView(mapper,res, maxPlayers);
     }
 
     public ErrorCodes gameStart(){
@@ -152,7 +155,7 @@ public class LobbyController {
             UserGameView view = tab.getGameView();
             userList.add(view);
         }
-        return new LobbyGameView(userList,maxPlayers);
+        return new LobbyGameView(userList,maxPlayers, maxCardsInHand);
     }
 
 }

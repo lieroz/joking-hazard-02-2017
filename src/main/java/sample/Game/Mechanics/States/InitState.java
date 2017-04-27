@@ -30,7 +30,7 @@ public class InitState implements GameState{
         GameUser user = new GameUser(session);
         item.setStrategy(user);
         num_connected++;
-        if(num_connected == context.numberofplayers){
+        if(num_connected == context.numberOfPlayers){
             context.state = new FinishState(context);
             return ErrorCodes.FINISHED;
         }
