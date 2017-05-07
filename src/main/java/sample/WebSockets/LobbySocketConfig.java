@@ -28,6 +28,7 @@ public class LobbySocketConfig implements WebSocketConfigurer{
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(LobbyWebSocketHandler(), "/lobby")
+                .setAllowedOrigins("https://jokinghazard.herokuapp.com")
                 .addInterceptors(new HttpSessionHandshakeInterceptor());
         registry.addHandler(GameWebSocketHandler(), "/game")
                 .addInterceptors(new HttpSessionHandshakeInterceptor());
