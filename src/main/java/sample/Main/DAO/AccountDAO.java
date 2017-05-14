@@ -28,6 +28,13 @@ final public class AccountDAO {
         );
     }
 
+    /**
+     * a1a2a
+     * b1b2b
+     * a1b2b
+     * b1b2b
+     * @param userData
+     */
     public final void insertUserIntoDb(final UserData userData) {
         final String sql = "insert into users (login, email, password) values(?, ?, ?)";
         jdbcTemplate.update(sql, userData.getUserLogin(),

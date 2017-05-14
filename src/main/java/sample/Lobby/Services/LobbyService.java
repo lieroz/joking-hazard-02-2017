@@ -140,6 +140,11 @@ public class LobbyService {
                 startGame();
                 break;
             }
+            case LOGIN_EXIST:{
+                user.sendMessageToUser(new ErrorMessage("Player with this login exist's in lobby", mapper));
+                user.close();
+                return ErrorCodes.INVALID_LOGIN;
+            }
             case INVALID_LOGIN: {
                 LOGGER.debug("Login is invalid");
                 user.sendMessageToUser(new ErrorMessage("Invalid Login", mapper));

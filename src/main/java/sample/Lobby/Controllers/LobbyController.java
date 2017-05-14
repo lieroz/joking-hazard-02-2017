@@ -26,7 +26,7 @@ public class LobbyController {
         OK,
         SERVER_ERROR,
         INVALID_LOGIN,
-        @SuppressWarnings("unused")LOGIN_EXIST,
+        LOGIN_EXIST,
         LOBBY_IS_FOOL,
         SEND_MESSAGE_ERROR,
         INVALID_USER,
@@ -59,6 +59,9 @@ public class LobbyController {
         String userId = user.getUserId();
         if(userId == null){
             return ErrorCodes.INVALID_USER;
+        }
+        if (users.containsKey(userId)){
+            return ErrorCodes.LOGIN_EXIST;
         }
         users.put(userId, user);
         if(users.size() == maxPlayers){
