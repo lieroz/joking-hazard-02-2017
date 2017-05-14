@@ -127,6 +127,11 @@ public class LobbyService {
                 return ErrorCodes.SERVER_ERROR;
             }
         }
+        if(serverManager.userExist(user.getUserId())){
+            user.sendMessageToUser(new ErrorMessage("Player with this login exist's in game", mapper));
+            user.close();
+            return ErrorCodes.INVALID_LOGIN;
+        }
         LobbyView lv = currentLobby.getView();
         user.sendMessageToUser(lv);
         LobbyController.ErrorCodes err = currentLobby.addUser(user);

@@ -96,4 +96,8 @@ public class ServerManager {
         }
         return ErrorCodes.OK;
     }
+
+    public boolean userExist(String userId){
+        return indexMap.containsKey(userId);
+    }
 }
