@@ -12,9 +12,8 @@ import sample.Game.Mechanics.Cards.GameCard;
 import sample.ResourceManager.ResourceManager;
 import sample.Game.Mechanics.States.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * Created by ksg on 25.04.17.
@@ -35,18 +34,22 @@ public class MainMechanics {
 
     public class GameContext{
         public final Map<String,GameUserItem> mp;
-        @SuppressWarnings("unused")
         public final Map<String, GameCard> table;
+        public GameCard[] cards;
+        public Queue<GameUserItem> masterQeue;
         public CardDeck deck;
         public GameState state;
         public int numberOfPlayers;
         public ObjectMapper mapper;
         public int numberCardsInHand;
+        public int currentRound;
         public GameContext(){
             state = new InitState(this);
             mp = new HashMap<>(); // TODO: Do it as user controller
             table = new HashMap<>();
-
+            masterQeue = new ArrayDeque<>();
+            cards = new GameCard[3];
+            currentRound = 0;
         }
     }
     private LobbyGameView view;
@@ -77,7 +80,9 @@ public class MainMechanics {
                 LOGGER.error("deck is null some trouble with resources");
                 return ErrorCodes.SERVER_ERROR;
             }
-            context.mp.put(id,new GameUserItem(cards,context.mapper));
+            GameUserItem curPlayer = new GameUserItem(cards,context.mapper);
+            context.mp.put(id, curPlayer);
+            context.masterQeue.add(curPlayer);
         }
         context.numberOfPlayers = view.getNumber();
         return ErrorCodes.OK;

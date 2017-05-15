@@ -1,5 +1,6 @@
 package sample.Game.Messages.SystemMessages;
 
+import sample.Game.Messages.BaseGameMessage;
 import sample.Game.Services.ServerManager;
 
 /**
@@ -9,8 +10,8 @@ import sample.Game.Services.ServerManager;
 public class MessageContainer {
     private final String userId;
     private final ServerManager.GameIndex index;
-    private final BaseSystemMessage msg;
-    public MessageContainer(String userId, ServerManager.GameIndex index, BaseSystemMessage msg){
+    private final BaseGameMessage msg;
+    public MessageContainer(String userId, ServerManager.GameIndex index, BaseGameMessage msg){
         this.userId = userId;
         this.index = index;
         this.msg = msg;
@@ -21,7 +22,7 @@ public class MessageContainer {
     public ServerManager.GameIndex getIndex(){
         return index;
     }
-    public BaseSystemMessage getMsg(){
+    public BaseGameMessage getMsg(){
         return msg;
     }
 }

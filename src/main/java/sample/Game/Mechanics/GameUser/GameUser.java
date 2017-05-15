@@ -44,4 +44,7 @@ public class GameUser implements GameUserInterface {
 
         }
     }
+    public boolean isUser(){
+        return true;
+    }
 }

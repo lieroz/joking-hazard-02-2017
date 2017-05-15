@@ -11,14 +11,19 @@ import java.util.Map;
  * Created by ksg on 27.04.17.
  */
 @SuppressWarnings("DefaultFileTemplate")
-public class FinishState implements GameState {
+public class FinishState extends GameState {
     public FinishState(MainMechanics.GameContext context){
+        this.context = context;
+    }
+    public ErrorCodes handle(MessageContainer msg){
+        return ErrorCodes.INVALID_COMMAND;
+    }
+    public ErrorCodes transfer(){
+        context.state = this;
         ServerFinishedMessage msg = new ServerFinishedMessage(context.mapper);
         for(Map.Entry<String, GameUserItem> entry : context.mp.entrySet()){
             entry.getValue().sendMessage(msg);
         }
-    }
-    public ErrorCodes handle(MessageContainer msg){
-        return ErrorCodes.INVALID_COMMAND;
+        return ErrorCodes.OK;
     }
 }

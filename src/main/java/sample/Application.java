@@ -1,8 +1,10 @@
 package sample;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
+import sample.Game.Messages.UserMessages.BaseUserMessage;
 
 @SpringBootApplication
 @ComponentScan({"sample.Main.Controllers",

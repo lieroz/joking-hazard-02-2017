@@ -20,4 +20,5 @@ public interface GameUserInterface {
     @SuppressWarnings({"UnusedReturnValue", "SameReturnValue"})
     ErrorCodes send(BaseServerMessage msg);
     void close();
+    boolean isUser();
 }

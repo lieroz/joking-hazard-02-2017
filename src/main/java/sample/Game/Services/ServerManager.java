@@ -4,9 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
+import sample.Game.Messages.BaseGameMessage;
 import sample.Game.Messages.SystemMessages.MessageContainer;
 import sample.Game.Messages.ServerMessages.ServerErrorMessage;
 import sample.Game.Messages.SystemMessages.UserConnectedMessage;
+import sample.Game.Messages.UserMessages.UserMessageContainer;
+import sample.Lobby.Messages.ErrorMessage;
 import sample.Lobby.Views.LobbyGameView;
 import sample.Lobby.Views.UserGameView;
 
@@ -28,6 +31,7 @@ public class ServerManager {
     public enum ErrorCodes{
         OK,
         ERROR_GAME_CREATION,
+        ERROR_GAME_CONNECTION,
     }
     public class GameIndex{
         final int index;
@@ -74,14 +78,16 @@ public class ServerManager {
     }
     //TODO: обернуть websocketsession
     @SuppressWarnings({"UnusedReturnValue", "SameReturnValue"})
-    public ErrorCodes connectUser(WebSocketSession session){
+    public ErrorCodes connectUser(WebSocketSession session){//TODO: change work with session level
         String userId = (String) session.getAttributes().get("userLogin");
         if(userId == null) {
             sendError(session, "No login");
+            return ErrorCodes.ERROR_GAME_CONNECTION;
         }
         GameIndex index = indexMap.get(userId);
         if(index == null){
             sendError(session, "No login in game system");
+            return ErrorCodes.ERROR_GAME_CONNECTION;
         }
         UserConnectedMessage msg = new UserConnectedMessage(session);
         worker.handleMessage(new MessageContainer(userId,index,msg));
@@ -95,6 +101,27 @@ public class ServerManager {
             indexMap.remove(id);
         }
         return ErrorCodes.OK;
+    }
+
+    public void addMessage(WebSocketSession session, String userMessage){
+        final String  userId = (String) session.getAttributes().get("userLogin");
+        if (userId == null) {
+            ErrorMessage msg = new ErrorMessage("Invalid user session", mapper);
+            String text_msg = msg.getJson();
+            try {
+                session.sendMessage(new TextMessage(text_msg));
+            } catch (IOException ignored) {
+
+            }
+            return;
+        }
+        GameIndex index = indexMap.get(userId);
+        if(index == null){
+            sendError(session, "No login in game system");
+            return;
+        }
+        BaseGameMessage msg = new UserMessageContainer(userMessage);
+        worker.handleMessage(new MessageContainer(userId,index,msg));
     }
 
     public boolean userExist(String userId){

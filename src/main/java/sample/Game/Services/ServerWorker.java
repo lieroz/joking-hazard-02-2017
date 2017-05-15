@@ -8,12 +8,13 @@ import sample.ResourceManager.ResourceManager;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.lang.Runnable;
 
 /**
  * Created by ksg on 25.04.17.
  */
 @SuppressWarnings("DefaultFileTemplate")
-public class ServerWorker {
+public class ServerWorker {//implements Runnable{
     enum ErrorCodes{
         OK,
 
@@ -70,5 +71,9 @@ public class ServerWorker {
         }
         return ErrorCodes.OK;
     }
+
+    //public void run(){
+
+    //}
 
 }

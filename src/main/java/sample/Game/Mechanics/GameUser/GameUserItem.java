@@ -3,6 +3,7 @@ package sample.Game.Mechanics.GameUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import sample.Game.Mechanics.Cards.GameCard;
 import sample.Game.Messages.ServerMessages.BaseServerMessage;
+import sample.Game.Messages.ServerMessages.GameUserInfo;
 import sample.Game.Messages.ServerMessages.HandInfo;
 
 import java.util.Vector;
@@ -14,7 +15,7 @@ import java.util.Vector;
 public class GameUserItem {
     private final Vector<GameCard> hand;
     @SuppressWarnings({"FieldCanBeLocal", "unused"})
-    private final Integer score;
+    private Integer score;
     private GameUserInterface user;
     private final ObjectMapper mapper;
     public GameUserItem(Vector<GameCard> hand, ObjectMapper mapper){
@@ -31,7 +32,17 @@ public class GameUserItem {
         if(user != null)
             user.send(msg);
     }
+    public boolean isUser(){
+        return user.isUser();
+    }
     public void close(){
         user.close();
+    }
+    public int getScore(){
+        return score;
+    }
+
+    public void setScore(int score){
+        this.score = score;
     }
 }

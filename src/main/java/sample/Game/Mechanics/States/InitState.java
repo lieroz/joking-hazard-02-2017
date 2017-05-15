@@ -11,7 +11,7 @@ import sample.Game.Messages.SystemMessages.UserConnectedMessage;
  * Created by ksg on 26.04.17.
  */
 @SuppressWarnings("DefaultFileTemplate")
-public class InitState implements GameState{
+public class InitState extends GameState{
     private final MainMechanics.GameContext context;
     private int num_connected;
 
@@ -30,11 +30,13 @@ public class InitState implements GameState{
         item.setStrategy(user);
         num_connected++;
         if(num_connected == context.numberOfPlayers){
-            context.state = new FinishState(context);
-            return ErrorCodes.FINISHED;
+            GameState state = new RoundBeginState(context);
+            state.transfer();
         }
         return ErrorCodes.OK;
     }
+
+
     @Override
     public ErrorCodes handle(MessageContainer msg) {
         String type = msg.getMsg().getType();
@@ -46,5 +48,10 @@ public class InitState implements GameState{
                 break;
         }
         return ErrorCodes.INVALID_COMMAND;
+    }
+
+    public ErrorCodes transfer(){
+        context.state = this;
+        return ErrorCodes.OK;
     }
 }
