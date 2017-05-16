@@ -1,6 +1,5 @@
 package sample.Game.Mechanics.States;
 
-import com.sun.xml.internal.ws.resources.ServerMessages;
 import sample.Game.Mechanics.GameUser.GameUserItem;
 import sample.Game.Mechanics.MainMechanics;
 import sample.Game.Messages.ServerMessages.BaseServerMessage;
