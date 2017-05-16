@@ -5,7 +5,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sample.Game.Mechanics.Cards.CardDeck;
 import sample.Game.Mechanics.GameUser.GameUserItem;
-import sample.Game.Messages.SystemMessages.MessageContainer;
+import sample.Game.Messages.BaseMessageContainer;
+import sample.Game.Messages.ServerMessages.GameUserInfo;
+import sample.Game.Messages.ServerMessages.RoundInfo;
+import sample.Game.Messages.ServerMessages.ServerErrorMessage;
 import sample.Lobby.Views.LobbyGameView;
 import sample.Lobby.Views.UserGameView;
 import sample.Game.Mechanics.Cards.GameCard;
@@ -25,7 +28,9 @@ public class MainMechanics {
     public enum  ErrorCodes{
         SERVER_ERROR,
         @SuppressWarnings("unused")RESOURCE_ERROR,
+        SERIALIZATION_ERROR,
         INVALID_COMMAND,
+        OUT_OF_RANGE,
         FINISHED,
         OK,
     }
@@ -43,10 +48,15 @@ public class MainMechanics {
         public ObjectMapper mapper;
         public int numberCardsInHand;
         public int currentRound;
+        public GameUserItem master;
+        public void reset(){
+            table.clear();
+            Arrays.fill(cards,null);
+        }
         public GameContext(){
             state = new InitState(this);
             mp = new HashMap<>(); // TODO: Do it as user controller
-            table = new HashMap<>();
+            table = new LinkedHashMap<>();
             masterQeue = new ArrayDeque<>();
             cards = new GameCard[3];
             currentRound = 0;
@@ -87,17 +97,39 @@ public class MainMechanics {
         context.numberOfPlayers = view.getNumber();
         return ErrorCodes.OK;
     }
-    public ErrorCodes handleMessage(MessageContainer msg){
+    public ErrorCodes handleMessage(BaseMessageContainer msg){
         GameState.ErrorCodes err = context.state.handle(msg);
-        return errorHandler(err);
+        return errorHandler(err, msg.getUserId());
     }
-    private ErrorCodes errorHandler(GameState.ErrorCodes err){
+    private ErrorCodes errorHandler(GameState.ErrorCodes err, String userId){
+        GameUserItem item = context.mp.get(userId);
         switch (err){
             case OK: {
                 break;
             }
             case INVALID_COMMAND: {
+                item.sendMessage(new ServerErrorMessage(context.mapper,"Invalid Command"));
                 return ErrorCodes.INVALID_COMMAND;
+            }
+            case SERIALIZATION_ERROR:{
+                item.sendMessage(new ServerErrorMessage(context.mapper,"Serialization Error"));
+                return ErrorCodes.INVALID_COMMAND;
+            }
+            case OUT_OF_RANGE:{
+                item.sendMessage(new ServerErrorMessage(context.mapper,"Out of range Error"));
+                return ErrorCodes.SERIALIZATION_ERROR;
+            }
+
+            case BAD_BEHAVIOR:{
+                item.sendMessage(new ServerErrorMessage(context.mapper,"Unexpected behavior"));
+                return ErrorCodes.INVALID_COMMAND;
+            }
+            case SERVER_ERROR:{
+                LOGGER.info("SERVER ERROR \n");
+                for(Map.Entry<String, GameUserItem> entry : context.mp.entrySet()){
+                    entry.getValue().sendMessage(new ServerErrorMessage(context.mapper, "server error, closing game"));
+                }
+                return ErrorCodes.FINISHED;
             }
             case FINISHED: {
                 LOGGER.info("GameFinished \n");
@@ -110,6 +142,17 @@ public class MainMechanics {
         return view;
     }
     public  void finishGame(){
+        Vector<GameUserInfo> resvect = new Vector<>();
+        for(Map.Entry<String, GameUserItem> entry : context.mp.entrySet()){
+            String userId = entry.getKey();
+            GameUserItem user = entry.getValue();
+            resvect.add(new GameUserInfo(context.mapper, userId, false, user.getScore()));
+        }
+        RoundInfo msg = new RoundInfo(context.mapper,resvect,context.currentRound);
+        for(Map.Entry<String, GameUserItem> entry : context.mp.entrySet()){
+            GameUserItem user = entry.getValue();
+            user.sendMessage(msg);
+        }
         for(Map.Entry<String, GameUserItem> entry : context.mp.entrySet()){
             entry.getValue().close();
         }

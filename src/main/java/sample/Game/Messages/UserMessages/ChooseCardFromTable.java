@@ -18,7 +18,7 @@ public class ChooseCardFromTable extends BaseUserMessage{
     public String getType(){
         return "ChooseCardFromTable";
     }
-    public int getCard(){
+    public int getChosenCard(){
         return chosenCard;
     }
 }

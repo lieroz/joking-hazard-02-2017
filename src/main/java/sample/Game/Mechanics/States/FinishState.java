@@ -3,7 +3,7 @@ package sample.Game.Mechanics.States;
 import sample.Game.Mechanics.GameUser.GameUserItem;
 import sample.Game.Mechanics.MainMechanics;
 import sample.Game.Messages.ServerMessages.ServerFinishedMessage;
-import sample.Game.Messages.SystemMessages.MessageContainer;
+import sample.Game.Messages.BaseMessageContainer;
 
 import java.util.Map;
 
@@ -15,7 +15,7 @@ public class FinishState extends GameState {
     public FinishState(MainMechanics.GameContext context){
         this.context = context;
     }
-    public ErrorCodes handle(MessageContainer msg){
+    public ErrorCodes handle(BaseMessageContainer msg){
         return ErrorCodes.INVALID_COMMAND;
     }
     public ErrorCodes transfer(){
@@ -24,6 +24,6 @@ public class FinishState extends GameState {
         for(Map.Entry<String, GameUserItem> entry : context.mp.entrySet()){
             entry.getValue().sendMessage(msg);
         }
-        return ErrorCodes.OK;
+        return ErrorCodes.FINISHED;
     }
 }

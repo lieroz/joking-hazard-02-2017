@@ -1,8 +1,11 @@
 package sample.Game.Mechanics.GameUser;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.TextMessage;
 import sample.Game.Messages.ServerMessages.BaseServerMessage;
+import sample.Game.Messages.ServerMessages.GetCardFromHand;
+import sample.Game.Messages.ServerMessages.GetCardFromTable;
 import sample.Game.Messages.ServerMessages.HandInfo;
 
 import java.io.IOException;
@@ -20,12 +23,13 @@ public class GameUser implements GameUserInterface {
     public void init(HandInfo info){
         send(info);
     }
-    public ErrorCodes getCardFromDeck(){
+    public ErrorCodes chooseCardFromHand(ObjectMapper mapper){
+        send(new GetCardFromHand(mapper));
         return ErrorCodes.OK;
     }
 
-    public ErrorCodes chooseCardFromTable(){
-
+    public ErrorCodes chooseCardFromTable(ObjectMapper mapper){
+        send(new GetCardFromTable(mapper));
         return ErrorCodes.OK;
     }
 

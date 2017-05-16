@@ -5,11 +5,10 @@ import sample.Game.Mechanics.Cards.GameCard;
 import sample.Game.Mechanics.GameUser.GameUser;
 import sample.Game.Mechanics.GameUser.GameUserItem;
 import sample.Game.Mechanics.MainMechanics;
-import sample.Game.Messages.ServerMessages.GameUserInfo;
-import sample.Game.Messages.ServerMessages.GetCardFromHand;
-import sample.Game.Messages.ServerMessages.RoundInfo;
-import sample.Game.Messages.ServerMessages.TableInfo;
+import sample.Game.Messages.BaseGameMessage;
+import sample.Game.Messages.ServerMessages.*;
 import sample.Game.Messages.SystemMessages.MessageContainer;
+import sample.Game.Messages.BaseMessageContainer;
 import sample.Game.Messages.SystemMessages.UserConnectedMessage;
 import sample.Game.Messages.UserMessages.ChooseCardFromHand;
 import sample.Main.Views.UserInfo;
@@ -27,7 +26,6 @@ public class RoundBeginState extends GameState {
     public RoundBeginState(MainMechanics.GameContext context){
         this.context = context;
     }
-
     private void prepareTable(GameUserItem it){
         Vector<GameUserInfo> resvect = new Vector<>();
         for(Map.Entry<String, GameUserItem> entry : context.mp.entrySet()){
@@ -57,16 +55,14 @@ public class RoundBeginState extends GameState {
         }
     }
 
-    private ErrorCodes addUser(MessageContainer msg){
-        String userId = msg.getUserId();
-        GameUserItem item = context.mp.get(userId);
-        Class cls = msg.getMsg().getClassOfMessage();
-        UserConnectedMessage conMessage = (UserConnectedMessage) cls.cast(msg.getMsg());
-        WebSocketSession session = conMessage.getSession();
-        GameUser user = new GameUser(session);
-        item.setStrategy(user);
-        return ErrorCodes.OK;
+    private void addMasterCard(GameCard card){
+        if (context.cards[1] == null){
+            context.cards[2] = card;
+        } else {
+            context.cards[1] = card;
+        }
     }
+
 
     private GameUserItem getMaster(){
         GameUserItem it;
@@ -77,18 +73,33 @@ public class RoundBeginState extends GameState {
         return it;
     }
 
-    private ErrorCodes chooseCardFromHand(MessageContainer msg){
+
+    private ErrorCodes chooseCardFromHand(BaseMessageContainer msg){
         String userId = msg.getUserId();
         GameUserItem item = context.mp.get(userId);
-        Class cls = msg.getMsg().getClassOfMessage();
-        ChooseCardFromHand conMessage = (ChooseCardFromHand) cls.cast(msg.getMsg());
+        if(item != context.master){
+            return ErrorCodes.BAD_BEHAVIOR;
+        }
+        Class cls = msg.getMsg(context.mapper).getClassOfMessage();
+        ChooseCardFromHand conMessage = (ChooseCardFromHand) cls.cast(msg.getMsg(context.mapper));
         //TODO: Logic
-        return ErrorCodes.OK;
+        int index = conMessage.getChosenCard();
+        GameCard card = context.master.getCardFromHandByIndex(index);
+        if(card == null){
+            return ErrorCodes.OUT_OF_RANGE;
+        }
+        addMasterCard(card);
+        RoundState state = new RoundState(context);
+        return state.transfer();
     }
 
     @Override
-    public ErrorCodes handle(MessageContainer msg) {
-        String type = msg.getMsg().getType();
+    public ErrorCodes handle(BaseMessageContainer msg) {
+        BaseGameMessage ser_msg =msg.getMsg(context.mapper);
+        if(ser_msg == null){
+            return ErrorCodes.SERIALIZATION_ERROR;
+        }
+        String type = ser_msg.getType();
         switch (type) {
             case "UserConnected": {
                 return addUser(msg);
@@ -103,20 +114,22 @@ public class RoundBeginState extends GameState {
     }
 
     public ErrorCodes transfer(){
-        GameUserItem it = getMaster();
-        if (it == null){
-            FinishState state = new FinishState(context);
-            state.transfer();
-            return ErrorCodes.OK;
-        }
-        prepareTable(it);
-        prepateCards();
+        context.reset();
+        context.currentRound++;
         for(Map.Entry<String, GameUserItem> entry : context.mp.entrySet()){
             GameUserItem user = entry.getValue();
-            if (it == user) {
-                user.sendMessage(new GetCardFromHand(context.mapper));
+            if (!user.reget(context.deck)){
+                return ErrorCodes.SERVER_ERROR;
             }
         }
+        context.master = getMaster();
+        if (context.master == null){
+            FinishState state = new FinishState(context);
+            return state.transfer();
+        }
+        prepareTable(context.master);
+        prepateCards();
+        context.master.getCardFromHand();
         this.context.state = this;
         //this.notifyAll(msg);
         return ErrorCodes.OK;

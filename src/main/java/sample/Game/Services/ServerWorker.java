@@ -2,7 +2,7 @@ package sample.Game.Services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import sample.Game.Mechanics.MainMechanics;
-import sample.Game.Messages.SystemMessages.MessageContainer;
+import sample.Game.Messages.BaseMessageContainer;
 import sample.Lobby.Views.LobbyGameView;
 import sample.ResourceManager.ResourceManager;
 
@@ -61,7 +61,7 @@ public class ServerWorker {//implements Runnable{
     }
 
     @SuppressWarnings({"UnusedReturnValue", "SameReturnValue"})
-    public ErrorCodes handleMessage(MessageContainer container){
+    public ErrorCodes handleMessage(BaseMessageContainer container){
         Integer gameIndex = container.getIndex().getIndex();
         MainMechanics mechanics = games.get(gameIndex);
         MainMechanics.ErrorCodes err = mechanics.handleMessage(container);

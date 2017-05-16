@@ -120,8 +120,7 @@ public class ServerManager {
             sendError(session, "No login in game system");
             return;
         }
-        BaseGameMessage msg = new UserMessageContainer(userMessage);
-        worker.handleMessage(new MessageContainer(userId,index,msg));
+        worker.handleMessage(new UserMessageContainer(userId,index,userMessage));
     }
 
     public boolean userExist(String userId){
