@@ -129,6 +129,7 @@ public class LobbyService {
         }
         if(serverManager.userExist(user.getUserId())){
             user.sendMessageToUser(new ErrorMessage("Player with this login exist's in game", mapper));
+            userSession.getAttributes().put("rejected",Boolean.TRUE);
             user.close();
             return ErrorCodes.INVALID_LOGIN;
         }
@@ -147,6 +148,7 @@ public class LobbyService {
             }
             case LOGIN_EXIST:{
                 user.sendMessageToUser(new ErrorMessage("Player with this login exist's in lobby", mapper));
+                userSession.getAttributes().put("rejected",Boolean.TRUE);
                 user.close();
                 return ErrorCodes.INVALID_LOGIN;
             }

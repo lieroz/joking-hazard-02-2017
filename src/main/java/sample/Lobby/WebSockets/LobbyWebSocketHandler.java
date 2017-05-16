@@ -39,7 +39,8 @@ public class LobbyWebSocketHandler extends TextWebSocketHandler {
     public void afterConnectionClosed(WebSocketSession webSocketSession, CloseStatus closeStatus) throws Exception {
 
         final String userId = (String) webSocketSession.getAttributes().get("userLogin");
-        if(userId != null) {
+        final Boolean rejected = (Boolean) webSocketSession.getAttributes().get("rejected");
+        if((userId != null)&&(rejected == null)) {
             lobbyService.removeUser(userId);
         }
         webSocketSession.close();
