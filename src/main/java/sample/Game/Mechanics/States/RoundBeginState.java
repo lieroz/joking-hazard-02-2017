@@ -51,6 +51,7 @@ public class RoundBeginState extends GameState {
         TableInfo tableInfoMsg = new TableInfo(context.mapper, context.cards);
         for(Map.Entry<String, GameUserItem> entry : context.mp.entrySet()){
             GameUserItem user = entry.getValue();
+            user.sendHand();
             user.sendMessage(tableInfoMsg);
         }
     }

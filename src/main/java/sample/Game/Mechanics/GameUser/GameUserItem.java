@@ -73,4 +73,5 @@ public class GameUserItem {
     public void incrementScore(){
         this.score++;
     }
+    public void sendHand(){user.sendHandInfo(new HandInfo(mapper, hand));}
 }

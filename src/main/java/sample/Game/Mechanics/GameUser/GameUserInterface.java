@@ -20,6 +20,7 @@ public interface GameUserInterface {
     ErrorCodes chooseCardFromTable(ObjectMapper mapper);
     @SuppressWarnings({"UnusedReturnValue", "SameReturnValue"})
     ErrorCodes send(BaseServerMessage msg);
+    void sendHandInfo(HandInfo hand);
     void close();
     boolean isUser();
 }

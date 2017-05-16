@@ -23,6 +23,9 @@ public class GameUser implements GameUserInterface {
     public void init(HandInfo info){
         send(info);
     }
+    public void sendHandInfo(HandInfo info){
+        send(info);
+    }
     public ErrorCodes chooseCardFromHand(ObjectMapper mapper){
         send(new GetCardFromHand(mapper));
         return ErrorCodes.OK;
