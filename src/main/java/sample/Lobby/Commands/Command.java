@@ -7,19 +7,23 @@ package sample.Lobby.Commands;
 public class Command {
     private String cmd;
     private String arguments;
-    public String getCmd(){
+
+    public String getCmd() {
         return cmd;
     }
+
     @SuppressWarnings("unused")
-    public String getArguments(){
+    public String getArguments() {
         return arguments;
     }
+
     @SuppressWarnings("unused")
-    public void setCmd(String cmd){
+    public void setCmd(String cmd) {
         this.cmd = cmd;
     }
+
     @SuppressWarnings("unused")
-    public void setArguments(String arguments){
+    public void setArguments(String arguments) {
         this.arguments = arguments;
     }
 }

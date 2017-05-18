@@ -1,24 +1,21 @@
 package sample.Main.Controllers;
 
 import org.springframework.context.MessageSource;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import sample.Main.Models.UserInfoModel;
 import sample.Main.Services.AccountService;
-import sample.Main.Views.ResponseCode;
-import sample.Main.Views.PassForm;
 import sample.Main.Views.MailForm;
+import sample.Main.Views.PassForm;
+import sample.Main.Views.ResponseCode;
+import sample.Main.Views.UserInfo;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
-
 import java.util.Locale;
 
-import sample.Main.Views.UserInfo;
-
-@SuppressWarnings("Duplicates")
 @CrossOrigin(origins = "https://jokinghazard.herokuapp.com")
 @RestController
 public class UserController {
@@ -46,6 +43,7 @@ public class UserController {
 
         final AccountService.ErrorCodes error = accountService.getUserData(id, data);
 
+        //noinspection EnumSwitchStatementWhichMissesCases
         switch (error) {
 
             case INVALID_LOGIN: {
@@ -98,6 +96,7 @@ public class UserController {
         final String login = (String) httpSession.getAttribute("userLogin");
         final AccountService.ErrorCodes result = accountService.changeMail(body.getUserMail(), login);
 
+        //noinspection EnumSwitchStatementWhichMissesCases
         switch (result) {
 
             case INVALID_SESSION: {
@@ -145,6 +144,7 @@ public class UserController {
 
         final AccountService.ErrorCodes error = accountService.changePassHash(form.getNewPassHash(), login);
 
+        //noinspection EnumSwitchStatementWhichMissesCases
         switch (error) {
 
             case OK: {
@@ -174,6 +174,7 @@ public class UserController {
 
         final AccountService.ErrorCodes error = accountService.deleteUserData(login);
 
+        //noinspection EnumSwitchStatementWhichMissesCases
         switch (error) {
 
             case OK: {

@@ -5,61 +5,62 @@ import sample.Game.Mechanics.GameUser.GameUserItem;
 import sample.Game.Mechanics.MainMechanics;
 import sample.Game.Messages.BaseGameMessage;
 import sample.Game.Messages.BaseMessageContainer;
-import sample.Game.Messages.UserMessages.ChooseCardFromHand;
 import sample.Game.Messages.UserMessages.ChooseCardFromTable;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by ksg on 16.05.17.
  */
-public class RoundFinishState extends GameState{
-    public RoundFinishState(MainMechanics.GameContext context){
+public class RoundFinishState extends GameState {
+    public RoundFinishState(MainMechanics.GameContext context) {
         this.context = context;
     }
 
 
+    @Override
     public GameState.ErrorCodes transfer() {
         this.context.state = this;
         context.master.getCardFromTable();
         return GameState.ErrorCodes.OK;
     }
 
-    private GameState.ErrorCodes chooseCardFromTable(BaseMessageContainer msg){
-        String userId = msg.getUserId();
-        GameUserItem item = context.mp.get(userId);
-        if(item != context.master){
+    private GameState.ErrorCodes chooseCardFromTable(BaseMessageContainer msg) {
+        final String userId = msg.getUserId();
+        final GameUserItem item = context.mp.get(userId);
+        if (!Objects.equals(item, context.master)) {
             return GameState.ErrorCodes.BAD_BEHAVIOR;
         }
-        if (context.table.containsKey(userId)){
+        if (context.table.containsKey(userId)) {
             return GameState.ErrorCodes.BAD_BEHAVIOR;
         }
-        Class cls = msg.getMsg(context.mapper).getClassOfMessage();
-        ChooseCardFromTable conMessage = (ChooseCardFromTable) cls.cast(msg.getMsg(context.mapper));
+        final Class cls = msg.getMsg(context.mapper).getClassOfMessage();
+        final ChooseCardFromTable conMessage = (ChooseCardFromTable) cls.cast(msg.getMsg(context.mapper));
         //TODO: Logic
-        int index = conMessage.getChosenCard();
-        Iterator<Map.Entry<String,GameCard>> it = context.table.entrySet().iterator();
-        for(int i = 0; i< index; i++){
+        final int index = conMessage.getChosenCard();
+        final Iterator<Map.Entry<String, GameCard>> it = context.table.entrySet().iterator();
+        for (int i = 0; i < index; i++) {
             it.next();
         }
-        String chosenUserId = it.next().getKey();
-        if(chosenUserId == null){
+        final String chosenUserId = it.next().getKey();
+        if (chosenUserId == null) {
             return GameState.ErrorCodes.OUT_OF_RANGE;
         }
-        GameUserItem winner = context.mp.get(chosenUserId);
+        final GameUserItem winner = context.mp.get(chosenUserId);
         winner.incrementScore();
-        RoundBeginState state = new RoundBeginState(context);
+        final RoundBeginState state = new RoundBeginState(context);
         return state.transfer();
     }
 
     @Override
     public GameState.ErrorCodes handle(BaseMessageContainer msg) {
-        BaseGameMessage ser_msg = msg.getMsg(context.mapper);
-        if(ser_msg == null){
+        @SuppressWarnings("LocalVariableNamingConvention") final BaseGameMessage ser_msg = msg.getMsg(context.mapper);
+        if (ser_msg == null) {
             return GameState.ErrorCodes.SERIALIZATION_ERROR;
         }
-        String type = ser_msg.getType();
+        final String type = ser_msg.getType();
         switch (type) {
             case "ChooseCardFromTable": {
                 return chooseCardFromTable(msg);

@@ -6,19 +6,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Created by ksg on 15.05.17.
  */
-public class ChooseCardFromHand extends BaseUserMessage{
-    int chosenCard;
+public class ChooseCardFromHand extends BaseUserMessage {
+    final int chosenCard;
+
     @JsonCreator
     public ChooseCardFromHand(
             @JsonProperty("chosenCard") int chosenCard
-    ){
+    ) {
         this.chosenCard = chosenCard;
     }
 
-    public String getType(){
+    @Override
+    public String getType() {
         return "ChooseCardFromHand";
     }
-    public int getChosenCard(){
+
+    public int getChosenCard() {
         return chosenCard;
     }
 }

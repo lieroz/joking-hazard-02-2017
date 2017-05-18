@@ -1,20 +1,18 @@
 package sample.Lobby.Services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import sample.Game.Services.ServerManager;
 import sample.Lobby.Controllers.LobbyController;
 import sample.Lobby.Controllers.LobbyUserController;
 import sample.Lobby.Messages.ErrorMessage;
 import sample.Lobby.Views.LobbyGameView;
 import sample.Lobby.Views.LobbyView;
 import sample.Main.Services.AccountService;
-import sample.Game.Services.ServerManager;
 import sample.ResourceManager.ResourceManager;
 
 /**
@@ -24,14 +22,15 @@ import sample.ResourceManager.ResourceManager;
 @SuppressWarnings("DefaultFileTemplate")
 @Service
 public class LobbyService {
-    public enum  ErrorCodes{
+    public enum ErrorCodes {
         DATABASE_ERROR,
         INVALID_LOGIN,
         SERVER_RESETED,
         INVALID_SESSION,
         SERVER_ERROR,
-        OK,
+        @SuppressWarnings("EnumeratedConstantNamingConvention")OK,
     }
+
     private static final Logger LOGGER = LoggerFactory.getLogger(LobbyService.class);
 
     @SuppressWarnings("SpringAutowiredFieldsWarningInspection")
@@ -51,18 +50,18 @@ public class LobbyService {
 
     private LobbyController currentLobby;
 
-    private void resetLobby(){
+    private void resetLobby() {
         LOGGER.debug("Lobby reseted");
-        if(currentLobby != null) {
+        if (currentLobby != null) {
             currentLobby.closeConnections();
         }
         currentLobby = new LobbyController(resourceManager.defaultMaxNumber(),
                 resourceManager.numberOfCardsInHand(),
                 mapper
-               );
+        );
     }
 
-    private void createLobby(){
+    private void createLobby() {
         LOGGER.debug("Lobby created");
         currentLobby = new LobbyController(resourceManager.defaultMaxNumber(),
                 resourceManager.numberOfCardsInHand(),
@@ -70,17 +69,18 @@ public class LobbyService {
         );
     }
 
-    private void startGame(){
+    private void startGame() {
         //TODO: StartGame, retry to add new lobby
         currentLobby.gameStart();
-        LobbyGameView lb = currentLobby.getGameView();
-        ServerManager.ErrorCodes err =serverManager.createGame(lb);
-        switch (err){
-            case OK:{
+        final LobbyGameView lb = currentLobby.getGameView();
+        final ServerManager.ErrorCodes err = serverManager.createGame(lb);
+        //noinspection EnumSwitchStatementWhichMissesCases,SwitchStatementWithoutDefaultBranch
+        switch (err) {
+            case OK: {
                 break;
             }
-            case ERROR_GAME_CREATION:{
-                currentLobby.sendMessageAll(new ErrorMessage("GameCreateionError",mapper));
+            case ERROR_GAME_CREATION: {
+                currentLobby.sendMessageAll(new ErrorMessage("GameCreateionError", mapper));
             }
         }
         resetLobby();
@@ -92,52 +92,54 @@ public class LobbyService {
         createLobby();
     }
 
-    @SuppressWarnings("UnusedReturnValue")
-    public synchronized ErrorCodes addUser(WebSocketSession userSession){
+    @SuppressWarnings({"UnusedReturnValue", "OverlyComplexMethod"})
+    public synchronized ErrorCodes addUser(WebSocketSession userSession) {
         LOGGER.debug("User adding starts.");
-        LobbyUserController user = new LobbyUserController();
-        LobbyUserController.ErrorCodes initErr = user.lobbyUserControllerInit(userSession,accountService);
-        switch (initErr){
-            case OK:{
+        final LobbyUserController user = new LobbyUserController();
+        final LobbyUserController.ErrorCodes initErr = user.lobbyUserControllerInit(userSession, accountService);
+        //noinspection EnumSwitchStatementWhichMissesCases,SwitchStatementWithoutDefaultBranch
+        switch (initErr) {
+            case OK: {
                 LOGGER.debug("User inited");
                 break;
             }
-            case INVALID_LOGIN:{
+            case INVALID_LOGIN: {
                 LOGGER.debug("Login is invalid");
                 user.sendMessageToUser(new ErrorMessage("Invalid Login", mapper));
                 user.close();
                 return ErrorCodes.INVALID_LOGIN;
             }
-            case DATABASE_ERROR:{
+            case DATABASE_ERROR: {
                 LOGGER.debug("Database error");
                 user.sendMessageToUser(new ErrorMessage("Database Error", mapper));
                 user.close();
-                return  ErrorCodes.DATABASE_ERROR;
+                return ErrorCodes.DATABASE_ERROR;
             }
-            case INVALID_SESSION:{
+            case INVALID_SESSION: {
                 LOGGER.debug("Invalid session");
                 user.sendMessageToUser(new ErrorMessage("Invalid Session", mapper));
                 user.close();
                 return ErrorCodes.INVALID_SESSION;
             }
-            case SERVER_ERROR:{
+            case SERVER_ERROR: {
                 LOGGER.error("Server error in user Lobby Controller initialisation");
                 user.sendMessageToUser(new ErrorMessage("Server Error", mapper));
                 user.close();
                 return ErrorCodes.SERVER_ERROR;
             }
         }
-        if(serverManager.userExist(user.getUserId())){
+        if (serverManager.userExist(user.getUserId())) {
             user.sendMessageToUser(new ErrorMessage("Player with this login exist's in game", mapper));
-            userSession.getAttributes().put("rejected",Boolean.TRUE);
+            userSession.getAttributes().put("rejected", Boolean.TRUE);
             user.close();
             return ErrorCodes.INVALID_LOGIN;
         }
-        LobbyView lv = currentLobby.getView();
+        final LobbyView lv = currentLobby.getView();
         user.sendMessageToUser(lv);
-        LobbyController.ErrorCodes err = currentLobby.addUser(user);
-        switch (err){
-            case OK:{
+        final LobbyController.ErrorCodes err = currentLobby.addUser(user);
+        //noinspection EnumSwitchStatementWhichMissesCases,SwitchStatementWithoutDefaultBranch
+        switch (err) {
+            case OK: {
                 LOGGER.debug("User added");
                 break;
             }
@@ -146,9 +148,9 @@ public class LobbyService {
                 startGame();
                 break;
             }
-            case LOGIN_EXIST:{
+            case LOGIN_EXIST: {
                 user.sendMessageToUser(new ErrorMessage("Player with this login exist's in lobby", mapper));
-                userSession.getAttributes().put("rejected",Boolean.TRUE);
+                userSession.getAttributes().put("rejected", Boolean.TRUE);
                 user.close();
                 return ErrorCodes.INVALID_LOGIN;
             }
@@ -169,14 +171,15 @@ public class LobbyService {
         return ErrorCodes.OK;
     }
 
-    public synchronized ErrorCodes removeUser(String UserId){
+    public synchronized ErrorCodes removeUser(String UserId) {
         LOGGER.debug("User removing starts");
-        LobbyController.ErrorCodes err =  currentLobby.removeUser(UserId);
-        switch (err){
-            case OK:{
+        final LobbyController.ErrorCodes err = currentLobby.removeUser(UserId);
+        //noinspection EnumSwitchStatementWhichMissesCases,SwitchStatementWithoutDefaultBranch
+        switch (err) {
+            case OK: {
                 break;
             }
-            case INVALID_LOGIN:{
+            case INVALID_LOGIN: {
                 return ErrorCodes.INVALID_LOGIN;
             }
         }

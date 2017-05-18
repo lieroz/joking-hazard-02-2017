@@ -8,21 +8,22 @@ import sample.Main.Views.UserInfo;
  * Created by ksg on 12.04.17.
  */
 @SuppressWarnings("DefaultFileTemplate")
-public class UserExitedMessage extends  BaseMessage {
+public class UserExitedMessage extends BaseMessage {
 
     private final UserInfo view;
 
-    public UserExitedMessage(UserInfo view, ObjectMapper mapper){
+    public UserExitedMessage(UserInfo view, ObjectMapper mapper) {
         super(mapper);
         this.view = view;
     }
 
     @Override
-    public String getType(){
+    public String getType() {
         return "UserExitedMessage";
     }
+
     @SuppressWarnings("unused")
-    public UserInfo getUser(){
+    public UserInfo getUser() {
         return view;
     }
 

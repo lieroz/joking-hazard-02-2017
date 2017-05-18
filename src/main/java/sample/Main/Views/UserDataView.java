@@ -11,8 +11,8 @@ import javax.validation.constraints.NotNull;
 @SuppressWarnings("DefaultFileTemplate")
 public final class UserDataView {
     @SuppressWarnings("unused")
-    public enum  ViewError {
-        OK,
+    public enum ViewError {
+        @SuppressWarnings("EnumeratedConstantNamingConvention")OK,
         INVALID_DATA_ERROR
     }
 
@@ -23,8 +23,8 @@ public final class UserDataView {
     @SuppressWarnings("unused")
     @JsonCreator
     public UserDataView(@JsonProperty("userMail") String userMail,
-                    @JsonProperty("userLogin") String userLogin,
-                    @JsonProperty("pass") String pass) {
+                        @JsonProperty("userLogin") String userLogin,
+                        @JsonProperty("pass") String pass) {
         this.userLogin = userLogin;
         this.pass = pass;
         this.userMail = userMail;
@@ -58,7 +58,7 @@ public final class UserDataView {
     }
 
     @SuppressWarnings({"unused", "SameReturnValue"})
-    public ViewError valid(){
+    public ViewError valid() {
         return ViewError.OK;
     }
 

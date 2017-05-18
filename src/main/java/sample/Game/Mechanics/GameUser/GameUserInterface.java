@@ -9,18 +9,26 @@ import sample.Game.Messages.ServerMessages.HandInfo;
  */
 @SuppressWarnings("DefaultFileTemplate")
 public interface GameUserInterface {
-    enum ErrorCodes{
-        OK,
+    enum ErrorCodes {
+        @SuppressWarnings("EnumeratedConstantNamingConvention")OK,
         @SuppressWarnings("unused")DISCONNECTED,
     }
+
     void init(HandInfo hand);
+
     @SuppressWarnings({"SameReturnValue", "unused"})
-    ErrorCodes chooseCardFromHand(ObjectMapper mapper);
+    void chooseCardFromHand(ObjectMapper mapper);
+
     @SuppressWarnings({"SameReturnValue", "unused"})
-    ErrorCodes chooseCardFromTable(ObjectMapper mapper);
+    void chooseCardFromTable(ObjectMapper mapper);
+
     @SuppressWarnings({"UnusedReturnValue", "SameReturnValue"})
     ErrorCodes send(BaseServerMessage msg);
+
     void sendHandInfo(HandInfo hand);
+
     void close();
+
+    @SuppressWarnings("SameReturnValue")
     boolean isUser();
 }

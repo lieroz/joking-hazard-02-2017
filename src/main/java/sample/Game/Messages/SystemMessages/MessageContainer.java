@@ -9,19 +9,16 @@ import sample.Game.Services.ServerManager;
  * Created by ksg on 26.04.17.
  */
 @SuppressWarnings("DefaultFileTemplate")
-public class MessageContainer extends BaseMessageContainer{
+public class MessageContainer extends BaseMessageContainer {
     private final BaseGameMessage msg;
-    public MessageContainer(String userId, ServerManager.GameIndex index, BaseGameMessage msg){
+
+    public MessageContainer(String userId, ServerManager.GameIndex index, BaseGameMessage msg) {
         super(userId, index);
         this.msg = msg;
     }
-    public String getUserId(){
-        return userId;
-    }
-    public ServerManager.GameIndex getIndex(){
-        return index;
-    }
-    public BaseGameMessage getMsg(ObjectMapper mapper){
+
+    @Override
+    public BaseGameMessage getMsg(ObjectMapper mapper) {
         return msg;
     }
 }

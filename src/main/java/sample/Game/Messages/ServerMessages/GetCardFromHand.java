@@ -5,11 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Created by ksg on 14.05.17.
  */
-public class GetCardFromHand extends BaseServerMessage{
-    public GetCardFromHand(ObjectMapper mapper){
+public class GetCardFromHand extends BaseServerMessage {
+    public GetCardFromHand(ObjectMapper mapper) {
         super(mapper);
     }
-    public String getType(){
+
+    @Override
+    public String getType() {
         return "GetCardFromHand";
     }
 }

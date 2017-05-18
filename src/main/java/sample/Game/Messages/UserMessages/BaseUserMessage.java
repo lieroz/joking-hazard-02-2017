@@ -1,9 +1,10 @@
 package sample.Game.Messages.UserMessages;
 
-import sample.Game.Messages.BaseGameMessage;
-import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import sample.Game.Messages.BaseGameMessage;
+
 /**
  * Created by ksg on 26.04.17.
  */

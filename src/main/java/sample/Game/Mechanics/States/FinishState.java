@@ -2,8 +2,8 @@ package sample.Game.Mechanics.States;
 
 import sample.Game.Mechanics.GameUser.GameUserItem;
 import sample.Game.Mechanics.MainMechanics;
-import sample.Game.Messages.ServerMessages.ServerFinishedMessage;
 import sample.Game.Messages.BaseMessageContainer;
+import sample.Game.Messages.ServerMessages.ServerFinishedMessage;
 
 import java.util.Map;
 
@@ -12,16 +12,20 @@ import java.util.Map;
  */
 @SuppressWarnings("DefaultFileTemplate")
 public class FinishState extends GameState {
-    public FinishState(MainMechanics.GameContext context){
+    public FinishState(MainMechanics.GameContext context) {
         this.context = context;
     }
-    public ErrorCodes handle(BaseMessageContainer msg){
+
+    @Override
+    public ErrorCodes handle(BaseMessageContainer msg) {
         return ErrorCodes.INVALID_COMMAND;
     }
-    public ErrorCodes transfer(){
+
+    @Override
+    public ErrorCodes transfer() {
         context.state = this;
-        ServerFinishedMessage msg = new ServerFinishedMessage(context.mapper);
-        for(Map.Entry<String, GameUserItem> entry : context.mp.entrySet()){
+        final ServerFinishedMessage msg = new ServerFinishedMessage(context.mapper);
+        for (Map.Entry<String, GameUserItem> entry : context.mp.entrySet()) {
             entry.getValue().sendMessage(msg);
         }
         return ErrorCodes.FINISHED;

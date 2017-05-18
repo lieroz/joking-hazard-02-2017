@@ -1,5 +1,6 @@
 package sample.Lobby.Models;
 
+import org.jetbrains.annotations.Nullable;
 import org.springframework.web.socket.WebSocketSession;
 import sample.Lobby.Views.UserGameView;
 import sample.Main.Models.UserInfoModel;
@@ -10,25 +11,27 @@ import sample.Main.Services.AccountService;
  */
 @SuppressWarnings("DefaultFileTemplate")
 public class LobbyUserModel {
-    public enum ErrorCodes{
-        OK,
+    public enum ErrorCodes {
+        @SuppressWarnings("EnumeratedConstantNamingConvention")OK,
         INVALID_LOGIN,
         DATABASE_ERROR,
         SERVER_ERROR
     }
+
     private final WebSocketSession session;
     private UserInfoModel userInfo;
     private final AccountService accountService;
 
-    public LobbyUserModel(WebSocketSession session, AccountService accountService){
+    public LobbyUserModel(WebSocketSession session, AccountService accountService) {
         this.accountService = accountService;
         this.session = session;
         this.userInfo = null;
     }
 
-    public ErrorCodes lobbyUserModelInit(String userId){
+    public ErrorCodes lobbyUserModelInit(String userId) {
         final UserInfoModel userInfoModel = new UserInfoModel(null, null);
         final AccountService.ErrorCodes resp = accountService.getUserData(userId, userInfoModel);
+        //noinspection EnumSwitchStatementWhichMissesCases
         switch (resp) {
             case OK: {
                 break;
@@ -47,23 +50,24 @@ public class LobbyUserModel {
         return ErrorCodes.OK;
     }
 
-    public String getUserId(){
+    public String getUserId() {
         return userInfo.getUserLogin();
     }
 
-    public WebSocketSession getSession(){
+    public WebSocketSession getSession() {
         return session;
     }
 
-    public UserInfoModel getUserInfo(){
+    public UserInfoModel getUserInfo() {
         return userInfo;
     }
 
-    public UserGameView getGameView(){
-        if(userInfo == null){
-            return  null;
+    @Nullable
+    public UserGameView getGameView() {
+        if (userInfo == null) {
+            return null;
         }
-        String  login = userInfo.getUserLogin();
-        return  new UserGameView(login);
+        final String login = userInfo.getUserLogin();
+        return new UserGameView(login);
     }
 }

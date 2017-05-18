@@ -7,11 +7,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @SuppressWarnings("DefaultFileTemplate")
 public class GameReadyMessage extends BaseMessage {
-    public GameReadyMessage(ObjectMapper mapper){
+    public GameReadyMessage(ObjectMapper mapper) {
         super(mapper);
     }
+
     @Override
-    public String getType(){
+    public String getType() {
         return "GameReadyMessage";
     }
 }

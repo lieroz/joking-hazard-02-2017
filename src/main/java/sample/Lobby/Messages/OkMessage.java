@@ -9,17 +9,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class OkMessage extends BaseMessage {
     private final String okMsg;
 
-    public OkMessage(@SuppressWarnings("SameParameterValue") String okMsg, ObjectMapper mapper){
+    public OkMessage(@SuppressWarnings("SameParameterValue") String okMsg, ObjectMapper mapper) {
         super(mapper);
         this.okMsg = okMsg;
     }
 
     @Override
-    public String getType(){
+    public String getType() {
         return "OkMessage";
     }
+
     @SuppressWarnings("unused")
-    public String getOkMsg(){
+    public String getOkMsg() {
         return okMsg;
     }
 

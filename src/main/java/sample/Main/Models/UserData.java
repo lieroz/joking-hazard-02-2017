@@ -1,8 +1,8 @@
 package sample.Main.Models;
 
-import sample.Main.Views.UserInfo;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import sample.Main.Views.UserInfo;
 
 import javax.validation.constraints.NotNull;
 

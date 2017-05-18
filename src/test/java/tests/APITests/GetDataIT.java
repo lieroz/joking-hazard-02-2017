@@ -20,9 +20,7 @@ import java.util.Locale;
 import static org.hamcrest.core.Is.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Created by lieroz on 24.03.17.
@@ -71,6 +69,7 @@ public class GetDataIT {
             createUser();
 
         } catch (Exception ex) {
+            //noinspection ThrowInsideCatchBlockWhichIgnoresCaughtException
             throw new RuntimeException();
         }
     }
