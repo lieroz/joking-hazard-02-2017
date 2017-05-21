@@ -23,6 +23,35 @@ import java.util.*;
  */
 
 
+@SuppressWarnings("PublicField")
+class GameContext {
+    public final Map<String, GameUserItem> mp;
+    public final Map<String, GameCard> table;
+    public final GameCard[] cards;
+    public final Queue<GameUserItem> masterQeue;
+    public CardDeck deck;
+    public GameState state;
+    public int numberOfPlayers;
+    public ObjectMapper mapper;
+    public int numberCardsInHand;
+    public int currentRound;
+    public GameUserItem master;
+
+    public void reset() {
+        table.clear();
+        Arrays.fill(cards, null);
+    }
+
+    public GameContext() {
+        state = new InitState(this);
+        mp = new HashMap<>(); // TODO: Do it as user controller
+        table = new LinkedHashMap<>();
+        masterQeue = new ArrayDeque<>();
+        cards = new GameCard[3];
+        currentRound = 0;
+    }
+}
+
 @SuppressWarnings("DefaultFileTemplate")
 public class MainMechanics {
     public enum ErrorCodes {
@@ -36,35 +65,6 @@ public class MainMechanics {
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MainMechanics.class);
-
-    @SuppressWarnings("PublicField")
-    public static class GameContext {
-        public final Map<String, GameUserItem> mp;
-        public final Map<String, GameCard> table;
-        public final GameCard[] cards;
-        public final Queue<GameUserItem> masterQeue;
-        public CardDeck deck;
-        public GameState state;
-        public int numberOfPlayers;
-        public ObjectMapper mapper;
-        public int numberCardsInHand;
-        public int currentRound;
-        public GameUserItem master;
-
-        public void reset() {
-            table.clear();
-            Arrays.fill(cards, null);
-        }
-
-        public GameContext() {
-            state = new InitState(this);
-            mp = new HashMap<>(); // TODO: Do it as user controller
-            table = new LinkedHashMap<>();
-            masterQeue = new ArrayDeque<>();
-            cards = new GameCard[3];
-            currentRound = 0;
-        }
-    }
 
     private LobbyGameView view;
     private final GameContext context;

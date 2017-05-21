@@ -6,17 +6,17 @@ import sample.Game.Mechanics.GameUser.GameUserItem;
 import sample.Game.Mechanics.MainMechanics;
 import sample.Game.Messages.BaseMessageContainer;
 import sample.Game.Messages.SystemMessages.UserConnectedMessage;
-
+import sample.Game.Mechanics.GameContext;
 /**
  * Created by ksg on 26.04.17.
  */
 @SuppressWarnings("DefaultFileTemplate")
 public class InitState extends GameState {
-    private final MainMechanics.GameContext context;
+    private final GameContext context;
     @SuppressWarnings("InstanceVariableNamingConvention")
     private int num_connected;
 
-    public InitState(MainMechanics.GameContext context) {
+    public InitState(GameContext context) {
         this.context = context;
         num_connected = 0;
     }
