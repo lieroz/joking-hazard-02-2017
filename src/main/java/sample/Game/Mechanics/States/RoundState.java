@@ -6,6 +6,7 @@ import sample.Game.Mechanics.MainMechanics;
 import sample.Game.Messages.BaseGameMessage;
 import sample.Game.Messages.BaseMessageContainer;
 import sample.Game.Messages.UserMessages.ChooseCardFromHand;
+import sample.Game.Mechanics.GameContext;
 
 import java.util.Map;
 import java.util.Objects;
@@ -14,7 +15,7 @@ import java.util.Objects;
  * Created by ksg on 16.05.17.
  */
 public class RoundState extends GameState {
-    public RoundState(MainMechanics.GameContext context) {
+    public RoundState(GameContext context) {
         this.context = context;
     }
 
@@ -42,7 +43,6 @@ public class RoundState extends GameState {
         }
         final Class cls = msg.getMsg(context.mapper).getClassOfMessage();
         final ChooseCardFromHand conMessage = (ChooseCardFromHand) cls.cast(msg.getMsg(context.mapper));
-        //TODO: Logic
         final int index = conMessage.getChosenCard();
         final GameCard card = item.getCardFromHandByIndex(index);
         if (card == null) {

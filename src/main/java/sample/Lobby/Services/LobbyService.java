@@ -18,7 +18,6 @@ import sample.ResourceManager.ResourceManager;
 /**
  * Created by ksg on 11.04.17.
  */
-//TODO: Message fabric
 @SuppressWarnings("DefaultFileTemplate")
 @Service
 public class LobbyService {

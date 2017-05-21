@@ -6,6 +6,7 @@ import sample.Game.Mechanics.MainMechanics;
 import sample.Game.Messages.BaseGameMessage;
 import sample.Game.Messages.BaseMessageContainer;
 import sample.Game.Messages.UserMessages.ChooseCardFromTable;
+import sample.Game.Mechanics.GameContext;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -15,7 +16,7 @@ import java.util.Objects;
  * Created by ksg on 16.05.17.
  */
 public class RoundFinishState extends GameState {
-    public RoundFinishState(MainMechanics.GameContext context) {
+    public RoundFinishState(GameContext context) {
         this.context = context;
     }
 
@@ -38,7 +39,6 @@ public class RoundFinishState extends GameState {
         }
         final Class cls = msg.getMsg(context.mapper).getClassOfMessage();
         final ChooseCardFromTable conMessage = (ChooseCardFromTable) cls.cast(msg.getMsg(context.mapper));
-        //TODO: Logic
         final int index = conMessage.getChosenCard();
         final Iterator<Map.Entry<String, GameCard>> it = context.table.entrySet().iterator();
         for (int i = 0; i < index; i++) {

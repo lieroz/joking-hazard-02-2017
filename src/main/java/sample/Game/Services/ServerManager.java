@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
+import sample.Game.Messages.BaseMessageContainer;
 import sample.Game.Messages.ServerMessages.ServerErrorMessage;
+import sample.Game.Messages.SystemMessages.BaseSystemMessage;
 import sample.Game.Messages.SystemMessages.MessageContainer;
 import sample.Game.Messages.SystemMessages.UserConnectedMessage;
 import sample.Game.Messages.UserMessages.UserMessageContainer;
@@ -16,6 +18,9 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by ksg on 25.04.17.
@@ -44,14 +49,21 @@ public class ServerManager {
         }
     }
 
-    private final ServerWorker worker;
     private final Map<String, GameIndex> indexMap;
     private final ObjectMapper mapper;
+    private final ConcurrentLinkedQueue<BaseMessageContainer> messageQue;
+    private final ConcurrentLinkedQueue<BaseSystemMessage> systemQue;
+    private final ExecutorService executor;
+    private final ServerWorker worker;
 
     public ServerManager() {
         indexMap = new ConcurrentHashMap<>();
         mapper = new ObjectMapper();
-        worker = new ServerWorker(this); // it'll be pull
+        messageQue = new ConcurrentLinkedQueue<BaseMessageContainer>();
+        systemQue = new ConcurrentLinkedQueue<BaseSystemMessage>();
+        worker = new ServerWorker(this, messageQue, systemQue, indexMap); // it'll be pull
+        executor = Executors.newScheduledThreadPool(1);
+        executor.execute(worker);
     }
 
     public ErrorCodes createGame(LobbyGameView view) {
