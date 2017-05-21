@@ -12,7 +12,6 @@ import sample.Game.Mechanics.GameContext;
  */
 @SuppressWarnings("DefaultFileTemplate")
 public class InitState extends GameState {
-    private final GameContext context;
     @SuppressWarnings("InstanceVariableNamingConvention")
     private int num_connected;
 
@@ -23,13 +22,7 @@ public class InitState extends GameState {
 
     @Override
     protected ErrorCodes addUser(BaseMessageContainer msg) {
-        final String userId = msg.getUserId();
-        final GameUserItem item = context.mp.get(userId);
-        final Class cls = msg.getMsg(context.mapper).getClassOfMessage();
-        final UserConnectedMessage conMessage = (UserConnectedMessage) cls.cast(msg.getMsg(context.mapper));
-        final WebSocketSession session = conMessage.getSession();
-        final GameUser user = new GameUser(session);
-        item.setStrategy(user);
+        super.addUser(msg);
         num_connected++;
         if (num_connected == context.numberOfPlayers) {
             final GameState state = new RoundBeginState(context);

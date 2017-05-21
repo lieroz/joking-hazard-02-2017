@@ -20,7 +20,6 @@ import java.util.Vector;
  * Created by ksg on 14.05.17.
  */
 public class RoundBeginState extends GameState {
-    private final GameContext context;
 
 
     public RoundBeginState(GameContext context) {
