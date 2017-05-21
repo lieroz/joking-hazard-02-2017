@@ -10,7 +10,6 @@ import sample.Game.Messages.ServerMessages.GameUserInfo;
 import sample.Game.Messages.ServerMessages.RoundInfo;
 import sample.Game.Messages.ServerMessages.TableInfo;
 import sample.Game.Messages.SystemMessages.UserConnectedMessage;
-import sample.Game.Mechanics.GameContext;
 
 import java.util.Map;
 import java.util.Objects;
@@ -56,7 +55,7 @@ public abstract class GameState {
         return ErrorCodes.OK;
     }
 
-    protected GameContext context;
+    protected MainMechanics.GameContext context;
 
     public abstract ErrorCodes handle(BaseMessageContainer msg);
 

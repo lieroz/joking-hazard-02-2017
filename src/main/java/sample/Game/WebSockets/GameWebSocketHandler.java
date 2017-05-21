@@ -35,6 +35,7 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
         LOGGER.debug("text message handler");
 
         serverManager.addMessage(session, message.getPayload());
+        //serverManager.addMessage(userId, new UserMessageContainer(message.getPayload()));
     }
 
     @Override

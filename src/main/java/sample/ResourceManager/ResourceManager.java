@@ -59,12 +59,16 @@ public class ResourceManager {
     private Props props;
 
     public ResourceManager() {
+        //numOfCardsInDeck = 50;
+        //vdefaultMaxNumber = 4;
+        //vnumberOfCardsInHand = 7;
         final ObjectMapper mapper = new ObjectMapper();
         //noinspection OverlyBroadCatchBlock
         try {
             final URL fl = Resources.getResource("Property");
 
             props = mapper.readValue(fl, Props.class);
+            //assert props != null;
         } catch (@SuppressWarnings("OverlyBroadCatchBlock") IOException e) {
             e.printStackTrace();
             LOGGER.error("can't read props", e);

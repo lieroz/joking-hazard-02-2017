@@ -4,7 +4,6 @@ import sample.Game.Mechanics.GameUser.GameUserItem;
 import sample.Game.Mechanics.MainMechanics;
 import sample.Game.Messages.BaseMessageContainer;
 import sample.Game.Messages.ServerMessages.ServerFinishedMessage;
-import sample.Game.Mechanics.GameContext;
 
 import java.util.Map;
 
@@ -13,7 +12,7 @@ import java.util.Map;
  */
 @SuppressWarnings("DefaultFileTemplate")
 public class FinishState extends GameState {
-    public FinishState(GameContext context) {
+    public FinishState(MainMechanics.GameContext context) {
         this.context = context;
     }
 

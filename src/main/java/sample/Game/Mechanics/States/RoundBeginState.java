@@ -10,7 +10,6 @@ import sample.Game.Messages.ServerMessages.GameUserInfo;
 import sample.Game.Messages.ServerMessages.RoundInfo;
 import sample.Game.Messages.ServerMessages.TableInfo;
 import sample.Game.Messages.UserMessages.ChooseCardFromHand;
-import sample.Game.Mechanics.GameContext;
 
 import java.util.Map;
 import java.util.Objects;
@@ -20,10 +19,10 @@ import java.util.Vector;
  * Created by ksg on 14.05.17.
  */
 public class RoundBeginState extends GameState {
-    private final GameContext context;
+    private final MainMechanics.GameContext context;
 
 
-    public RoundBeginState(GameContext context) {
+    public RoundBeginState(MainMechanics.GameContext context) {
         this.context = context;
     }
 
@@ -84,6 +83,7 @@ public class RoundBeginState extends GameState {
         }
         final Class cls = msg.getMsg(context.mapper).getClassOfMessage();
         final ChooseCardFromHand conMessage = (ChooseCardFromHand) cls.cast(msg.getMsg(context.mapper));
+        //TODO: Logic
         final int index = conMessage.getChosenCard();
         final GameCard card = context.master.getCardFromHandByIndex(index);
         if (card == null) {
@@ -133,6 +133,7 @@ public class RoundBeginState extends GameState {
         prepateCards();
         context.master.getCardFromHand();
         this.context.state = this;
+        //this.notifyAll(msg);
         return ErrorCodes.OK;
     }
 }

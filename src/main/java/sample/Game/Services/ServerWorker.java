@@ -3,19 +3,17 @@ package sample.Game.Services;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import sample.Game.Mechanics.MainMechanics;
 import sample.Game.Messages.BaseMessageContainer;
-import sample.Game.Messages.SystemMessages.BaseSystemMessage;
 import sample.Lobby.Views.LobbyGameView;
 import sample.ResourceManager.ResourceManager;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Created by ksg on 25.04.17.
  */
 @SuppressWarnings("DefaultFileTemplate")
-public class ServerWorker implements Runnable{
+public class ServerWorker {//implements Runnable{
 
     enum ErrorCodes {
         @SuppressWarnings("EnumeratedConstantNamingConvention")OK,
@@ -41,21 +39,13 @@ public class ServerWorker implements Runnable{
     private final ObjectMapper mapper;
     private final Map<Integer, MainMechanics> games;
     private final ServerManager master;
-    private final ConcurrentLinkedQueue<BaseMessageContainer> messageQue;
-    private final ConcurrentLinkedQueue<BaseSystemMessage> systemQue;
-    Map<String, ServerManager.GameIndex> indexMap;
 
-    public ServerWorker(ServerManager master, ConcurrentLinkedQueue<BaseMessageContainer> messageQueue,
-                        ConcurrentLinkedQueue<BaseSystemMessage> systemQue,
-                        Map<String, ServerManager.GameIndex> indexMap) {
+    public ServerWorker(ServerManager master) {
         manager = new ResourceManager();
         generator = new KeyGenerator();
         mapper = new ObjectMapper();
         games = new ConcurrentHashMap<>();
         this.master = master;
-        this.messageQue = messageQueue;
-        this.systemQue = systemQue;
-        this.indexMap = indexMap;
     }
 
     public Integer createGame(LobbyGameView players) {
@@ -75,7 +65,8 @@ public class ServerWorker implements Runnable{
         return key;
     }
 
-    public void handleMessage(BaseMessageContainer container) {
+    @SuppressWarnings({"UnusedReturnValue", "SameReturnValue"})
+    public ErrorCodes handleMessage(BaseMessageContainer container) {
         final Integer gameIndex = container.getIndex().getIndex();
         final MainMechanics mechanics = games.get(gameIndex);
         final MainMechanics.ErrorCodes err = mechanics.handleMessage(container);
@@ -83,23 +74,11 @@ public class ServerWorker implements Runnable{
             master.deleteUsers(mechanics.getUsersView());
             mechanics.finishGame();
         }
+        return ErrorCodes.OK;
     }
 
-    public void handleSystemMessage(BaseSystemMessage msg){
-        return;
+    //public void run(){
 
-    }
+    //}
 
-    @Override
-    public void run(){ //TODO: reschedule
-        while(true){
-            if(!this.messageQue.isEmpty()){
-                handleMessage(this.messageQue.poll());
-            }
-            if(!this.systemQue.isEmpty()){
-                handleSystemMessage(this.systemQue.poll());
-            }
-        }
-
-    }
 }

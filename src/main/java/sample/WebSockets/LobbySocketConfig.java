@@ -17,13 +17,19 @@ import sample.Lobby.WebSockets.LobbyWebSocketHandler;
 @Configuration
 @EnableWebSocket
 public class LobbySocketConfig implements WebSocketConfigurer {
+    /*@NotNull
+    private final WebSocketHandler webSocketHandler;
+    public LobbySocketConfig (@NotNull WebSocketHandler webSocketHandler) {
+        this.webSocketHandler = webSocketHandler;
+    }*/
+    // TODO: CORSWEBSOCKET!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*
+    // 403 FOREVER!!!!
+    //
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(LobbyWebSocketHandler(), "/lobby")
-                .setAllowedOrigins("https://jokinghazard.herokuapp.com")
                 .addInterceptors(new HttpSessionHandshakeInterceptor());
         registry.addHandler(GameWebSocketHandler(), "/game")
-                .setAllowedOrigins("https://jokinghazard.herokuapp.com")
                 .addInterceptors(new HttpSessionHandshakeInterceptor());
     }
 

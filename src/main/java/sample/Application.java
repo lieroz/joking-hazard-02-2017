@@ -19,4 +19,9 @@ public class Application {
     public static void main(String[] args) throws Exception {
         SpringApplication.run(Application.class, args);
     }
+    /*@Bean
+    public WebSocketHandler lobbyWebSocketHandler() {
+        return new PerConnectionWebSocketHandler(LobbyWebSocketHandler.class);
+    }*/
+    // закоменченно до лучших времён и до комментариев  R.I.P.
 }
