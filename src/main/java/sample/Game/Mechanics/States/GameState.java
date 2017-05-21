@@ -1,16 +1,15 @@
 package sample.Game.Mechanics.States;
 
 import org.springframework.web.socket.WebSocketSession;
+import sample.Game.Mechanics.GameContext;
 import sample.Game.Mechanics.GameUser.GameUser;
 import sample.Game.Mechanics.GameUser.GameUserItem;
-import sample.Game.Mechanics.MainMechanics;
 import sample.Game.Messages.BaseMessageContainer;
 import sample.Game.Messages.ServerMessages.BaseServerMessage;
 import sample.Game.Messages.ServerMessages.GameUserInfo;
 import sample.Game.Messages.ServerMessages.RoundInfo;
 import sample.Game.Messages.ServerMessages.TableInfo;
 import sample.Game.Messages.SystemMessages.UserConnectedMessage;
-import sample.Game.Mechanics.GameContext;
 
 import java.util.Map;
 import java.util.Objects;
