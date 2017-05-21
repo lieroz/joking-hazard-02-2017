@@ -15,12 +15,11 @@ import sample.Lobby.Views.LobbyGameView;
 import sample.Lobby.Views.UserGameView;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by ksg on 25.04.17.
@@ -39,39 +38,54 @@ public class ServerManager {
 
     public static class GameIndex {
         final int index;
-
-        public GameIndex(int index) {
+        final int thread;
+        public GameIndex( int thread, int index) {
             this.index = index;
+            this.thread = thread;
         }
 
         public int getIndex() {
             return index;
         }
+        public int getThread() {
+            return thread;
+        }
     }
 
     private final Map<String, GameIndex> indexMap;
     private final ObjectMapper mapper;
-    private final ConcurrentLinkedQueue<BaseMessageContainer> messageQue;
-    private final ConcurrentLinkedQueue<BaseSystemMessage> systemQue;
-    private final ExecutorService executor;
-    private final ServerWorker worker;
+    private final ScheduledExecutorService executor;
+    private final ArrayList<ServerWorker> worker;
+    private AtomicInteger curThread;
+    private final int maxThreads;
+
+    public int getNew(){
+        return  curThread.incrementAndGet() % maxThreads;
+    }
 
     public ServerManager() {
         indexMap = new ConcurrentHashMap<>();
         mapper = new ObjectMapper();
-        messageQue = new ConcurrentLinkedQueue<BaseMessageContainer>();
-        systemQue = new ConcurrentLinkedQueue<BaseSystemMessage>();
-        worker = new ServerWorker(this, messageQue, systemQue, indexMap); // it'll be pull
         executor = Executors.newScheduledThreadPool(1);
-        executor.execute(worker);
+        worker = new ArrayList<>(5);
+        maxThreads = 5;
+        curThread  = new AtomicInteger(0);
+        for(int i = 0; i< maxThreads; i++) {
+            ConcurrentLinkedQueue<BaseMessageContainer> messageQue  = new ConcurrentLinkedQueue<BaseMessageContainer>();
+            ConcurrentLinkedQueue<BaseSystemMessage> systemQue = new ConcurrentLinkedQueue<BaseSystemMessage>();
+            ServerWorker wrk = new ServerWorker(this, messageQue, systemQue, executor); // it'll be pull
+            executor.execute(wrk);
+            worker.add(wrk);
+        }
     }
 
     public ErrorCodes createGame(LobbyGameView view) {
-        final Integer ind = worker.createGame(view);
+        int curr = getNew();
+        final Integer ind = worker.get(curr).createGame(view);
         if (ind < 0) {
             return ErrorCodes.ERROR_GAME_CREATION;
         }
-        final GameIndex index = new GameIndex(ind);
+        final GameIndex index = new GameIndex(curr,ind);
         final Vector<UserGameView> ulist = view.getList();
         for (UserGameView user : ulist) {
             final String id = user.getUserId();
@@ -106,7 +120,8 @@ public class ServerManager {
             return ErrorCodes.ERROR_GAME_CONNECTION;
         }
         final UserConnectedMessage msg = new UserConnectedMessage(session);
-        worker.handleMessage(new MessageContainer(userId, index, msg));
+        final MessageContainer container = new MessageContainer(userId, index, msg);
+        worker.get(index.getThread()).getMessageQue().add(container);
         return ErrorCodes.OK;
     }
 
@@ -137,7 +152,8 @@ public class ServerManager {
             sendError(session, "No login in game system");
             return;
         }
-        worker.handleMessage(new UserMessageContainer(userId, index, userMessage));
+        UserMessageContainer container = new UserMessageContainer(userId, index, userMessage);
+        worker.get(index.getThread()).getMessageQue().add(container);
     }
 
     public boolean userExist(String userId) {

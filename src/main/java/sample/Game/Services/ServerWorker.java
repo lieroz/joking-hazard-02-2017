@@ -10,6 +10,7 @@ import sample.ResourceManager.ResourceManager;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Created by ksg on 25.04.17.
@@ -43,11 +44,12 @@ public class ServerWorker implements Runnable{
     private final ServerManager master;
     private final ConcurrentLinkedQueue<BaseMessageContainer> messageQue;
     private final ConcurrentLinkedQueue<BaseSystemMessage> systemQue;
-    Map<String, ServerManager.GameIndex> indexMap;
+    ServerManager serverManager;
+    ScheduledExecutorService executorService;
 
     public ServerWorker(ServerManager master, ConcurrentLinkedQueue<BaseMessageContainer> messageQueue,
                         ConcurrentLinkedQueue<BaseSystemMessage> systemQue,
-                        Map<String, ServerManager.GameIndex> indexMap) {
+                        ScheduledExecutorService executorService) {
         manager = new ResourceManager();
         generator = new KeyGenerator();
         mapper = new ObjectMapper();
@@ -55,9 +57,20 @@ public class ServerWorker implements Runnable{
         this.master = master;
         this.messageQue = messageQueue;
         this.systemQue = systemQue;
-        this.indexMap = indexMap;
+        this.executorService = executorService;
     }
 
+    public ConcurrentLinkedQueue<BaseMessageContainer> getMessageQue(){
+        return messageQue;
+    }
+
+    public ConcurrentLinkedQueue<BaseSystemMessage> getSystemQue(){
+        return systemQue;
+    }
+
+    private void  deleteGame(Integer index){
+        games.remove(index);
+    }
     public Integer createGame(LobbyGameView players) {
         final MainMechanics game = new MainMechanics(mapper);
         final MainMechanics.ErrorCodes error = game.init(players, manager);
@@ -75,31 +88,30 @@ public class ServerWorker implements Runnable{
         return key;
     }
 
-    public void handleMessage(BaseMessageContainer container) {
+    private void handleMessage(BaseMessageContainer container) {
         final Integer gameIndex = container.getIndex().getIndex();
         final MainMechanics mechanics = games.get(gameIndex);
         final MainMechanics.ErrorCodes err = mechanics.handleMessage(container);
         if (err == MainMechanics.ErrorCodes.FINISHED) {
             master.deleteUsers(mechanics.getUsersView());
             mechanics.finishGame();
+            deleteGame(gameIndex);
         }
     }
 
-    public void handleSystemMessage(BaseSystemMessage msg){
+    private void handleSystemMessage(BaseSystemMessage msg){
         return;
 
     }
 
     @Override
     public void run(){ //TODO: reschedule
-        while(true){
             if(!this.messageQue.isEmpty()){
                 handleMessage(this.messageQue.poll());
             }
             if(!this.systemQue.isEmpty()){
                 handleSystemMessage(this.systemQue.poll());
             }
-        }
-
+            executorService.execute(this);
     }
 }
