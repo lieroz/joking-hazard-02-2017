@@ -16,6 +16,9 @@ import sample.Main.DAO.AccountDAO;
 import sample.Main.Models.LogInModel;
 import sample.Main.Models.UserData;
 import sample.Main.Models.UserInfoModel;
+import sample.Main.Models.UserScoreModel;
+
+import java.util.List;
 
 @Service
 public class AccountService {
@@ -166,5 +169,9 @@ public class AccountService {
         }
 
         return ErrorCodes.OK;
+    }
+
+    public List<UserScoreModel> getScoreBoard(@NotNull String login) {
+        return accountDAO.getScoreBoard(login);
     }
 }

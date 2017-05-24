@@ -7,10 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sample.Main.Models.UserInfoModel;
 import sample.Main.Services.AccountService;
-import sample.Main.Views.MailForm;
-import sample.Main.Views.PassForm;
-import sample.Main.Views.ResponseCode;
-import sample.Main.Views.UserInfo;
+import sample.Main.Views.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
@@ -190,5 +187,16 @@ public class UserController {
                         HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
+    }
+
+    @RequestMapping(path = "api/score", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> getScoreBoard(HttpSession httpSession) {
+        final String login = (String) httpSession.getAttribute("userLogin");
+        if (login == null) {
+            return new ResponseEntity<>(new ResponseCode(false,
+                    messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH)),
+                    HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(new ScoreView(accountService.getScoreBoard(login)), HttpStatus.OK);
     }
 }
