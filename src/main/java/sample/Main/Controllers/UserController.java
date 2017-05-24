@@ -7,7 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sample.Main.Models.UserInfoModel;
 import sample.Main.Services.AccountService;
-import sample.Main.Views.*;
+import sample.Main.Views.MailForm;
+import sample.Main.Views.PassForm;
+import sample.Main.Views.ResponseCode;
+import sample.Main.Views.UserInfo;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
@@ -197,6 +200,8 @@ public class UserController {
                     messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH)),
                     HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(new ScoreView(accountService.getScoreBoard(login)), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseCode<>(true,
+                messageSource.getMessage("msgs.ok", null, Locale.ENGLISH),
+                accountService.getScoreBoard(login)), HttpStatus.OK);
     }
 }
