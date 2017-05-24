@@ -5,9 +5,13 @@ import sample.Game.Mechanics.GameUser.GameUserItem;
 import sample.Game.Mechanics.MainMechanics;
 import sample.Game.Messages.BaseGameMessage;
 import sample.Game.Messages.BaseMessageContainer;
+import sample.Game.Messages.ServerMessages.BaseServerMessage;
+import sample.Game.Messages.ServerMessages.TableInfo;
+import sample.Game.Messages.ServerMessages.UsersCardsInfo;
 import sample.Game.Messages.UserMessages.ChooseCardFromTable;
 import sample.Game.Mechanics.GameContext;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
@@ -24,11 +28,14 @@ public class RoundFinishState extends GameState {
     @Override
     public GameState.ErrorCodes transfer() {
         this.context.state = this;
-        context.master.getCardFromTable();
+        BaseServerMessage msg = new UsersCardsInfo(context.mapper,
+                new ArrayList<GameCard>( context.table.values()));
         for (Map.Entry<String, GameUserItem> entry : context.mp.entrySet()) {
             final GameUserItem user = entry.getValue();
+            user.sendMessage(msg);
             user.resetMessage();
         }
+        context.master.getCardFromTable();
         return GameState.ErrorCodes.OK;
     }
 
