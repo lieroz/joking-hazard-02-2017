@@ -3,6 +3,7 @@ package sample.Main.DAO;
 import org.springframework.jdbc.core.JdbcTemplate;
 import sample.Main.Models.UserData;
 import sample.Main.Models.UserScoreModel;
+import sample.Main.Views.UserScoreRankView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +56,7 @@ public final class AccountDAO {
         jdbcTemplate.update(sql, login);
     }
 
-    public List<UserScoreModel> getScoreBoard(final String nickname) {
+    public List<UserScoreRankView> getScoreBoard(final String nickname) {
         final String sql = "SELECT login, score FROM users ORDER BY score, login";
         List<UserScoreModel> usersTable = jdbcTemplate.query(sql, (rs, rowNum) ->
                 new UserScoreModel(
@@ -63,17 +64,24 @@ public final class AccountDAO {
                         rs.getInt("score")
                 )
         );
-        List<UserScoreModel> result = new ArrayList<>(usersTable.subList(0, usersTable.size() > 10 ? 10 : usersTable.size()));
+        List<UserScoreRankView> result = new ArrayList<>();
+        Integer count = usersTable.size() > 10 ? 10 : usersTable.size();
         Boolean isPresent = false;
-        for (int i = 0; i < result.size(); ++i) {
+        for (int i = 0; i < count; ++i) {
+            result.add(new UserScoreRankView(i + 1, usersTable.get(i).getLogin(), usersTable.get(i).getScore()));
             if (result.get(i).getLogin().equals(nickname)) {
                 isPresent = true;
-                break;
             }
         }
         for (int i = 10; i < usersTable.size() && !isPresent; ++i) {
             if (usersTable.get(i).getLogin().equals(nickname)) {
-                result.addAll(usersTable.subList(i - 1, i == usersTable.size() - 1 ? i + 1 : i + 2));
+                if (i != 10) {
+                    result.add(new UserScoreRankView(i, usersTable.get(i - 1).getLogin(), usersTable.get(i - 1).getScore()));
+                }
+                result.add(new UserScoreRankView(i + 1, usersTable.get(i).getLogin(), usersTable.get(i).getScore()));
+                if (i != usersTable.size() - 1) {
+                    result.add(new UserScoreRankView(i + 2, usersTable.get(i + 1).getLogin(), usersTable.get(i + 1).getScore()));
+                }
                 break;
             }
         }

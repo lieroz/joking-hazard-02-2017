@@ -16,7 +16,7 @@ import sample.Main.DAO.AccountDAO;
 import sample.Main.Models.LogInModel;
 import sample.Main.Models.UserData;
 import sample.Main.Models.UserInfoModel;
-import sample.Main.Models.UserScoreModel;
+import sample.Main.Views.UserScoreRankView;
 
 import java.util.List;
 
@@ -171,7 +171,7 @@ public class AccountService {
         return ErrorCodes.OK;
     }
 
-    public List<UserScoreModel> getScoreBoard(@NotNull String login) {
+    public List<UserScoreRankView> getScoreBoard(@NotNull String login) {
         return accountDAO.getScoreBoard(login);
     }
 }
