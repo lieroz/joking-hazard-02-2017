@@ -28,6 +28,7 @@ public class RoundState extends GameState {
             if (!Objects.equals(user, context.master)) {
                 user.getCardFromHand();
             }
+            user.resetMessage();
         }
         return ErrorCodes.OK;
     }

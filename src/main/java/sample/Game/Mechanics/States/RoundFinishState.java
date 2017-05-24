@@ -25,6 +25,10 @@ public class RoundFinishState extends GameState {
     public GameState.ErrorCodes transfer() {
         this.context.state = this;
         context.master.getCardFromTable();
+        for (Map.Entry<String, GameUserItem> entry : context.mp.entrySet()) {
+            final GameUserItem user = entry.getValue();
+            user.resetMessage();
+        }
         return GameState.ErrorCodes.OK;
     }
 

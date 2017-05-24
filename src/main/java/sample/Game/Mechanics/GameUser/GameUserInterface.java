@@ -1,6 +1,7 @@
 package sample.Game.Mechanics.GameUser;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.Serializers;
 import sample.Game.Messages.ServerMessages.BaseServerMessage;
 import sample.Game.Messages.ServerMessages.HandInfo;
 
@@ -17,10 +18,10 @@ public interface GameUserInterface {
     void init(HandInfo hand);
 
     @SuppressWarnings({"SameReturnValue", "unused"})
-    void chooseCardFromHand(ObjectMapper mapper);
+    BaseServerMessage chooseCardFromHand(ObjectMapper mapper);
 
     @SuppressWarnings({"SameReturnValue", "unused"})
-    void chooseCardFromTable(ObjectMapper mapper);
+    BaseServerMessage chooseCardFromTable(ObjectMapper mapper);
 
     @SuppressWarnings({"UnusedReturnValue", "SameReturnValue"})
     ErrorCodes send(BaseServerMessage msg);
