@@ -1,6 +1,7 @@
 package sample.Game.Mechanics.GameUser;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.Serializers;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import sample.Game.Messages.ServerMessages.BaseServerMessage;
@@ -33,13 +34,17 @@ public class GameUser implements GameUserInterface {
     }
 
     @Override
-    public void chooseCardFromHand(ObjectMapper mapper) {
-        send(new GetCardFromHand(mapper));
+    public BaseServerMessage chooseCardFromHand(ObjectMapper mapper) {
+        BaseServerMessage msg = new GetCardFromHand(mapper);
+        send(msg);
+        return msg;
     }
 
     @Override
-    public void chooseCardFromTable(ObjectMapper mapper) {
-        send(new GetCardFromTable(mapper));
+    public BaseServerMessage chooseCardFromTable(ObjectMapper mapper) {
+        BaseServerMessage msg = new GetCardFromTable(mapper);
+        send(msg);
+        return msg;
     }
 
     @Override

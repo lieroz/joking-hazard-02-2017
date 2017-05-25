@@ -18,6 +18,7 @@ public class GameUserItem {
     @SuppressWarnings({"unused"})
     private Integer score;
     private GameUserInterface user;
+    private BaseServerMessage lastCmd;
     private final ObjectMapper mapper;
     private final int cardNum;
 
@@ -57,11 +58,20 @@ public class GameUserItem {
     }
 
     public void getCardFromHand() {
-        user.chooseCardFromHand(mapper);
+        lastCmd = user.chooseCardFromHand(mapper);
     }
 
     public void getCardFromTable() {
-        user.chooseCardFromTable(mapper);
+        lastCmd = user.chooseCardFromTable(mapper);
+    }
+
+    public void resendLast(){
+        if(lastCmd == null)
+            sendMessage(lastCmd);
+    }
+
+    public void resetMessage(){
+        lastCmd = null;
     }
 
     public boolean isUser() {

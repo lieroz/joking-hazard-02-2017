@@ -41,6 +41,7 @@ public abstract class GameState {
         }
         final RoundInfo msg = new RoundInfo(context.mapper, resvect, context.currentRound);
         item.sendMessage(msg);
+        item.resendLast();
     }
 
     protected ErrorCodes addUser(BaseMessageContainer msg) {

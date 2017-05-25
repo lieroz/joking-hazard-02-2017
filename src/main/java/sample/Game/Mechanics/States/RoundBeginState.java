@@ -119,6 +119,7 @@ public class RoundBeginState extends GameState {
         context.currentRound++;
         for (Map.Entry<String, GameUserItem> entry : context.mp.entrySet()) {
             final GameUserItem user = entry.getValue();
+            user.resetMessage();
             if (!user.reget(context.deck)) {
                 return ErrorCodes.SERVER_ERROR;
             }
