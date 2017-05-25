@@ -66,7 +66,7 @@ public class GameUserItem {
     }
 
     public void resendLast(){
-        if(lastCmd == null)
+        if(lastCmd != null)
             sendMessage(lastCmd);
     }
 

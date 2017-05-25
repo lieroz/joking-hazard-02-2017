@@ -55,12 +55,19 @@ public class RoundFinishState extends GameState {
         for (int i = 0; i < index; i++) {
             it.next();
         }
-        final String chosenUserId = it.next().getKey();
-        if (chosenUserId == null) {
+        Map.Entry<String, GameCard> wnr = it.next();
+        if (wnr == null) {
             return GameState.ErrorCodes.OUT_OF_RANGE;
         }
+        final String chosenUserId = wnr.getKey();
+        context.cards[0]= wnr.getValue();
         final GameUserItem winner = context.mp.get(chosenUserId);
         winner.incrementScore();
+        TableInfo tblInf = new TableInfo(context.mapper, context.cards);
+        for (Map.Entry<String, GameUserItem> entry : context.mp.entrySet()) {
+            final GameUserItem user = entry.getValue();
+            user.sendMessage(tblInf);
+        }
         final RoundBeginState state = new RoundBeginState(context);
         return state.transfer();
     }

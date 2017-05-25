@@ -19,7 +19,7 @@ public class UsersCardsInfo extends BaseServerMessage{
 
     @Override
     public String getType() {
-        return "TableInfo";
+        return "UserCardsInfo";
     }
 
     @SuppressWarnings("unused")

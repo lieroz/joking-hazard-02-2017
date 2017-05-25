@@ -5,6 +5,7 @@ import sample.Game.Mechanics.GameUser.GameUserItem;
 import sample.Game.Mechanics.MainMechanics;
 import sample.Game.Messages.BaseGameMessage;
 import sample.Game.Messages.BaseMessageContainer;
+import sample.Game.Messages.ServerMessages.TableInfo;
 import sample.Game.Messages.UserMessages.ChooseCardFromHand;
 import sample.Game.Mechanics.GameContext;
 
@@ -23,11 +24,13 @@ public class RoundState extends GameState {
     @Override
     public ErrorCodes transfer() {
         this.context.state = this;
+        TableInfo tblInf = new TableInfo(context.mapper, context.cards);
         for (Map.Entry<String, GameUserItem> entry : context.mp.entrySet()) {
             final GameUserItem user = entry.getValue();
             if (!Objects.equals(user, context.master)) {
                 user.getCardFromHand();
             }
+            user.sendMessage(tblInf);
             user.resetMessage();
         }
         return ErrorCodes.OK;
