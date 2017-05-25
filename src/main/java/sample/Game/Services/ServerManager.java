@@ -54,7 +54,7 @@ public class ServerManager {
 
     private final Map<String, GameIndex> indexMap;
     private final ObjectMapper mapper;
-    private final ScheduledExecutorService executor;
+    private final ArrayList<ScheduledExecutorService> executor;
     private final ArrayList<ServerWorker> worker;
     private AtomicInteger curThread;
     private final int maxThreads;
@@ -66,16 +66,18 @@ public class ServerManager {
     public ServerManager() {
         indexMap = new ConcurrentHashMap<>();
         mapper = new ObjectMapper();
-        executor = Executors.newScheduledThreadPool(1);
         worker = new ArrayList<>(5);
         maxThreads = 5;
         curThread  = new AtomicInteger(0);
+        executor = new ArrayList<>();
         for(int i = 0; i< maxThreads; i++) {
             ConcurrentLinkedQueue<BaseMessageContainer> messageQue  = new ConcurrentLinkedQueue<BaseMessageContainer>();
             ConcurrentLinkedQueue<BaseSystemMessage> systemQue = new ConcurrentLinkedQueue<BaseSystemMessage>();
-            ServerWorker wrk = new ServerWorker(this, messageQue, systemQue, executor); // it'll be pull
-            executor.execute(wrk);
+            ScheduledExecutorService new_executor = Executors.newScheduledThreadPool(1);
+            ServerWorker wrk = new ServerWorker(this, messageQue, systemQue, new_executor); // it'll be pull
+            new_executor.execute(wrk);
             worker.add(wrk);
+            executor.add(new_executor);
         }
     }
 
