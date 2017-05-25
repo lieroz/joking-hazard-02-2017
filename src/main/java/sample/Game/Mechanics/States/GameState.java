@@ -1,16 +1,15 @@
 package sample.Game.Mechanics.States;
 
 import org.springframework.web.socket.WebSocketSession;
+import sample.Game.Mechanics.Cards.GameCard;
 import sample.Game.Mechanics.GameContext;
 import sample.Game.Mechanics.GameUser.GameUser;
 import sample.Game.Mechanics.GameUser.GameUserItem;
 import sample.Game.Messages.BaseMessageContainer;
-import sample.Game.Messages.ServerMessages.BaseServerMessage;
-import sample.Game.Messages.ServerMessages.GameUserInfo;
-import sample.Game.Messages.ServerMessages.RoundInfo;
-import sample.Game.Messages.ServerMessages.TableInfo;
+import sample.Game.Messages.ServerMessages.*;
 import sample.Game.Messages.SystemMessages.UserConnectedMessage;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Vector;
@@ -41,6 +40,8 @@ public abstract class GameState {
         }
         final RoundInfo msg = new RoundInfo(context.mapper, resvect, context.currentRound);
         item.sendMessage(msg);
+        BaseServerMessage ucardsMsg = new UsersCardsInfo(context.mapper, new ArrayList<GameCard>( context.table.values()));
+        item.sendMessage(ucardsMsg);
         item.resendLast();
     }
 
