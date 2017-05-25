@@ -48,6 +48,7 @@ class GameSocket:
         self.testsystem = testsystem
         self.errorst = False
         self.error_next = False
+        self.good_msg = ''
         pass
     @staticmethod
     def on_open(ws):
@@ -67,21 +68,32 @@ class GameSocket:
 
     def truehandl(self,message):
         tp = message["type"]
-        if tp == "GetCardFromHand":
-            self.game_socket.send('{"type":"ChooseCardFromHand", "chosenCard":0}')
-        if tp == "GetCardFromTable":
-            self.game_socket.send('{"type":"ChooseCardFromTable", "chosenCard":0}')
         if tp == "ErrorMsg":
-            self.testsystem.fail("error")
+            #print("error handled")
+            self.game_socket.send(self.good_msg)
             self.error_next = False
+            self.errorst = False
+        if self.error_next:
+            self.testsystem.fail("error was not")
 
     def fakehandl(self,message):
-        self.game_socket.send('#####ERROR#####')
-        self.errorst = True
-        self.error_next = True
+        tp = message["type"]
+        if tp == "GetCardFromHand":
+            self.game_socket.send('#####ERROR#####')
+            self.good_msg = '{"type":"ChooseCardFromHand", "chosenCard":0}'
+            #print("error send")
+            self.errorst = True
+            self.error_next = True
+        if tp == "GetCardFromTable":
+            self.game_socket.send('#####ERROR#####')
+            self.good_msg = '{"type":"ChooseCardFromTable", "chosenCard":0}'
+            #print("error send")
+            self.errorst = True
+            self.error_next = True
 
     def handle(self,message):
         #print(message)
+        #print(self.errorst)
         if self.errorst:
             self.truehandl(message)
         else:
