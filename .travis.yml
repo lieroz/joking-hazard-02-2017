@@ -1,15 +1,14 @@
 language: java
 jdk: oraclejdk8
- before_install:  
- - npm install gulp gulp-mocha gulp-util chai  
- - sudo apt-get update  
- - sudo apt-get install python3
- - sudo -H pip3 install websocket
- - sudo -H pip3 install faker
+sudo: true
+before_install:
+   - sudo apt-get install python3
+   - sudo -H pip3 install websocket
+   - sudo -H pip3 install faker
 install: true
 script: 
- - mvn clean integration-test
- - python3 ./pytest/websockettest.py
+  - mvn clean integration-test
+  - python3 ./pytest/websockettest.py
 cache:
   directories:
   - $HOME/.m2
