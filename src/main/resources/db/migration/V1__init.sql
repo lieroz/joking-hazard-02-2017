@@ -4,3 +4,8 @@ CREATE TABLE IF NOT EXISTS users (
   password TEXT,
   score    INTEGER DEFAULT 0
 );
+
+CREATE TABLE IF NOT EXISTS cards (
+  id  SERIAL,
+  url TEXT
+);
