@@ -192,7 +192,7 @@ public class UserController {
         }
     }
 
-    @RequestMapping(path = "api/score", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(path = "/api/score", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getScoreBoard(HttpSession httpSession) {
         final String login = (String) httpSession.getAttribute("userLogin");
         if (login == null) {
