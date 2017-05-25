@@ -29,8 +29,8 @@ public class RoundState extends GameState {
             final GameUserItem user = entry.getValue();
             if (!Objects.equals(user, context.master)) {
                 user.getCardFromHand();
-                user.sendMessage(tblInf);
             }
+            user.sendMessage(tblInf);
             user.resetMessage();
         }
         return ErrorCodes.OK;
