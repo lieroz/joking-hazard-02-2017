@@ -87,4 +87,9 @@ public final class AccountDAO {
         }
         return result;
     }
+
+    public void updateScore(final String login, final Integer score) {
+        final String sql = "UPDATE users SET score = score + ? WHERE login = ?";
+        jdbcTemplate.update(sql, score, login);
+    }
 }

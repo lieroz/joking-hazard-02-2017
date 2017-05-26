@@ -174,4 +174,15 @@ public class AccountService {
     public List<UserScoreRankView> getScoreBoard(@NotNull String login) {
         return accountDAO.getScoreBoard(login);
     }
+
+    public ErrorCodes updateScore(@NotNull String login, @NotNull Integer score) {
+        try {
+            accountDAO.updateScore(login, score);
+        } catch (EmptyResultDataAccessException ex) {
+            return ErrorCodes.INVALID_SESSION;
+        } catch (DataAccessException ex) {
+            return ErrorCodes.DATABASE_ERROR;
+        }
+        return ErrorCodes.OK;
+    }
 }

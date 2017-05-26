@@ -16,8 +16,11 @@ public class DropboxDAO {
     }
 
     public void addCard(final String url) {
-        final String sql = "INSERT INTO cards (url) VALUES (?)";
-        jdbcTemplate.update(sql, url);
+        final String checkSql = "SELECT COUNT(*) FROM cards WHERE url = ?";
+        if (jdbcTemplate.queryForObject(checkSql, new Object[]{url}, Integer.class) == 0) {
+            final String insertSql = "INSERT INTO cards (url) VALUES (?)";
+            jdbcTemplate.update(insertSql, url);
+        }
     }
 
     public List<CardView> getDeck() {

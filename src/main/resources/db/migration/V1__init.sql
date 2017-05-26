@@ -1,4 +1,5 @@
 CREATE TABLE IF NOT EXISTS users (
+  id       SERIAL PRIMARY KEY,
   login    VARCHAR(50) UNIQUE,
   email    VARCHAR(50) UNIQUE,
   password TEXT,
@@ -6,6 +7,6 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS cards (
-  id  SERIAL,
-  url TEXT
+  id  SERIAL PRIMARY KEY,
+  url VARCHAR(100) UNIQUE
 );
