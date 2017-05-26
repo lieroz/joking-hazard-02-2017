@@ -33,11 +33,26 @@ public class ResourceController {
         dropboxDAO = new DropboxDAO(jdbcTemplate);
     }
 
-    @RequestMapping(value = "/api/resources", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseCode> getCardsDeck() {
+    @RequestMapping(value = "/api/resources/jpg", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseCode> getCardsDeckJpg() {
         List<CardView> deck;
         try {
-            deck = dropboxDAO.getDeck();
+            deck = dropboxDAO.getDeckJpg();
+        } catch (DataAccessException ex) {
+            return new ResponseEntity<>(new ResponseCode<>(false,
+                    messageSource.getMessage("dropbox.bad", null, Locale.ENGLISH)),
+                    HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(new ResponseCode<>(true,
+                messageSource.getMessage("msgs.ok", null, Locale.ENGLISH),
+                deck), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/api/resources/webp", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseCode> getCardsDeckWebp() {
+        List<CardView> deck;
+        try {
+            deck = dropboxDAO.getDeckWebp();
         } catch (DataAccessException ex) {
             return new ResponseEntity<>(new ResponseCode<>(false,
                     messageSource.getMessage("dropbox.bad", null, Locale.ENGLISH)),

@@ -15,17 +15,23 @@ public class DropboxDAO {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void addCard(final String url) {
-        final String checkSql = "SELECT COUNT(*) FROM cards WHERE url = ?";
-        if (jdbcTemplate.queryForObject(checkSql, new Object[]{url}, Integer.class) == 0) {
-            final String insertSql = "INSERT INTO cards (url) VALUES (?)";
-            jdbcTemplate.update(insertSql, url);
+    public void addCard(final String jpgUrl, final String webpUrl) {
+        final String checkSql = "SELECT COUNT(*) FROM cards WHERE jpg_url = ? AND webp_url = ?";
+        if (jdbcTemplate.queryForObject(checkSql, new Object[]{jpgUrl, webpUrl}, Integer.class) == 0) {
+            final String insertSql = "INSERT INTO cards (jpg_url, webp_url) VALUES (?, ?)";
+            jdbcTemplate.update(insertSql, jpgUrl, webpUrl);
         }
     }
 
-    public List<CardView> getDeck() {
-        final String sql = "SELECT * FROM cards";
+    public List<CardView> getDeckJpg() {
+        final String sql = "SELECT id, jpg_url FROM cards";
         return jdbcTemplate.query(sql, (rs, rowNum) ->
-                new CardView(rs.getInt("id"), rs.getString("url")));
+                new CardView(rs.getInt("id"), rs.getString("jpg_url")));
+    }
+
+    public List<CardView> getDeckWebp() {
+        final String sql = "SELECT id, webp_url FROM cards";
+        return jdbcTemplate.query(sql, (rs, rowNum) ->
+                new CardView(rs.getInt("id"), rs.getString("webp_url")));
     }
 }
