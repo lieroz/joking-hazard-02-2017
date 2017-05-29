@@ -66,10 +66,9 @@ public class ResourceManager {
 
             props = mapper.readValue(fl, Props.class);
         } catch (@SuppressWarnings("OverlyBroadCatchBlock") IOException e) {
-            e.printStackTrace();
-            LOGGER.error("can't read props", e);
+            LOGGER.error("IOException can't read props", e);
         } catch (Exception e) {
-            LOGGER.error("can't read props", e);
+            LOGGER.error("Exception can't read props", e);
         }
 
     }

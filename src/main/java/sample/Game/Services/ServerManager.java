@@ -1,6 +1,8 @@
 package sample.Game.Services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -11,6 +13,7 @@ import sample.Game.Messages.SystemMessages.MessageContainer;
 import sample.Game.Messages.SystemMessages.UserConnectedMessage;
 import sample.Game.Messages.UserMessages.UserMessageContainer;
 import sample.Lobby.Messages.ErrorMessage;
+import sample.Lobby.Services.LobbyService;
 import sample.Lobby.Views.LobbyGameView;
 import sample.Lobby.Views.UserGameView;
 
@@ -29,6 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @SuppressWarnings("DefaultFileTemplate")
 @Service
 public class ServerManager {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LobbyService.class);
 
     public enum ErrorCodes {
         @SuppressWarnings("EnumeratedConstantNamingConvention")OK,
@@ -103,7 +107,7 @@ public class ServerManager {
         try {
             session.sendMessage(new TextMessage(err.getJson()));
         } catch (IOException ignored) {
-
+            LOGGER.error("IOException", ignored);
         }
         return ErrorCodes.OK;
     }
@@ -145,7 +149,7 @@ public class ServerManager {
             try {
                 session.sendMessage(new TextMessage(text_msg));
             } catch (IOException ignored) {
-
+                LOGGER.error("IOException", ignored);
             }
             return;
         }
