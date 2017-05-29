@@ -6,8 +6,5 @@ CREATE TABLE IF NOT EXISTS users (
   score    INTEGER DEFAULT 0
 );
 
-CREATE TABLE IF NOT EXISTS cards (
-  id       SERIAL PRIMARY KEY,
-  jpg_url  VARCHAR(100) UNIQUE,
-  webp_url VARCHAR(100) UNIQUE
-);
+CREATE UNIQUE INDEX users_login_unique_idx
+  ON users (login);
