@@ -76,7 +76,7 @@ public class ResourceManager {
     public CardDeck getCardDeck() {
         final List<GameCard> lst = new ArrayList<>();
         for (int i = 0; i < props.numOfCardsInDeck; i++) {
-            final GameCard card = new GameCard(i, (i % 7) == 0);
+            final GameCard card = new GameCard(i, false);
             lst.add(card);
         }
         return new CardDeck(lst);
