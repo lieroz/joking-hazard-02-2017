@@ -43,7 +43,8 @@ public class ServerManager {
     public static class GameIndex {
         final int index;
         final int thread;
-        public GameIndex( int thread, int index) {
+
+        public GameIndex(int thread, int index) {
             this.index = index;
             this.thread = thread;
         }
@@ -51,37 +52,32 @@ public class ServerManager {
         public int getIndex() {
             return index;
         }
+
         public int getThread() {
             return thread;
         }
     }
 
-    private final Map<String, GameIndex> indexMap;
-    private final ObjectMapper mapper;
-    private final ArrayList<ScheduledExecutorService> executor;
-    private final ArrayList<ServerWorker> worker;
-    private AtomicInteger curThread;
-    private final int maxThreads;
+    private final Map<String, GameIndex> indexMap = new ConcurrentHashMap<>();
+    private final ObjectMapper mapper = new ObjectMapper();
+    private final ArrayList<ScheduledExecutorService> executors = new ArrayList<>();
+    private final ArrayList<ServerWorker> worker = new ArrayList<>(5);
+    private AtomicInteger curThread = new AtomicInteger(0);
+    private final int maxThreads = 5;
 
-    public int getNew(){
-        return  curThread.incrementAndGet() % maxThreads;
+    public int getNew() {
+        return curThread.incrementAndGet() % maxThreads;
     }
 
     public ServerManager() {
-        indexMap = new ConcurrentHashMap<>();
-        mapper = new ObjectMapper();
-        worker = new ArrayList<>(5);
-        maxThreads = 5;
-        curThread  = new AtomicInteger(0);
-        executor = new ArrayList<>();
-        for(int i = 0; i< maxThreads; i++) {
-            ConcurrentLinkedQueue<BaseMessageContainer> messageQue  = new ConcurrentLinkedQueue<BaseMessageContainer>();
+        for (int i = 0; i < maxThreads; i++) {
+            ConcurrentLinkedQueue<BaseMessageContainer> messageQue = new ConcurrentLinkedQueue<BaseMessageContainer>();
             ConcurrentLinkedQueue<BaseSystemMessage> systemQue = new ConcurrentLinkedQueue<BaseSystemMessage>();
-            ScheduledExecutorService new_executor = Executors.newScheduledThreadPool(1);
-            ServerWorker wrk = new ServerWorker(this, messageQue, systemQue, new_executor); // it'll be pull
-            new_executor.execute(wrk);
+            ScheduledExecutorService newExecutor = Executors.newScheduledThreadPool(1);
+            ServerWorker wrk = new ServerWorker(this, messageQue, systemQue, newExecutor); // it'll be pull
+            newExecutor.execute(wrk);
             worker.add(wrk);
-            executor.add(new_executor);
+            executors.add(newExecutor);
         }
     }
 
@@ -91,7 +87,7 @@ public class ServerManager {
         if (ind < 0) {
             return ErrorCodes.ERROR_GAME_CREATION;
         }
-        final GameIndex index = new GameIndex(curr,ind);
+        final GameIndex index = new GameIndex(curr, ind);
         final Vector<UserGameView> ulist = view.getList();
         for (UserGameView user : ulist) {
             final String id = user.getUserId();
@@ -145,9 +141,9 @@ public class ServerManager {
         final String userId = (String) session.getAttributes().get("userLogin");
         if (userId == null) {
             final ErrorMessage msg = new ErrorMessage("Invalid user session", mapper);
-            @SuppressWarnings("LocalVariableNamingConvention") final String text_msg = msg.getJson();
+            @SuppressWarnings("LocalVariableNamingConvention") final String textMsg = msg.getJson();
             try {
-                session.sendMessage(new TextMessage(text_msg));
+                session.sendMessage(new TextMessage(textMsg));
             } catch (IOException ignored) {
                 LOGGER.error("IOException", ignored);
             }
