@@ -57,7 +57,7 @@ public final class AccountDAO {
     }
 
     public List<UserScoreRankView> getScoreBoard(final String nickname) {
-        final String sql = "SELECT login, score FROM users ORDER BY score, login";
+        final String sql = "SELECT login, score FROM users ORDER BY score DESC, login";
         List<UserScoreModel> usersTable = jdbcTemplate.query(sql, (rs, rowNum) ->
                 new UserScoreModel(
                         rs.getString("login"),
