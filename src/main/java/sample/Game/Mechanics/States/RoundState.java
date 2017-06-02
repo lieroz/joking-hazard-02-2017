@@ -74,6 +74,9 @@ public class RoundState extends GameState {
             case "UserConnected": {
                 return addUser(msg);
             }
+            case "UserExited": {
+                return exitUser(msg);
+            }
             default:
                 break;
         }

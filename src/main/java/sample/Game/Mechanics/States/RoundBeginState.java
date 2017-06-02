@@ -108,6 +108,9 @@ public class RoundBeginState extends GameState {
             case "ChooseCardFromHand": {
                 return chooseCardFromHand(msg);
             }
+            case "UserExited": {
+                return exitUser(msg);
+            }
             default:
                 break;
         }

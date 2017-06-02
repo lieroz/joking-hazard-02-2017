@@ -86,6 +86,9 @@ public class RoundFinishState extends GameState {
             case "UserConnected": {
                 return addUser(msg);
             }
+            case "UserExited": {
+                return addUser(msg);
+            }
             default:
                 break;
         }
