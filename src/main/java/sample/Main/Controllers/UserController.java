@@ -4,10 +4,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import sample.Main.Services.AccountService;
 import sample.Main.Views.MailForm;
 import sample.Main.Views.PassForm;
@@ -18,7 +15,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 import java.util.Locale;
 
-//@CrossOrigin(origins = "https://jokinghazard.herokuapp.com")
+@CrossOrigin(origins = "https://jokinghazard.herokuapp.com")
 @RestController
 public class UserController {
     @NotNull
