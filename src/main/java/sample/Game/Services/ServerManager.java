@@ -8,14 +8,13 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import sample.Game.Messages.BaseMessageContainer;
 import sample.Game.Messages.ServerMessages.ServerErrorMessage;
-import sample.Game.Messages.SystemMessages.BaseSystemMessage;
-import sample.Game.Messages.SystemMessages.MessageContainer;
-import sample.Game.Messages.SystemMessages.UserConnectedMessage;
+import sample.Game.Messages.SystemMessages.*;
 import sample.Game.Messages.UserMessages.UserMessageContainer;
 import sample.Lobby.Messages.ErrorMessage;
 import sample.Lobby.Services.LobbyService;
 import sample.Lobby.Views.LobbyGameView;
 import sample.Lobby.Views.UserGameView;
+import sample.Main.Services.AccountService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,6 +60,9 @@ public class ServerManager {
     private final Map<String, GameIndex> indexMap = new ConcurrentHashMap<>();
     private final ObjectMapper mapper = new ObjectMapper();
     private final ArrayList<ScheduledExecutorService> executors = new ArrayList<>();
+    private final  ExecutorService databaseExecutor;
+    private final DatabaseWorker databaseWorker;
+    private final  AccountService accountService;
     private final ArrayList<ServerWorker> worker = new ArrayList<>(5);
     private AtomicInteger curThread = new AtomicInteger(0);
     private final int maxThreads = 5;
@@ -69,10 +71,15 @@ public class ServerManager {
         return curThread.incrementAndGet() % maxThreads;
     }
 
-    public ServerManager() {
+    public ServerManager(AccountService dataBase) {
+        accountService = dataBase;
+        databaseExecutor = Executors.newFixedThreadPool(1);
+        ConcurrentLinkedQueue<BaseSystemMessage> databaseQue = new ConcurrentLinkedQueue<BaseSystemMessage>();
+        databaseWorker = new DatabaseWorker(this, databaseQue, accountService);
+        databaseExecutor.execute(databaseWorker);
         for (int i = 0; i < maxThreads; i++) {
             ConcurrentLinkedQueue<BaseMessageContainer> messageQue = new ConcurrentLinkedQueue<BaseMessageContainer>();
-            ConcurrentLinkedQueue<BaseSystemMessage> systemQue = new ConcurrentLinkedQueue<BaseSystemMessage>();
+            ConcurrentLinkedQueue<BaseSystemMessageContainer> systemQue = new ConcurrentLinkedQueue<BaseSystemMessageContainer>();
             ScheduledExecutorService newExecutor = Executors.newScheduledThreadPool(1);
             ServerWorker wrk = new ServerWorker(this, messageQue, systemQue, newExecutor); // it'll be pull
             newExecutor.execute(wrk);
@@ -158,7 +165,20 @@ public class ServerManager {
         worker.get(index.getThread()).getMessageQue().add(container);
     }
 
+    public void addSystemMessage(String userId, BaseSystemMessage msg){
+        final GameIndex index = indexMap.get(userId);
+        if (index == null) {
+            return;
+        }
+        final SystemMessageContainer container = new SystemMessageContainer(userId, index, msg);
+        worker.get(index.getThread()).getSystemQue().add(container);
+    }
+
     public boolean userExist(String userId) {
         return indexMap.containsKey(userId);
+    }
+
+    public DatabaseWorker getDatabase(){
+        return this.databaseWorker;
     }
 }
