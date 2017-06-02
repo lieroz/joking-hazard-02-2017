@@ -22,12 +22,14 @@ public final class AccountDAO {
     }
 
     public UserData getUserByLogin(final String login) {
-        final String sql = "SELECT login, email, password FROM users WHERE login = ?";
+        final String sql = "SELECT * FROM users WHERE login = ?";
         return jdbcTemplate.queryForObject(sql, new Object[]{login}, (rs, rowNum) ->
                 new UserData(
-                        rs.getString("email"),
+                        rs.getInt("id"),
                         rs.getString("login"),
-                        rs.getString("password")
+                        rs.getString("email"),
+                        rs.getString("password"),
+                        rs.getInt("score")
                 )
         );
     }

@@ -4,19 +4,21 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import sample.Main.Models.UserInfoModel;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import sample.Main.Services.AccountService;
 import sample.Main.Views.MailForm;
 import sample.Main.Views.PassForm;
 import sample.Main.Views.ResponseCode;
-import sample.Main.Views.UserInfo;
+import sample.Main.Views.UserInfoView;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 import java.util.Locale;
 
-@CrossOrigin(origins = "https://jokinghazard.herokuapp.com")
+//@CrossOrigin(origins = "https://jokinghazard.herokuapp.com")
 @RestController
 public class UserController {
     @NotNull
@@ -31,8 +33,8 @@ public class UserController {
     }
 
     @RequestMapping(path = "/api/user/data", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseCode<UserInfo>> getWho(HttpSession httpSession) {
-        final UserInfoModel data = new UserInfoModel(null, null);
+    public ResponseEntity<ResponseCode<UserInfoView>> getWho(HttpSession httpSession) {
+        final UserInfoView data = new UserInfoView();
         final String id = (String) httpSession.getAttribute("userLogin");
 
         if (id == null) {
@@ -41,7 +43,7 @@ public class UserController {
                     HttpStatus.NOT_FOUND);
         }
 
-        final AccountService.ErrorCodes error = accountService.getUserData(id, data);
+        final AccountService.ErrorCodes error = accountService.getUserView(id, data);
 
         //noinspection EnumSwitchStatementWhichMissesCases
         switch (error) {
@@ -55,8 +57,7 @@ public class UserController {
             case OK: {
                 return new ResponseEntity<>(new ResponseCode<>(true,
                         messageSource.getMessage("msgs.ok", null, Locale.ENGLISH),
-                        new UserInfo(data.getUserMail(), data.getUserLogin())),
-                        HttpStatus.OK);
+                        data), HttpStatus.OK);
             }
 
             default: {
