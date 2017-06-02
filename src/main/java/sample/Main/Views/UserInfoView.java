@@ -10,9 +10,9 @@ import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("DefaultFileTemplate")
 public final class UserInfoView {
     private Integer id;
-    private String userMail;
     private String userLogin;
-    private Integer score;
+    private String userMail;
+    private Integer userScore;
 
     public UserInfoView() {
 
@@ -20,13 +20,13 @@ public final class UserInfoView {
 
     @JsonCreator
     public UserInfoView(@Nullable @JsonProperty("id") Integer id,
-                        @Nullable @JsonProperty("userMail") String userMail,
                         @Nullable @JsonProperty("userLogin") String userLogin,
-                        @Nullable @JsonProperty("score") Integer score) {
+                        @Nullable @JsonProperty("userMail") String userMail,
+                        @Nullable @JsonProperty("userScore") Integer userScore) {
         this.id = id;
         this.userLogin = userLogin;
         this.userMail = userMail;
-        this.score = score;
+        this.userScore = userScore;
     }
 
     public Integer getId() {
@@ -53,11 +53,11 @@ public final class UserInfoView {
         this.userMail = userMail;
     }
 
-    public Integer getScore() {
-        return score;
+    public Integer getUserScore() {
+        return userScore;
     }
 
-    public void setScore(final Integer score) {
-        this.score = score;
+    public void setUserScore(final Integer userScore) {
+        this.userScore = userScore;
     }
 }

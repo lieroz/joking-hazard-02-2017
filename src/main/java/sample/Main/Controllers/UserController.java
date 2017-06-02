@@ -15,7 +15,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 import java.util.Locale;
 
-@CrossOrigin(origins = "https://jokinghazard.herokuapp.com")
+//@CrossOrigin(origins = "https://jokinghazard.herokuapp.com")
 @RestController
 public class UserController {
     @NotNull

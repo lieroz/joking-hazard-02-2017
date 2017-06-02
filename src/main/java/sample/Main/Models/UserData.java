@@ -27,8 +27,8 @@ public final class UserData {
 
     @JsonCreator
     public UserData(@JsonProperty("id") Integer id,
-                    @JsonProperty("userMail") String userMail,
                     @JsonProperty("userLogin") String userLogin,
+                    @JsonProperty("userMail") String userMail,
                     @JsonProperty("pass") String passHash,
                     @JsonProperty("score") Integer score) {
         this.id = id;

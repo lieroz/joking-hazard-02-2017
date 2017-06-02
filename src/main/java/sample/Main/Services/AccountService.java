@@ -161,7 +161,7 @@ public class AccountService {
             view.setId(data.getId());
             view.setUserLogin(data.getUserLogin());
             view.setUserMail(data.getUserMail());
-            view.setScore(data.getScore());
+            view.setUserScore(data.getScore());
 
         } catch (EmptyResultDataAccessException ex) {
             return ErrorCodes.INVALID_LOGIN;
