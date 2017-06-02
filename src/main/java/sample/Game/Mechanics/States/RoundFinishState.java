@@ -60,7 +60,7 @@ public class RoundFinishState extends GameState {
             return GameState.ErrorCodes.OUT_OF_RANGE;
         }
         final String chosenUserId = wnr.getKey();
-        context.cards[0]= wnr.getValue();
+        context.cards[2]= wnr.getValue();
         final GameUserItem winner = context.mp.get(chosenUserId);
         winner.incrementScore();
         TableInfo tblInf = new TableInfo(context.mapper, context.cards);
