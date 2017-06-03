@@ -6,15 +6,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sample.Main.Models.LogInModel;
-import sample.Main.Views.ResponseCode;
 import sample.Main.Services.AccountService;
 import sample.Main.Views.LogInData;
+import sample.Main.Views.ResponseCode;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 import java.util.Locale;
 
-@SuppressWarnings("Duplicates")
 @CrossOrigin(origins = "https://jokinghazard.herokuapp.com")
 @RestController
 public class LogInController {
@@ -32,9 +31,10 @@ public class LogInController {
     @RequestMapping(path = "/api/user/login", method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCode> getMsg(@RequestBody LogInData body, HttpSession httpSession) {
-        final LogInModel body_model = new LogInModel(body.getUserLogin(), body.getPassHash());
+        @SuppressWarnings("LocalVariableNamingConvention") final LogInModel body_model = new LogInModel(body.getUserLogin(), body.getPassHash());
         final AccountService.ErrorCodes resp = accountService.login(body_model);
 
+        //noinspection EnumSwitchStatementWhichMissesCases
         switch (resp) {
 
             case INVALID_AUTH_DATA: {
@@ -43,7 +43,8 @@ public class LogInController {
                         HttpStatus.BAD_REQUEST);
             }
 
-            case INVALID_LOGIN: case INVALID_PASSWORD: {
+            case INVALID_LOGIN:
+            case INVALID_PASSWORD: {
                 return new ResponseEntity<>(new ResponseCode(false,
                         messageSource.getMessage("msgs.forbidden", null, Locale.ENGLISH)),
                         HttpStatus.FORBIDDEN);

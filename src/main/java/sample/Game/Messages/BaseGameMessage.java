@@ -6,7 +6,11 @@ package sample.Game.Messages;
 @SuppressWarnings("DefaultFileTemplate")
 public class BaseGameMessage {
     @SuppressWarnings("unused")
-    public String getType(){
+    public String getType() {
         return "BaseGameMessage";
+    }
+
+    public Class getClassOfMessage() {
+        return BaseGameMessage.class;
     }
 }

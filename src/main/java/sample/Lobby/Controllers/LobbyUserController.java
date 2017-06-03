@@ -1,6 +1,7 @@
 package sample.Lobby.Controllers;
 
 
+import org.jetbrains.annotations.Nullable;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import sample.Lobby.Messages.BaseMessage;
@@ -19,8 +20,8 @@ import java.io.IOException;
 @SuppressWarnings("DefaultFileTemplate")
 public class LobbyUserController {
 
-    public enum ErrorCodes{
-        OK,
+    public enum ErrorCodes {
+        @SuppressWarnings("EnumeratedConstantNamingConvention")OK,
         INVALID_SESSION,
         INVALID_LOGIN,
         DATABASE_ERROR,
@@ -32,16 +33,14 @@ public class LobbyUserController {
 
     private LobbyUserModel model;
 
-    public   LobbyUserController(){
-    }
-
-    public ErrorCodes lobbyUserControllerInit(WebSocketSession session, AccountService accountService){
+    public ErrorCodes lobbyUserControllerInit(WebSocketSession session, AccountService accountService) {
         final String userId = (String) session.getAttributes().get("userLogin");
         model = new LobbyUserModel(session, accountService);
         if (userId == null) {
             return ErrorCodes.INVALID_SESSION;
         }
-        LobbyUserModel.ErrorCodes result = model.lobbyUserModelInit(userId);
+        final LobbyUserModel.ErrorCodes result = model.lobbyUserModelInit(userId);
+        //noinspection EnumSwitchStatementWhichMissesCases
         switch (result) {
             case OK: {
                 break;
@@ -59,61 +58,63 @@ public class LobbyUserController {
         return ErrorCodes.OK;
     }
 
-    public String getUserId(){
-        if(model == null){
+    @Nullable
+    public String getUserId() {
+        if (model == null) {
             return null;
         }
-        return  model.getUserId();
+        return model.getUserId();
     }
 
-    public ErrorCodes sendMessageToUser(String msg){
-        if(model == null){
+    public ErrorCodes sendMessageToUser(String msg) {
+        if (model == null) {
             return ErrorCodes.NOT_INITIALIZED;
         }
-        WebSocketSession session = model.getSession();
-        if(session == null){
+        final WebSocketSession session = model.getSession();
+        if (session == null) {
             return ErrorCodes.SERVER_ERROR;
         }
         try {
             session.sendMessage(new TextMessage(msg));
-        } catch (IOException e){
+        } catch (IOException e) {
             return ErrorCodes.ERROR_SEND_MESSAGE;
         }
         return ErrorCodes.OK;
     }
 
     @SuppressWarnings("UnusedReturnValue")
-    public ErrorCodes sendMessageToUser(BaseMessage msg){
-        String result;
-        result = msg.getJson();
-        if(result == null){
+    public ErrorCodes sendMessageToUser(BaseMessage msg) {
+        final String result = msg.getJson();
+        if (result == null) {
             return ErrorCodes.ERROR_SERIALIZATION;
         }
         return sendMessageToUser(result);
     }
 
-    public UserInfo getUserDataView(){
-        if(model == null){
+    @Nullable
+    public UserInfo getUserDataView() {
+        if (model == null) {
             return null;
         }
-        UserInfoModel info = model.getUserInfo();
-        return  info.getUserInfo();
+        final UserInfoModel info = model.getUserInfo();
+        return info.getUserInfo();
     }
 
-    public UserGameView getGameView(){
-        if(model == null){
+    @Nullable
+    public UserGameView getGameView() {
+        if (model == null) {
             return null;
         }
 
         return model.getGameView();
     }
-    public void close(){
-        WebSocketSession ses;
-        if(model != null) {
-            ses = model.getSession();
+
+    public void close() {
+        if (model != null) {
+            final WebSocketSession ses = model.getSession();
             try {
                 ses.close();
-            } catch (IOException ignored){
+            } catch (IOException ignored) {
 
             }
         }

@@ -11,16 +11,20 @@ import java.util.Vector;
 @SuppressWarnings("DefaultFileTemplate")
 public class HandInfo extends BaseServerMessage {
     private final Vector<GameCard> hand;
-    public HandInfo(ObjectMapper mapper, Vector<GameCard> hand){
+
+    public HandInfo(ObjectMapper mapper, Vector<GameCard> hand) {
         super(mapper);
         this.hand = hand;
 
     }
-    public String getType(){
+
+    @Override
+    public String getType() {
         return "HandInfo";
     }
+
     @SuppressWarnings("unused")
-    public Vector<GameCard> getHand(){
+    public Vector<GameCard> getHand() {
         return hand;
     }
 }

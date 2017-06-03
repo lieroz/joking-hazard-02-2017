@@ -1,5 +1,7 @@
 package sample.Game.Mechanics.GameUser;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ser.Serializers;
 import sample.Game.Messages.ServerMessages.BaseServerMessage;
 import sample.Game.Messages.ServerMessages.HandInfo;
 
@@ -8,16 +10,26 @@ import sample.Game.Messages.ServerMessages.HandInfo;
  */
 @SuppressWarnings("DefaultFileTemplate")
 public interface GameUserInterface {
-    enum ErrorCodes{
-        OK,
+    enum ErrorCodes {
+        @SuppressWarnings("EnumeratedConstantNamingConvention")OK,
         @SuppressWarnings("unused")DISCONNECTED,
     }
+
     void init(HandInfo hand);
+
     @SuppressWarnings({"SameReturnValue", "unused"})
-    ErrorCodes getCardFromDeck();
+    BaseServerMessage chooseCardFromHand(ObjectMapper mapper);
+
     @SuppressWarnings({"SameReturnValue", "unused"})
-    ErrorCodes chooseCardFromTable();
+    BaseServerMessage chooseCardFromTable(ObjectMapper mapper);
+
     @SuppressWarnings({"UnusedReturnValue", "SameReturnValue"})
     ErrorCodes send(BaseServerMessage msg);
+
+    void sendHandInfo(HandInfo hand);
+
     void close();
+
+    @SuppressWarnings("SameReturnValue")
+    boolean isUser();
 }

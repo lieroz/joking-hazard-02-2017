@@ -1,20 +1,21 @@
 package sample.Lobby.WebSockets;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.socket.*;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
+import org.springframework.web.socket.handler.TextWebSocketHandler;
+import sample.Lobby.Commands.Command;
+import sample.Lobby.Messages.ErrorMessage;
+import sample.Lobby.Messages.OkMessage;
+import sample.Lobby.Services.LobbyService;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import javax.naming.AuthenticationException;
 import java.io.IOException;
-
-import sample.Lobby.Commands.Command;
-import sample.Lobby.Messages.*;
-import sample.Lobby.Services.LobbyService;
 
 /**
  * Created by ksg on 11.04.17.
@@ -22,7 +23,7 @@ import sample.Lobby.Services.LobbyService;
 
 @SuppressWarnings("DefaultFileTemplate")
 public class LobbyWebSocketHandler extends TextWebSocketHandler {
-    @SuppressWarnings("SpringJavaAutowiredMembersInspection")
+    @SuppressWarnings({"SpringJavaAutowiredMembersInspection", "SpringAutowiredFieldsWarningInspection"})
     @Autowired
     private
     LobbyService lobbyService;
@@ -35,11 +36,13 @@ public class LobbyWebSocketHandler extends TextWebSocketHandler {
         lobbyService.addUser(webSocketSession);
     }
 
+    @SuppressWarnings("OverlyBroadThrowsClause")
     @Override
     public void afterConnectionClosed(WebSocketSession webSocketSession, CloseStatus closeStatus) throws Exception {
 
         final String userId = (String) webSocketSession.getAttributes().get("userLogin");
-        if(userId != null) {
+        final Boolean rejected = (Boolean) webSocketSession.getAttributes().get("rejected");
+        if ((userId != null) && (rejected == null)) {
             lobbyService.removeUser(userId);
         }
         webSocketSession.close();
@@ -47,15 +50,15 @@ public class LobbyWebSocketHandler extends TextWebSocketHandler {
     }
 
     @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message){
-        final String  userId = (String) session.getAttributes().get("userLogin");
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) {
+        final String userId = (String) session.getAttributes().get("userLogin");
         if (userId == null) {
-            ErrorMessage msg = new ErrorMessage("Invalid user session", objectMapper);
-            String text_msg = msg.getJson();
+            final ErrorMessage msg = new ErrorMessage("Invalid user session", objectMapper);
+            @SuppressWarnings("LocalVariableNamingConvention") final String text_msg = msg.getJson();
             try {
                 session.sendMessage(new TextMessage(text_msg));
             } catch (IOException ignored) {
-
+                LOGGER.error("IOException", ignored);
             }
         } else {
             handleMessage(userId, session, message);
@@ -64,47 +67,53 @@ public class LobbyWebSocketHandler extends TextWebSocketHandler {
 
     private void handleMessage(String userId, WebSocketSession session, TextMessage text) {
 
-        Command cmd;
+        final Command cmd;
         try {
-            cmd= objectMapper.readValue(text.getPayload(), Command.class);
+            cmd = objectMapper.readValue(text.getPayload(), Command.class);
         } catch (IOException ex) {
             LOGGER.error("wrong json format at first level", ex);
-            ErrorMessage msg = new ErrorMessage("Invalid first level json format", objectMapper);
+            final ErrorMessage msg = new ErrorMessage("Invalid first level json format", objectMapper);
             try {
                 session.sendMessage(new TextMessage(msg.getJson()));
-            }catch (IOException ignored) {
+            } catch (IOException ignored) {
+                LOGGER.error("IOException", ignored);
             }
             return;
         }
-        switch (cmd.getCmd()){
-            case "EndSession":{
+        switch (cmd.getCmd()) {
+            case "EndSession": {
                 endSession(userId, session);
                 break;
             }
-            default:{
+            default: {
                 LOGGER.error("wrong command");
-                ErrorMessage msg = new ErrorMessage("Invalid command", objectMapper);
+                final ErrorMessage msg = new ErrorMessage("Invalid command", objectMapper);
                 try {
                     session.sendMessage(new TextMessage(msg.getJson()));
-                }catch (IOException ignored) {
+                } catch (IOException ignored) {
+                    LOGGER.error("IOException", ignored);
                 }
             }
 
         }
     }
-    private void endSession(String userId, WebSocketSession session){
-        LobbyService.ErrorCodes codes = lobbyService.removeUser(userId);
-        switch (codes){
+
+    private void endSession(String userId, WebSocketSession session) {
+        final LobbyService.ErrorCodes codes = lobbyService.removeUser(userId);
+        //noinspection EnumSwitchStatementWhichMissesCases,SwitchStatementWithoutDefaultBranch
+        switch (codes) {
             case OK: {
-                OkMessage msg = new OkMessage("Ok", objectMapper);
+                final OkMessage msg = new OkMessage("Ok", objectMapper);
                 try {
                     session.sendMessage(new TextMessage(msg.getJson()));
-                }catch (IOException ignored) {
+                } catch (IOException ignored) {
+                    LOGGER.error("IOException", ignored);
                 }
                 break;
             }
         }
     }
+
     @Override
     public boolean supportsPartialMessages() {
         return false;

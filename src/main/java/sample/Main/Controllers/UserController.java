@@ -1,24 +1,20 @@
 package sample.Main.Controllers;
 
 import org.springframework.context.MessageSource;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
-import sample.Main.Models.UserInfoModel;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import sample.Main.Services.AccountService;
-import sample.Main.Views.ResponseCode;
-import sample.Main.Views.PassForm;
 import sample.Main.Views.MailForm;
+import sample.Main.Views.PassForm;
+import sample.Main.Views.ResponseCode;
+import sample.Main.Views.UserInfoView;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
-
 import java.util.Locale;
 
-import sample.Main.Views.UserInfo;
-
-@SuppressWarnings("Duplicates")
 @CrossOrigin(origins = "https://jokinghazard.herokuapp.com")
 @RestController
 public class UserController {
@@ -34,8 +30,8 @@ public class UserController {
     }
 
     @RequestMapping(path = "/api/user/data", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseCode<UserInfo>> getWho(HttpSession httpSession) {
-        final UserInfoModel data = new UserInfoModel(null, null);
+    public ResponseEntity<ResponseCode<UserInfoView>> getWho(HttpSession httpSession) {
+        final UserInfoView data = new UserInfoView();
         final String id = (String) httpSession.getAttribute("userLogin");
 
         if (id == null) {
@@ -44,8 +40,9 @@ public class UserController {
                     HttpStatus.NOT_FOUND);
         }
 
-        final AccountService.ErrorCodes error = accountService.getUserData(id, data);
+        final AccountService.ErrorCodes error = accountService.getUserView(id, data);
 
+        //noinspection EnumSwitchStatementWhichMissesCases
         switch (error) {
 
             case INVALID_LOGIN: {
@@ -57,8 +54,7 @@ public class UserController {
             case OK: {
                 return new ResponseEntity<>(new ResponseCode<>(true,
                         messageSource.getMessage("msgs.ok", null, Locale.ENGLISH),
-                        new UserInfo(data.getUserMail(), data.getUserLogin())),
-                        HttpStatus.OK);
+                        data), HttpStatus.OK);
             }
 
             default: {
@@ -98,6 +94,7 @@ public class UserController {
         final String login = (String) httpSession.getAttribute("userLogin");
         final AccountService.ErrorCodes result = accountService.changeMail(body.getUserMail(), login);
 
+        //noinspection EnumSwitchStatementWhichMissesCases
         switch (result) {
 
             case INVALID_SESSION: {
@@ -145,6 +142,7 @@ public class UserController {
 
         final AccountService.ErrorCodes error = accountService.changePassHash(form.getNewPassHash(), login);
 
+        //noinspection EnumSwitchStatementWhichMissesCases
         switch (error) {
 
             case OK: {
@@ -174,6 +172,7 @@ public class UserController {
 
         final AccountService.ErrorCodes error = accountService.deleteUserData(login);
 
+        //noinspection EnumSwitchStatementWhichMissesCases
         switch (error) {
 
             case OK: {
@@ -189,5 +188,18 @@ public class UserController {
                         HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
+    }
+
+    @RequestMapping(path = "/api/score", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> getScoreBoard(HttpSession httpSession) {
+        final String login = (String) httpSession.getAttribute("userLogin");
+        if (login == null) {
+            return new ResponseEntity<>(new ResponseCode(false,
+                    messageSource.getMessage("msgs.not_found", null, Locale.ENGLISH)),
+                    HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(new ResponseCode<>(true,
+                messageSource.getMessage("msgs.ok", null, Locale.ENGLISH),
+                accountService.getScoreBoard(login)), HttpStatus.OK);
     }
 }

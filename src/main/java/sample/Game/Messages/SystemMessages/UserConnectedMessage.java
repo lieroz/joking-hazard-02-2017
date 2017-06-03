@@ -8,16 +8,22 @@ import org.springframework.web.socket.WebSocketSession;
 @SuppressWarnings("DefaultFileTemplate")
 public class UserConnectedMessage extends BaseSystemMessage {
     private final WebSocketSession session;
-    public UserConnectedMessage(WebSocketSession session){
+
+    public UserConnectedMessage(WebSocketSession session) {
         this.session = session;
     }
-    public String getType(){
+
+    @Override
+    public String getType() {
         return "UserConnected";
     }
-    public WebSocketSession getSession(){
+
+    public WebSocketSession getSession() {
         return session;
     }
-    public Class getClassOfMessage(){
+
+    @Override
+    public Class getClassOfMessage() {
         return UserConnectedMessage.class;
     }
 }

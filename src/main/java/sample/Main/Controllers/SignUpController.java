@@ -1,12 +1,12 @@
 package sample.Main.Controllers;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sample.Main.Services.AccountService;
 import sample.Main.Models.UserData;
+import sample.Main.Services.AccountService;
 import sample.Main.Views.ResponseCode;
 import sample.Main.Views.UserDataView;
 
@@ -14,7 +14,6 @@ import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotNull;
 import java.util.Locale;
 
-@SuppressWarnings("Duplicates")
 @CrossOrigin(origins = "https://jokinghazard.herokuapp.com")
 @RestController
 public class SignUpController {
@@ -32,9 +31,10 @@ public class SignUpController {
     @RequestMapping(path = "/api/user/signup", method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseCode> getMsg(@RequestBody UserDataView body, HttpSession httpSession) {
-        final UserData body_model = new UserData(body.getUserMail(), body.getUserLogin(), body.getPass());
+        @SuppressWarnings("LocalVariableNamingConvention") final UserData body_model = new UserData(body.getUserMail(), body.getUserLogin(), body.getPass());
         final AccountService.ErrorCodes result = accountService.register(body_model);
 
+        //noinspection EnumSwitchStatementWhichMissesCases
         switch (result) {
 
             case INVALID_REG_DATA: {

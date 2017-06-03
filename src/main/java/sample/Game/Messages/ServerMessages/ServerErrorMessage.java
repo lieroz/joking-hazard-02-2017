@@ -8,15 +8,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @SuppressWarnings("DefaultFileTemplate")
 public class ServerErrorMessage extends BaseServerMessage {
     private final String msg;
-    public ServerErrorMessage(ObjectMapper mapper, String msg){
+
+    public ServerErrorMessage(ObjectMapper mapper, String msg) {
         super(mapper);
         this.msg = msg;
     }
-    public String getType(){
+
+    @Override
+    public String getType() {
         return "ErrorMsg";
     }
+
     @SuppressWarnings("unused")
-    public String getMsg(){
+    public String getMsg() {
         return msg;
     }
 }

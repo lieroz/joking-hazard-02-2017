@@ -2,7 +2,7 @@ package sample.Main.Models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
+import org.jetbrains.annotations.Nullable;
 import sample.Main.Views.UserInfo;
 
 /**
@@ -15,8 +15,8 @@ public final class UserInfoModel {
     private String userLogin;
 
     @JsonCreator
-    public UserInfoModel(@SuppressWarnings("SameParameterValue") @JsonProperty("userMail") String userMail,
-                         @SuppressWarnings("SameParameterValue") @JsonProperty("userLogin") String userLogin) {
+    public UserInfoModel(@Nullable @SuppressWarnings("SameParameterValue") @JsonProperty("userMail") String userMail,
+                         @Nullable @SuppressWarnings("SameParameterValue") @JsonProperty("userLogin") String userLogin) {
         this.userLogin = userLogin;
         this.userMail = userMail;
     }
@@ -26,7 +26,7 @@ public final class UserInfoModel {
     }
 
     public void setUserLogin(final String userLogin) {
-        this.userLogin =  userLogin;
+        this.userLogin = userLogin;
     }
 
     public String getUserMail() {
@@ -37,7 +37,7 @@ public final class UserInfoModel {
         this.userMail = userMail;
     }
 
-    public UserInfo getUserInfo(){
-        return new UserInfo(userMail,userLogin);
+    public UserInfo getUserInfo() {
+        return new UserInfo(userMail, userLogin);
     }
 }

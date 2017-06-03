@@ -1,6 +1,8 @@
 package sample.Main.Services;
 
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.dao.DataAccessException;
@@ -10,19 +12,19 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import sample.Main.DAO.AccountDAO;
 import sample.Main.Models.LogInModel;
-import sample.Main.Models.UserInfoModel;
 import sample.Main.Models.UserData;
+import sample.Main.Models.UserInfoModel;
+import sample.Main.Views.UserInfoView;
+import sample.Main.Views.UserScoreRankView;
+
+import java.util.List;
 
 @Service
 public class AccountService {
-    public enum  ErrorCodes {
-        OK,
+    public enum ErrorCodes {
+        @SuppressWarnings("EnumeratedConstantNamingConvention")OK,
         INVALID_LOGIN,
         INVALID_PASSWORD,
         LOGIN_OCCUPIED,
@@ -83,7 +85,7 @@ public class AccountService {
             }
 
         } catch (EmptyResultDataAccessException ex) {
-            return  ErrorCodes.INVALID_LOGIN;
+            return ErrorCodes.INVALID_LOGIN;
 
         } catch (DataAccessException ex) {
             return ErrorCodes.DATABASE_ERROR;
@@ -109,7 +111,7 @@ public class AccountService {
         return ErrorCodes.OK;
     }
 
-    public ErrorCodes changePassHash(@NotNull  String newPassHash, @NotNull String login) {
+    public ErrorCodes changePassHash(@NotNull String newPassHash, @NotNull String login) {
         try {
             final UserData data = accountDAO.getUserByLogin(login);
             data.setPassHash(newPassHash);
@@ -145,6 +147,21 @@ public class AccountService {
             final UserData data = accountDAO.getUserByLogin(login);
             model.setUserLogin(data.getUserLogin());
             model.setUserMail(data.getUserMail());
+        } catch (EmptyResultDataAccessException ex) {
+            return ErrorCodes.INVALID_LOGIN;
+        } catch (DataAccessException ex) {
+            return ErrorCodes.DATABASE_ERROR;
+        }
+        return ErrorCodes.OK;
+    }
+
+    public ErrorCodes getUserView(@NotNull String login, UserInfoView view) {
+        try {
+            final UserData data = accountDAO.getUserByLogin(login);
+            view.setId(data.getId());
+            view.setUserLogin(data.getUserLogin());
+            view.setUserMail(data.getUserMail());
+            view.setUserScore(data.getScore());
 
         } catch (EmptyResultDataAccessException ex) {
             return ErrorCodes.INVALID_LOGIN;
@@ -167,6 +184,21 @@ public class AccountService {
             return ErrorCodes.DATABASE_ERROR;
         }
 
+        return ErrorCodes.OK;
+    }
+
+    public List<UserScoreRankView> getScoreBoard(@NotNull String login) {
+        return accountDAO.getScoreBoard(login);
+    }
+
+    public ErrorCodes updateScore(@NotNull String login, @NotNull Integer score) {
+        try {
+            accountDAO.updateScore(login, score);
+        } catch (EmptyResultDataAccessException ex) {
+            return ErrorCodes.INVALID_SESSION;
+        } catch (DataAccessException ex) {
+            return ErrorCodes.DATABASE_ERROR;
+        }
         return ErrorCodes.OK;
     }
 }

@@ -11,7 +11,9 @@ public class BaseSystemMessage extends BaseGameMessage {
     public String getType() {
         return "BaseSystemMessage";
     }
-    public Class getClassOfMessage(){
+
+    @Override
+    public Class getClassOfMessage() {
         return BaseSystemMessage.class;
     }
 }

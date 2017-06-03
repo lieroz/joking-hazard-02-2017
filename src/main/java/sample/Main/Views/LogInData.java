@@ -13,8 +13,8 @@ public final class LogInData {
     private final String pass;
 
     @SuppressWarnings("unused")
-    public enum  ViewError {
-        OK,
+    public enum ViewError {
+        @SuppressWarnings("EnumeratedConstantNamingConvention")OK,
         INVALID_DATA_ERROR
     }
 

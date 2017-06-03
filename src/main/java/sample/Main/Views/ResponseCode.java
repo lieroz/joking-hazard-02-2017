@@ -2,6 +2,7 @@ package sample.Main.Views;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created by ksg on 02.03.17.
@@ -39,6 +40,7 @@ public final class ResponseCode<T> {
         return errorMsg;
     }
 
+    @Nullable
     @SuppressWarnings("unused")
     public T getData() {
         return data;
