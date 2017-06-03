@@ -7,6 +7,6 @@ import sample.Game.Messages.BaseGameMessage;
  */
 public class UserExit extends BaseGameMessage {
     public String getType() {
-        return "UserExit";
+        return "UserExited";
     }
 }
