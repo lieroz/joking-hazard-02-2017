@@ -87,7 +87,7 @@ public class RoundFinishState extends GameState {
                 return addUser(msg);
             }
             case "UserExited": {
-                return addUser(msg);
+                return exitUser(msg);
             }
             default:
                 break;

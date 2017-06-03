@@ -98,6 +98,7 @@ public class RoundBeginState extends GameState {
     public ErrorCodes handle(BaseMessageContainer msg) {
         @SuppressWarnings("LocalVariableNamingConvention") final BaseGameMessage ser_msg = msg.getMsg(context.mapper);
         if (ser_msg == null) {
+
             return ErrorCodes.SERIALIZATION_ERROR;
         }
         final String type = ser_msg.getType();

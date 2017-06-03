@@ -129,19 +129,23 @@ public class MainMechanics {
                 break;
             }
             case INVALID_COMMAND: {
+                LOGGER.error("INVALID_COMMAND");
                 item.sendMessage(new ServerErrorMessage(context.mapper, "Invalid Command"));
                 return ErrorCodes.INVALID_COMMAND;
             }
             case SERIALIZATION_ERROR: {
+                LOGGER.error("SERIALIZATION_ERROR");
                 item.sendMessage(new ServerErrorMessage(context.mapper, "Serialization Error"));
                 return ErrorCodes.INVALID_COMMAND;
             }
             case OUT_OF_RANGE: {
+                LOGGER.error("OUT_OF_RANGE");
                 item.sendMessage(new ServerErrorMessage(context.mapper, "Out of range Error"));
                 return ErrorCodes.SERIALIZATION_ERROR;
             }
 
             case BAD_BEHAVIOR: {
+                LOGGER.error("BAD_BEHAVIOR");
                 item.sendMessage(new ServerErrorMessage(context.mapper, "Unexpected behavior"));
                 return ErrorCodes.INVALID_COMMAND;
             }
